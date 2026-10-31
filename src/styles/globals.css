@@ -96,6 +96,61 @@ body {
   color: transparent;
 }
 
+/* Faint square grid behind the hero only. It ties into the pixel map. */
+.hero-grid {
+  background-image:
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Markdown bodies for events and posts */
+.prose-site > * + * {
+  margin-top: 1em;
+}
+
+.prose-site h2,
+.prose-site h3 {
+  margin-top: 1.75em;
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.prose-site h2 {
+  font-size: 1.25em;
+}
+
+.prose-site a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.prose-site ul,
+.prose-site ol {
+  padding-left: 1.25em;
+}
+
+.prose-site ul {
+  list-style: square;
+}
+
+.prose-site ol {
+  list-style: decimal;
+}
+
+.prose-site code {
+  font-family: var(--font-display);
+  font-size: 14px;
+}
+
+.prose-site pre {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+  padding: 16px;
+}
+
 /* Pixel grids. Everything is fully visible unless a motion rule below applies. */
 .pixel-ring-static {
   opacity: 0.7;

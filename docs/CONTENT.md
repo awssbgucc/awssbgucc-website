@@ -30,7 +30,7 @@ Editable items are flagged **[admin]**. They live in the database and are seeded
 
 - Line 1: `Build from`
 - Line 2 (brand gradient): `Cape Coast.`
-- Paragraph: `We are UCC's AWS Student Builder Group. Students from any department learn cloud computing by building real projects on AWS, together, every week.`
+- Paragraph: `We are the AWS Student Builder Group at University of Cape Coast. Students from any department learn cloud computing by building real projects on AWS, together, every week.`
 - Primary button: `Join on Meetup` linking to the Meetup URL
 - Secondary button: `Join the WhatsApp community` linking to the WhatsApp URL
 - Text link under the buttons: `New to AWS? Create your free Builder Center profile` linking to the tracked Builder Center link
@@ -127,7 +127,7 @@ TODO(joel): confirm every benefit against the current program terms before launc
 - Headline: `Partners`
 - Intro: `Campus associations and organisations that work with us to bring cloud skills to more students.`
 - Groups: Campus partners, Sponsors (hidden if empty), Community partners (hidden if empty).
-- Closing block: headline `Want to work with us?`, copy `We work with departmental associations, clubs and organisations that want their members building on AWS. Email us and we will set up a call.`, button `Email the team` (mailto).
+- Closing block: headline `Work with us`, copy `We work with departmental associations, clubs and organisations that want their members building on AWS. Email us and we will set up a call.`, button `Email the team` (mailto).
 
 ## Blog page
 

@@ -112,7 +112,56 @@ Left:
 
 - `/` returns 404 until Phase 2, and there is no favicon yet
 - The purple and faint contrast failures remain until the brand kit colours are confirmed
-- Nothing is committed
+- Committed as 58ad68f
+
+## Phase 2: public pages with static data
+
+Decisions from Joel, 31 Oct 2026: events are added from the dashboard later, so none are seeded. Everything else follows the recommendations in this file.
+
+- [x] Typed content in `src/lib/content/static.ts`, shaped like the models in docs/ADMIN.md, with tested selectors
+- [x] Home, events list, event detail, team, partners, blog list, post detail, 404, nav, mobile menu and footer
+- [x] Metadata, Open Graph image, sitemap, robots and a favicon
+- [x] Copy updated in docs: hero name (C18), `Work with us` (C17), muted eyebrows (W6)
+- [x] `pnpm typecheck`, `pnpm lint`, `pnpm test` and `pnpm check:copy`
+- [x] Screenshots of every page at 375px
+- [ ] Lighthouse mobile 90+ on the default settings: not met on this laptop, see the review
+
+### Phase 2 review (31 Oct 2026)
+
+Checked:
+
+- `pnpm typecheck`, `pnpm lint`, `pnpm test` (23 tests) and `pnpm check:copy` pass
+- Playwright: 18 dev tests at 375px and 1280px, and 3 production tests pass
+- No horizontal scroll or console errors on any page at 375px and 1280px
+- Event and post layouts checked with sample records at `/styleguide/preview`, which returns 404 in production
+
+Lighthouse on the home page, production build, this laptop (Ryzen 3 2200U):
+
+| Setting | Performance | Accessibility | Best practices |
+|---|---|---|---|
+| Default, 4x CPU slowdown, 3 runs | 76 to 85 | 96 | 100 |
+| 2x CPU slowdown, my estimate of a typical phone on this CPU, 5 runs | 90 to 94 | 96 | 100 |
+
+For comparison, the near-empty `/blog` scores 85 to 90 on the default setting, so most of the gap comes from this CPU and the framework. The home page costs about 8 more points, from hydrating the map SVG and its animation. `will-change` and inlined CSS did not help, so both were reverted. Run PageSpeed Insights on the deployed site in Phase 7 for the real figure.
+
+Accessibility is 96 because of the Bootcamp tag's purple contrast (C8).
+
+Choices made to avoid inventing content:
+
+- The bootcamp card leaves out the voucher sentence and has no schedule yet (C19)
+- The nav and footer use text until the official logo file is in `public/brand/`
+- The 404 page leaves out the pixel chip until the program contact confirms it (W7)
+- The closing section drops its WhatsApp sentence until the link exists (C21)
+- Partner tiles show names until logos arrive
+- The blog shows only its headline and intro while it has no posts, and the Past tab appears once a past event exists
+- `/scd` and the Community Day card stay off (C29). The "Live now" dot is dropped (C30)
+- The favicon is a lime square on the background colour, our own mark and not the logo. Say if you want something else
+
+Left:
+
+- W2 needs an answer before Phase 3: time-based ISR on Amplify
+- Seeding: Phase 3 seeds no events, so C3 and C4 need no data model change for seeding. C4's unused `featured` field is still open
+- Phase 2 is not committed
 
 ## Contradictions in the docs
 

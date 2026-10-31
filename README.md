@@ -14,7 +14,7 @@ Specs and assets for Claude Code to build the group website and admin dashboard.
 | Path | Purpose |
 |---|---|
 | `CLAUDE.md` | Rules Claude Code reads every session: stack, writing rules, workflow |
-| `BUILD_PROMPT.md` | Seven phases, each with its own prompt and done criteria |
+| `BUILD_PROMPT.md` | Eight phases, 0 to 7, each with its own prompt and done criteria |
 | `docs/DESIGN.md` | Tokens, type, components, pixel map spec |
 | `docs/CONTENT.md` | All v1 copy and seed data |
 | `docs/ADMIN.md` | Dashboard scope, Prisma schema, auth, uploads |

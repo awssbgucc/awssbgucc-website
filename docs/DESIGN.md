@@ -79,7 +79,7 @@ Never on buttons, cards, borders or body text.
 |---|---|---|---|---|
 | Hero headline | display | 44 / 80px | 500 | Two lines, tight tracking (-0.02em) |
 | Section headline | display | 28 / 44px | 500 | |
-| Eyebrow | sans | 12px | 600 | Uppercase, 0.12em tracking, `--color-lime` |
+| Eyebrow | sans | 12px | 600 | Uppercase, 0.12em tracking, `--color-text-muted` |
 | Card title | sans | 18px | 600 | |
 | Body | sans | 16 / 17px | 400 | Line height 1.6, max width 62ch |
 | Small and meta | sans | 14px | 500 | `--color-text-muted` |
