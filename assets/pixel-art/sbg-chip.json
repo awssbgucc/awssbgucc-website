@@ -1,0 +1,24 @@
+{
+ "name": "sbg-chip",
+ "cols": 9,
+ "rows": 9,
+ "palette": {
+  "#": "#a95df3"
+ },
+ "legend": {
+  ".": "empty",
+  "#": "logo purple"
+ },
+ "grid": [
+  "..#.#.#..",
+  "..#####..",
+  "##.....##",
+  ".#.....#.",
+  "##.....##",
+  ".#.....#.",
+  "##.....##",
+  "..#####..",
+  "..#.#.#.."
+ ],
+ "source": "Cell-for-cell trace of the official AWS Student Builder Group logo. Use the official file from Box for the logo itself."
+}

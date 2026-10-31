@@ -1,0 +1,166 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Clears the default palette, so only the tokens below can be used */
+  --color-*: initial;
+
+  /* Surfaces */
+  --color-bg: #161d26;
+  --color-bg-alt: #1a222d;
+  --color-card: #1d2630;
+  --color-card-raised: #232e3c;
+  --color-border: rgb(255 255 255 / 0.07);
+  --color-border-strong: rgb(255 255 255 / 0.14);
+
+  /* Text */
+  --color-text: #e8ecf2;
+  --color-text-muted: #9aa5b4;
+  --color-text-faint: #6b7685; /* fails 4.5:1 on every surface, so not for text */
+  --color-white: #ffffff;
+
+  /* Accents */
+  --color-purple: #b460ef;
+  --color-lavender: #c4b5fd;
+  --color-sky: #8ab8f8;
+  --color-cyan: #38d9f5;
+  --color-lime: #b8ff3e;
+
+  /* Single-purpose */
+  --color-logo-purple: #a95df3;
+  --color-danger: #f87171;
+
+  /* Type */
+  --font-display: var(--font-mono-face), ui-monospace, monospace;
+  --font-sans: var(--font-sans-face), system-ui, sans-serif;
+
+  /* Radius: small, consistent */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  /* Motion */
+  --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root {
+  --grad-brand: linear-gradient(90deg, var(--color-purple) 0%, var(--color-sky) 55%, var(--color-cyan) 100%);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+@media (min-width: 1024px) {
+  body {
+    font-size: 17px;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
+}
+
+/* Type roles. The min() keeps "Cape Coast." on one line on phones under 360px. */
+.type-hero {
+  font-family: var(--font-display);
+  font-size: min(44px, 12.2vw);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.type-section {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+@media (min-width: 1024px) {
+  .type-hero {
+    font-size: 80px;
+  }
+
+  .type-section {
+    font-size: 44px;
+  }
+}
+
+.text-brand-gradient {
+  background: var(--grad-brand);
+  background-clip: text;
+  color: transparent;
+}
+
+/* Pixel grids. Everything is fully visible unless a motion rule below applies. */
+.pixel-ring-static {
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pixel-fade .pixel-row {
+    animation: pixel-row-in 250ms var(--ease-brand) backwards;
+    animation-delay: calc(var(--row) * var(--row-step));
+  }
+
+  [data-fade='waiting'] .pixel-row {
+    animation: none;
+    opacity: 0;
+  }
+
+  .pixel-marker {
+    animation: pixel-marker-flash 400ms linear 900ms;
+  }
+
+  .pixel-ring {
+    animation: pixel-ring-pulse 3s linear 1300ms infinite;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}
+
+@media (min-width: 1280px) {
+  .pixel-map-label {
+    left: var(--label-left);
+    top: var(--label-top);
+  }
+}
+
+@keyframes pixel-row-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pixel-marker-flash {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* 1.8s of a 3s cycle: from the 3 by 3 block to the 5 by 5 block */
+@keyframes pixel-ring-pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(var(--ring-from));
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
