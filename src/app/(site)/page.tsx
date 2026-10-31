@@ -13,8 +13,8 @@ import { FadeOnView } from '@/components/ui/FadeOnView';
 import { PixelGrid } from '@/components/ui/PixelGrid';
 import { Section } from '@/components/ui/Section';
 import { Tag, type EventTag } from '@/components/ui/Tag';
-import { activeTeam, homeStats, publishedPartners, upcomingEvents } from '@/lib/content/selectors';
-import { events, partners, siteSettings, teamMembers } from '@/lib/content/static';
+import { getEvents, getPartners, getSiteSettings, getTeam } from '@/lib/content/queries';
+import { homeStats, upcomingEvents } from '@/lib/content/selectors';
 
 const POINTS = [
   'Free and open to every department and level',
@@ -56,12 +56,12 @@ const BENEFITS = [
   { title: 'Certification support', copy: 'Study support for AWS certifications, and a route to exam vouchers for committed members.' },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
   const now = new Date();
-  const s = siteSettings;
+  const [s, events, partners, team] = await Promise.all([getSiteSettings(), getEvents(), getPartners(), getTeam()]);
   const stats = homeStats(s, events, partners, now);
   const nextEvent = upcomingEvents(events, now)[0];
-  const campusPartners = publishedPartners(partners, 'CAMPUS');
+  const campusPartners = partners.filter((partner) => partner.type === 'CAMPUS');
   const programmes = PROGRAMMES.filter((p) => !p.scdOnly || s.scdPageEnabled);
 
   return (
@@ -173,18 +173,20 @@ export default function HomePage() {
         )}
       </Section>
 
-      <Section>
-        <Eyebrow>The team</Eyebrow>
-        <h2 className="type-section mt-3">Run by students, for students.</h2>
-        <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-6">
-          {activeTeam(teamMembers).map((person) => (
-            <TeamCard key={person.id} person={person} />
-          ))}
-        </div>
-        <Link href="/team" className="mt-8 inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4">
-          Meet the team
-        </Link>
-      </Section>
+      {team.length > 0 && (
+        <Section>
+          <Eyebrow>The team</Eyebrow>
+          <h2 className="type-section mt-3">Run by students, for students.</h2>
+          <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-6">
+            {team.map((person) => (
+              <TeamCard key={person.id} person={person} />
+            ))}
+          </div>
+          <Link href="/team" className="mt-8 inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4">
+            Meet the team
+          </Link>
+        </Section>
+      )}
 
       {campusPartners.length > 0 && (
         <Section alt>

@@ -1,7 +1,7 @@
-import { siteSettings } from '@/lib/content/static';
+import { getSiteSettings } from '@/lib/content/queries';
 
-export function AnnouncementBar() {
-  const { announcementActive, announcementText, announcementUrl } = siteSettings;
+export async function AnnouncementBar() {
+  const { announcementActive, announcementText, announcementUrl } = await getSiteSettings();
   if (!announcementActive || !announcementText) return null;
   return (
     <p className="bg-card-raised px-6 py-2 text-center text-sm font-medium">

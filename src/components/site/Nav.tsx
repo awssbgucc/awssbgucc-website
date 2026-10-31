@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { siteSettings } from '@/lib/content/static';
+import { getSiteSettings } from '@/lib/content/queries';
 import { Logo } from './Logo';
 import { MobileMenu } from './MobileMenu';
 import { NAV_LINKS } from './nav-links';
 
-export function Nav() {
-  const { meetupUrl, whatsappUrl } = siteSettings;
+export async function Nav() {
+  const { meetupUrl, whatsappUrl } = await getSiteSettings();
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/85">
       <Container className="flex min-h-[60px] items-center justify-between gap-6">

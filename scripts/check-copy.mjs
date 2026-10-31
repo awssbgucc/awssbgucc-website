@@ -11,7 +11,7 @@ import path from 'node:path';
 import { findCopyIssues } from './copy-rules.mjs';
 
 const DEFAULT_ROOTS = ['src', 'docs', 'prisma', 'tasks', 'scripts', 'CLAUDE.md', 'BUILD_PROMPT.md', 'README.md'];
-const SKIP_DIRS = new Set(['node_modules', '.next', '.git', 'dist', 'build', 'coverage', 'public', '.vercel', '.amplify']);
+const SKIP_DIRS = new Set(['node_modules', '.next', '.git', 'dist', 'build', 'coverage', 'public', 'generated', '.vercel', '.amplify']);
 const EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.md', '.mdx', '.json', '.css', '.html', '.txt', '.prisma', '.yml', '.yaml']);
 const SKIP_FILES = new Set(['package-lock.json', 'pnpm-lock.yaml', 'yarn.lock']);
 

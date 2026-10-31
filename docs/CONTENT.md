@@ -164,7 +164,7 @@ Use these in `prisma/seed.ts`. Every record is seeded as Draft unless marked Pub
 
 ### Team
 
-Photos, programmes and levels are TODO(joel). Seed `photoUrl` as null; the card shows initials on `--color-card-raised` until a photo is uploaded.
+Seeded with `active` false, so nobody appears publicly until Joel switches them on. Photos, programmes and levels are TODO(joel). Seed `photoUrl` as null; the card shows initials on `--color-card-raised` until a photo is uploaded.
 
 | Order | Name | Role | Role group |
 |---|---|---|---|
@@ -186,6 +186,8 @@ Joel: BSc Computer Science, Level 300.
 | CANSSAG | Campus | Draft. TODO(joel): full name and logo |
 
 ### Events
+
+Not seeded: Joel decided on 31 Oct 2026 that the team adds events from the dashboard. Use this table as the source when entering them.
 
 TODO(joel): verify every title, date and venue before publishing. Attendance numbers are TODO and must come from the attendance records, not estimates.
 

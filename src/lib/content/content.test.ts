@@ -1,22 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, formatTime, formatTimeRange } from '@/lib/format';
+import { adminUsers, partners as seedPartners, siteSettings as seedSettings, teamMembers } from '../../../prisma/seed-data';
 import { findCopyIssues } from '@/lib/copy-rules';
-import { activeTeam, homeStats, initials, pastEvents, publishedPartners, upcomingEvents } from './selectors';
-import { partners, siteSettings, teamMembers } from './static';
-import type { Event } from './types';
+import { formatDate, formatTime, formatTimeRange } from '@/lib/format';
+import { externalLabel, homeStats, initials, pastEvents, upcomingEvents } from './selectors';
+import type { Event, Partner, SiteSettings } from './types';
 
-function event(id: string, startsAt: string, endsAt: string, status: Event['status'] = 'PUBLISHED'): Event {
+function event(id: string, startsAt: string, endsAt: string): Event {
   return {
     id, slug: id, title: id, tag: 'TALK', format: 'ONLINE', startsAt: new Date(startsAt), endsAt: new Date(endsAt), venue: null,
-    summary: '', body: '', meetupUrl: null, coverImage: null, photos: [], attendance: null, recapPostId: null, status,
+    summary: '', body: '', meetupUrl: null, coverImage: null, photos: [], attendance: null, recapPostId: null, status: 'PUBLISHED',
+    updatedBy: null, createdAt: new Date(0), updatedAt: new Date(0),
   };
 }
+
+const settings = { ...seedSettings, announcementText: null, announcementUrl: null, announcementActive: false, updatedBy: null, updatedAt: new Date(0) } as SiteSettings;
+const campus = { type: 'CAMPUS' } as Partner;
 
 const NOW = new Date('2026-11-01T12:00:00Z');
 const past = event('past', '2026-10-17T16:30:00Z', '2026-10-17T18:00:00Z');
 const soon = event('soon', '2026-11-14T09:30:00Z', '2026-11-14T13:00:00Z');
 const later = event('later', '2026-12-01T09:30:00Z', '2026-12-01T13:00:00Z');
-const draft = event('draft', '2026-11-02T09:30:00Z', '2026-11-02T13:00:00Z', 'DRAFT');
 
 describe('format', () => {
   const start = new Date('2026-11-14T09:30:00Z');
@@ -33,10 +36,8 @@ describe('format', () => {
 });
 
 describe('event selectors', () => {
-  const all = [later, past, draft, soon];
-
-  it('sorts upcoming soonest first and leaves out drafts', () => {
-    expect(upcomingEvents(all, NOW).map((e) => e.id)).toEqual(['soon', 'later']);
+  it('sorts upcoming soonest first', () => {
+    expect(upcomingEvents([later, past, soon], NOW).map((e) => e.id)).toEqual(['soon', 'later']);
   });
 
   it('keeps an event upcoming until it ends', () => {
@@ -44,34 +45,47 @@ describe('event selectors', () => {
     expect(pastEvents([soon], new Date('2026-11-14T13:00:00Z'))).toHaveLength(1);
   });
 
-  it('lists past events and leaves out drafts', () => {
-    expect(pastEvents(all, new Date('2027-01-01T00:00:00Z')).map((e) => e.id)).toEqual(['later', 'soon', 'past']);
+  it('sorts past events most recent first', () => {
+    expect(pastEvents([past, later, soon], new Date('2027-01-01T00:00:00Z')).map((e) => e.id)).toEqual(['later', 'soon', 'past']);
   });
 });
 
 describe('homeStats', () => {
   it('drops missing values and zero counts', () => {
-    expect(homeStats(siteSettings, [], partners, NOW)).toEqual([{ label: 'Partner associations', value: 2 }]);
+    expect(homeStats(settings, [], [campus, campus], NOW)).toEqual([{ label: 'Partner associations', value: 2 }]);
   });
 
-  it('counts only finished published events', () => {
-    const stats = homeStats(siteSettings, [past, soon, draft], [], NOW);
-    expect(stats).toEqual([{ label: 'Events run', value: 1 }]);
+  it('counts only finished events', () => {
+    expect(homeStats(settings, [past, soon], [], NOW)).toEqual([{ label: 'Events run', value: 1 }]);
+  });
+
+  it('counts campus partners only', () => {
+    expect(homeStats(settings, [], [campus, { type: 'SPONSOR' } as Partner], NOW)).toEqual([{ label: 'Partner associations', value: 1 }]);
   });
 });
 
-describe('static content', () => {
-  it('keeps draft partners off the public list', () => {
-    expect(publishedPartners(partners, 'CAMPUS').map((p) => p.name)).toEqual(['CITSA', 'AmaliTech Coding Club']);
+describe('seed data', () => {
+  it('seeds Joel as the one admin', () => {
+    expect(adminUsers).toEqual([expect.objectContaining({ email: 'anarbajoel@gmail.com', role: 'ADMIN' })]);
   });
 
-  it('orders the team with the Group Leader first', () => {
-    expect(activeTeam(teamMembers)[0].role).toBe('Group Leader');
-    expect(activeTeam(teamMembers)).toHaveLength(6);
+  it('keeps the gates and the team off until reviewed', () => {
+    expect(seedSettings.scdPageEnabled).toBe(false);
+    expect(seedSettings.uccCrestApproved).toBe(false);
+    expect(teamMembers.every((person) => !person.active)).toBe(true);
+    expect(seedPartners.find((p) => p.name === 'CANSSAG')?.status).toBe('DRAFT');
   });
 
   it('passes the copy rules', () => {
-    expect(findCopyIssues(JSON.stringify({ teamMembers, partners, siteSettings }))).toEqual([]);
+    expect(findCopyIssues(JSON.stringify({ teamMembers, seedPartners, seedSettings }))).toEqual([]);
+  });
+});
+
+describe('externalLabel', () => {
+  it('names known destinations', () => {
+    expect(externalLabel('https://www.linkedin.com/pulse/x')).toBe('LinkedIn');
+    expect(externalLabel('https://builder.aws.com/content/x')).toBe('AWS Builder Center');
+    expect(externalLabel('https://example.org/x')).toBe('example.org');
   });
 });
 

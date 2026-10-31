@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
-import { siteSettings } from '@/lib/content/static';
+import { getSiteSettings } from '@/lib/content/queries';
 import { AWS_EVENT_TERMS_URL } from '@/lib/site';
 import { Logo } from './Logo';
 import { NAV_LINKS } from './nav-links';
@@ -30,8 +30,8 @@ function Column({ title, links }: { title: string; links: { href: string; label:
   );
 }
 
-export function Footer() {
-  const s = siteSettings;
+export async function Footer() {
+  const s = await getSiteSettings();
   const connect = [
     { href: s.meetupUrl, label: 'Meetup' },
     { href: s.whatsappUrl, label: 'WhatsApp' },

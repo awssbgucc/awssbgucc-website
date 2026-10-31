@@ -1,0 +1,137 @@
+// Timestamps are UTC. See docs/ADMIN.md.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+}
+
+enum EventTag {
+  BOOTCAMP
+  BUILD
+  TALK
+  NETWORKING
+  COMMUNITY_DAY
+}
+
+enum EventFormat {
+  IN_PERSON
+  ONLINE
+}
+
+enum RoleGroup {
+  LEADER
+  TECHNICAL
+  EVENTS
+  COMMUNITY
+}
+
+enum PartnerType {
+  CAMPUS
+  SPONSOR
+  COMMUNITY
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(EDITOR)
+  createdAt DateTime @default(now())
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  title       String
+  tag         EventTag
+  format      EventFormat
+  startsAt    DateTime
+  endsAt      DateTime
+  venue       String? // required when format is IN_PERSON
+  summary     String // max 200 chars, shown on cards
+  body        String // Markdown
+  meetupUrl   String? // required before status can be PUBLISHED
+  coverImage  String?
+  photos      String[] // gallery, added after the event
+  attendance  Int? // entered after the event, from the attendance sheet
+  recapPostId String?
+  status      Status      @default(DRAFT)
+  updatedBy   String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model TeamMember {
+  id        String    @id @default(cuid())
+  name      String
+  role      String
+  roleGroup RoleGroup
+  programme String?
+  level     String?
+  photoUrl  String?
+  linkedin  String?
+  order     Int       @default(0)
+  active    Boolean   @default(true)
+  updatedAt DateTime  @updatedAt
+}
+
+model Partner {
+  id          String      @id @default(cuid())
+  name        String
+  type        PartnerType
+  logoUrl     String?
+  url         String?
+  description String? // one line, what they do with us
+  order       Int         @default(0)
+  status      Status      @default(DRAFT)
+  updatedAt   DateTime    @updatedAt
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  excerpt     String
+  body        String? // Markdown; null when externalUrl is set
+  externalUrl String? // LinkedIn or Builder Center article
+  coverImage  String?
+  author      String
+  publishedAt DateTime?
+  status      Status    @default(DRAFT)
+  updatedBy   String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model SiteSettings {
+  id                 Int      @id @default(1) // single row
+  email              String
+  meetupUrl          String
+  whatsappUrl        String?
+  builderCenterUrl   String
+  linkedinUrl        String?
+  instagramUrl       String?
+  xUrl               String?
+  membersCount       Int?
+  departmentsCount   Int?
+  announcementText   String?
+  announcementUrl    String?
+  announcementActive Boolean  @default(false)
+  scdPageEnabled     Boolean  @default(false)
+  uccCrestApproved   Boolean  @default(false) // switch on only after UCC gives written approval
+  updatedBy          String?
+  updatedAt          DateTime @updatedAt
+}

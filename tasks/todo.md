@@ -159,9 +159,42 @@ Choices made to avoid inventing content:
 
 Left:
 
-- W2 needs an answer before Phase 3: time-based ISR on Amplify
-- Seeding: Phase 3 seeds no events, so C3 and C4 need no data model change for seeding. C4's unused `featured` field is still open
-- Phase 2 is not committed
+- Committed as 3c38419
+
+## Phase 3: database
+
+Decisions from Joel, 31 Oct 2026: a 60-second refresh timer (W2), remove `Event.featured` (C4), seed the team inactive (C2).
+
+- [x] Prisma 7.10.1 schema from docs/ADMIN.md, without `featured`
+- [x] First migration, seed from `prisma/seed-data.ts`, and query functions that read published and active records only
+- [x] Public pages static, with a 60-second refresh
+- [x] Verified on a throwaway local Postgres
+- [ ] Run the migration and seed on Neon: needs Joel's connection strings
+- [ ] Confirm the refresh timer on Amplify Hosting: needs a deploy, in Phase 7
+
+### Phase 3 review (31 Oct 2026)
+
+Checked on a throwaway local Postgres, not on Neon:
+
+- A fresh database migrates and seeds without errors, and seeding again changes nothing
+- Seeded site: published partners show. CANSSAG, the inactive team and the gated content do not
+- With test rows on a production build: a new published event, an activated team member and a settings change all appeared after the 60-second timer, with no rebuild
+- A draft event that was sooner than the published one never appeared, and draft event and post pages returned 404
+- After a rebuild, the sitemap listed the published event and no drafts. The test rows were then removed
+- `pnpm typecheck`, `pnpm lint`, `pnpm test` (25 tests) and `pnpm check:copy` pass. Playwright: 18 dev and 3 production tests pass
+
+Changes from the plan or the docs:
+
+- Uses `@prisma/adapter-pg`, not the Neon adapter, because it works with both Neon and local Postgres. Neon's docs show the Neon adapter, so check this on the first connection
+- Prisma's `latest` tag on npm is a version 8 release candidate, so Prisma is pinned to stable 7.10.1
+- The install scripts for `@prisma/engines`, `prisma` and `esbuild` are denied, and migrate, generate and seed still work
+- `pnpm build` and the Playwright tests now need `DATABASE_URL`. Amplify needs it at build time and at run time
+- The first visitor after 60 seconds still gets the old page and triggers the refresh, so changes show after about a minute, on the next visit
+- BUILD_PROMPT.md Phase 4 still mentions revalidating on save. That is not needed with the timer, apart from the admin's own screens
+
+Left:
+
+- Phase 3 is not committed
 
 ## Contradictions in the docs
 

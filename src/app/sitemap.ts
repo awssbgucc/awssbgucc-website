@@ -1,19 +1,19 @@
 import type { MetadataRoute } from 'next';
-import { publishedEvents, publishedPosts } from '@/lib/content/selectors';
-import { events, posts } from '@/lib/content/static';
+import { getEvents, getPosts } from '@/lib/content/queries';
 import { SITE_URL } from '@/lib/site';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [events, posts] = await Promise.all([getEvents(), getPosts()]);
   const paths = [
     '',
     '/events',
     '/team',
     '/partners',
     '/blog',
-    ...publishedEvents(events).map((event) => `/events/${event.slug}`),
-    ...publishedPosts(posts)
-      .filter((post) => !post.externalUrl)
-      .map((post) => `/blog/${post.slug}`),
+    ...events.map((event) => `/events/${event.slug}`),
+    ...posts.filter((post) => !post.externalUrl).map((post) => `/blog/${post.slug}`),
   ];
   return paths.map((path) => ({ url: `${SITE_URL}${path}` }));
 }

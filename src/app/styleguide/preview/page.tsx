@@ -29,6 +29,9 @@ const event: Event = {
   attendance: null,
   recapPostId: null,
   status: 'PUBLISHED',
+  updatedBy: null,
+  createdAt: new Date(0),
+  updatedAt: new Date(0),
 };
 
 const post: Post = {
@@ -42,6 +45,8 @@ const post: Post = {
   author: 'Sample author',
   publishedAt: new Date('2030-01-05T09:30:00Z'),
   status: 'PUBLISHED',
+  updatedBy: null,
+  updatedAt: new Date(0),
 };
 
 export default function PreviewPage() {

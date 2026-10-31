@@ -61,7 +61,6 @@ model Event {
   photos      String[]    // gallery, added after the event
   attendance  Int?        // entered after the event, from the attendance sheet
   recapPostId String?
-  featured    Boolean     @default(false)
   status      Status      @default(DRAFT)
   updatedBy   String?
   createdAt   DateTime    @default(now())
@@ -153,7 +152,7 @@ Shared zod schemas in `src/lib/validation/`. On top of the field rules:
 
 ## Publishing
 
-- Saving revalidates the affected public routes with `revalidatePath`, so changes show within seconds and pages stay static.
+- Public pages stay static and refresh on a 60-second timer, so changes show within about a minute. Amplify Hosting does not support on-demand revalidation.
 - Draft content is never visible on the public site. An editor can open a draft with a preview link that only works while signed in.
 
 ## Screens
