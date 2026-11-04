@@ -68,7 +68,7 @@ Done when: a fresh database seeds without errors, public pages render from the d
 ```
 Build the admin dashboard in docs/ADMIN.md, except uploads.
 
-1. Auth.js v5 with Google. Only AdminUser emails can sign in. Seed anarbajoel@gmail.com as ADMIN.
+1. Better Auth with Google. Only AdminUser emails can sign in. Seed anarbajoel@gmail.com as ADMIN.
 2. requireRole() in every server action and every admin page.
 3. Screens for events, team, partners, posts, settings and users, as listed.
 4. The shared copy rules in lib/copy-rules.ts reject em dashes, en dashes and emojis on save, with the message in docs/ADMIN.md.

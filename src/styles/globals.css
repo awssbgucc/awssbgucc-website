@@ -45,6 +45,10 @@
   --grad-brand: linear-gradient(90deg, var(--color-purple) 0%, var(--color-sky) 55%, var(--color-cyan) 100%);
 }
 
+:root {
+  color-scheme: dark;
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-text);

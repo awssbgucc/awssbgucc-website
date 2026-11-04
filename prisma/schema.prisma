@@ -86,6 +86,7 @@ model TeamMember {
   linkedin  String?
   order     Int       @default(0)
   active    Boolean   @default(true)
+  updatedBy String?
   updatedAt DateTime  @updatedAt
 }
 
@@ -98,6 +99,7 @@ model Partner {
   description String? // one line, what they do with us
   order       Int         @default(0)
   status      Status      @default(DRAFT)
+  updatedBy   String?
   updatedAt   DateTime    @updatedAt
 }
 
@@ -134,4 +136,67 @@ model SiteSettings {
   uccCrestApproved   Boolean  @default(false) // switch on only after UCC gives written approval
   updatedBy          String?
   updatedAt          DateTime @updatedAt
+}
+
+// Better Auth tables. Who may sign in is decided by AdminUser, in src/lib/auth.ts.
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }

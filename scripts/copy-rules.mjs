@@ -64,7 +64,16 @@ export function findCopyIssues(text) {
   return issues;
 }
 
-/** True when text has no error-level issues. For use in zod refinements. */
+/**
+ * True when text has no banned dash and no emoji. The admin forms use this:
+ * banned phrases are for our own copy, and may fairly appear in a member's post.
+ */
+export function hasNoDashOrEmoji(text) {
+  if (BANNED_CHARS.some(({ char }) => text.includes(char))) return false;
+  return [...text.matchAll(EMOJI)].every((m) => ALLOWED_SYMBOLS.has(m[0]));
+}
+
+/** True when text has no error-level issues. */
 export function isCleanCopy(text) {
   return !findCopyIssues(text).some((i) => i.level === 'error');
 }

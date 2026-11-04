@@ -10,14 +10,14 @@ The dashboard lets the core team keep the site current without code. It is a sma
 | Team | Add, edit, reorder, deactivate members. Upload photos. |
 | Partners | Add, edit, reorder, deactivate. Upload logos. |
 | Posts | Write in Markdown with live preview, or link to an external article. Publish and unpublish. |
-| Site settings | Links (Meetup, WhatsApp, Builder Center, socials, email), manual stats, announcement bar, SCD page switch, UCC crest switch. |
+| Site settings | Links (Meetup, WhatsApp, Builder Center, socials, email), manual stats, announcement bar, UCC crest switch. The SCD page switch comes with the SCD content, in a later phase. |
 | Admin users | Admins only: add or remove people, set their role. |
 
 Out of scope for v1: comments, member accounts, RSVPs, newsletters, analytics dashboards, multi-language.
 
 ## Access
 
-- Sign in with Google through Auth.js. Only emails in the `AdminUser` table can sign in; everyone else sees "This account does not have access" and nothing else.
+- Sign in with Google through Better Auth. Only emails in the `AdminUser` table can sign in; everyone else sees "This account does not have access" and nothing else.
 - Two roles:
   - **ADMIN**: everything, including Admin users and Site settings.
   - **EDITOR**: Events, Team, Partners, Posts. Cannot change Site settings or users.
@@ -162,7 +162,7 @@ Shared zod schemas in `src/lib/validation/`. On top of the field rules:
 | `/admin` | Counts of drafts and published items, next three upcoming events, events in the last 14 days with no attendance recorded (prompt to fill in) |
 | `/admin/events` | Table: title, tag, date, status. Filter by status and upcoming or past. |
 | `/admin/events/new`, `/admin/events/[id]` | Form, Markdown editor with preview, image uploads, publish switch |
-| `/admin/team` | List with drag to reorder, active switch |
+| `/admin/team` | List with move up and move down buttons, active switch |
 | `/admin/partners` | Same pattern as team |
 | `/admin/posts` | Table plus editor |
 | `/admin/settings` | Admins only |

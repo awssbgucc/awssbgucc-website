@@ -33,7 +33,7 @@ These are decided. Do not swap any of them without asking Joel first.
 | Styling | Tailwind CSS v4, tokens in `@theme` from `docs/DESIGN.md` | One source of truth for colors and type |
 | Database | PostgreSQL on Neon (free tier) | Free, serverless, no idle cost |
 | ORM | Prisma | Typed queries, migrations, seed script |
-| Auth | Auth.js v5, Google provider, email allowlist in the `AdminUser` table | No passwords to store or reset |
+| Auth | Better Auth, Google provider, email allowlist in the `AdminUser` table | No passwords to store or reset |
 | Uploads | Amazon S3, presigned PUT from the server, images served through `next/image` | We are an AWS group; uploads stay cheap |
 | Validation | zod, shared between server actions and forms | |
 | Tests | Vitest for `lib/`, Playwright smoke tests for key routes | |
@@ -56,7 +56,7 @@ src/
     ui/                shared primitives (Button, Tag, Card, Field)
   lib/
     db.ts              Prisma client singleton
-    auth.ts            Auth.js config and requireAdmin() helper
+    auth.ts            Better Auth config and requireRole() helper
     validation/        zod schemas, one file per model
     copy-rules.ts      re-exports scripts/copy-rules.mjs for zod refinements
   styles/

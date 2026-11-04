@@ -194,7 +194,75 @@ Changes from the plan or the docs:
 
 Left:
 
-- Phase 3 is not committed
+- Committed as b3468ec
+
+## Phase 4: admin auth and content management
+
+Decisions from Joel, 31 Oct 2026: Better Auth (W3), move buttons instead of drag (W8), and admin saves reject only dashes and emojis (C23).
+
+- [x] Better Auth with Google, an `AdminUser` allowlist on sign-up and sign-in, and `requireRole()` in every page and action
+- [x] Screens for overview, events, team, partners, posts, settings and users
+- [x] Copy rules on save, publish rules, slugs, draft previews and `updatedBy`
+- [x] Unit tests and the unauthenticated redirect test
+- [ ] Real Google sign-in: needs Joel's OAuth client ID and secret
+- [ ] Choose the real database and run the migrations on it
+
+### Phase 4 review (31 Oct 2026)
+
+Checked on a throwaway local Postgres, with signed sessions created directly in the database, because no Google credentials exist yet:
+
+- Better Auth's real hooks: an outsider is rejected with no row created, a removed admin cannot start a session, and a listed admin can
+- A valid session for an email not on the allowlist sees only "This account does not have access"
+- Every flow in a browser: create, edit, publish, preview, reorder, activate, delete, settings, and adding and removing users
+- A draft is 404 publicly, and its preview needs sign in. An edit reaches the public page
+- An editor has no settings or users links and is sent away from those pages. A removed editor loses access at once
+- The only admin cannot remove or demote themselves
+- No horizontal page scroll at 375px. Tables scroll inside their own box
+
+Not checked: the Google redirect itself, and the server actions called directly by an editor, which rely on the same `requireRole('ADMIN')` line as the pages.
+
+Changes from the plan or the docs:
+
+- Added `updatedBy` to `TeamMember` and `Partner`, because ADMIN.md says every write sets it and these two models had no field for it
+- No `revalidatePath` on public pages, because the 60-second timer replaces it (W2)
+- No SCD switch in settings (C29), no pixel chip on sign-in (W7), and no middleware, because Amplify does not support edge middleware
+- Partners use a publish switch, not an active switch (C1)
+
+Database decision for Joel: the AWS account is on a paid plan with no credits. RDS db.t4g.micro in eu-west-1 costs about $18.60 a month ($12.41 instance, $2.54 for 20 GB, about $3.65 public IPv4). Neon's free tier costs nothing. Recommendation: Neon.
+
+Left:
+
+- Phase 4 is not committed
+
+## Phase 5: uploads
+
+### Decisions needed before I start
+
+- [ ] **D1. Credentials (W4).** No AWS keys in environment variables. Amplify rejects variable names that start with `AWS`, so the two in CLAUDE.md cannot be set there. On Amplify: an SSR Compute role with the one-bucket policy. Locally: an IAM user with the same policy, used through a named profile (`AWS_PROFILE=sbg-ucc`), which the SDK picks up by itself. CLAUDE.md and `.env.example` change to match.
+- [ ] **D2. No SVG in v1 (W4).** The browser uploads straight to S3, so the server never sees the bytes and cannot sanitise them without a second step that downloads and rewrites every SVG. `next/image` also refuses SVG unless `dangerouslyAllowSVG` is on. Logos become transparent PNG or WebP. ADMIN.md lines 147 and 149 change to match.
+- [ ] **D3. Partner logos: PNG or WebP only.** The partner tile turns logos into white shapes (`brightness-0 invert`), so a JPEG logo on a white background shows as a white box. Photos and covers take JPEG, PNG or WebP.
+- [ ] **D4. Uploads on the edit screen only.** Keys contain the record id (`team/<memberId>/...`), and a new record has no id until it is saved. The new form says "Save first, then add a photo." The alternative is to make the id when the new form opens, which leaves files behind when a form is abandoned.
+- [ ] **D5. Event gallery waits.** ADMIN.md lists gallery uploads, but DESIGN.md and CONTENT.md never say where the gallery shows. Proposal: this phase does team photos, partner logos, and event and post covers. The gallery comes back when it has a design, so we do not store photos that show nowhere.
+- [ ] **D6. The bucket.** eu-west-1 (af-south-1 is an opt-in region and costs more). Objects are public to read through a bucket policy, because `next/image` fetches them by URL. At our size it costs cents a month. Either I create the bucket, CORS rule, policies and IAM user with your `default` AWS CLI profile, or you create them by following DEPLOY.md. I need one or the other to meet the "done when" check.
+- [ ] **D7. Commit Phase 4 first**, as its own commit, so the two phases stay separate in the history.
+
+### Plan
+
+- [ ] Add `@aws-sdk/client-s3` and `@aws-sdk/s3-request-presigner`
+- [ ] `src/lib/uploads/rules.ts`, pure and unit tested: allowed types for each kind, the 5 MB limit, the key builder `<folder>/<recordId>/<random>.<ext>`, and a check that a URL is in our bucket under the right record
+- [ ] `src/lib/uploads/s3.ts`: the S3 client, a presigned PUT that signs the content type and exact size so S3 refuses any other file, valid for 5 minutes, and a delete helper
+- [ ] A server action, not an API route, that calls `requireRole()`, checks the record exists, checks type and size, and returns the upload URL and the public URL
+- [ ] On save, zod accepts only a URL from our bucket under that record. After a save replaces or removes an image, and after a record is deleted, the old file is deleted from S3
+- [ ] `ImageField` in `src/components/admin/`: file picker, preview, status text, remove button. It checks type and size first for a quick message; the server checks again
+- [ ] Add the field to the team, partner, event and post forms, their schemas and actions
+- [ ] `images.remotePatterns` in `next.config.ts`, built from `S3_PUBLIC_BASE_URL`
+- [ ] `.env.example`: `S3_BUCKET`, `S3_REGION`, `S3_PUBLIC_BASE_URL`, and a note on `AWS_PROFILE`
+- [ ] `docs/DEPLOY.md`: bucket settings, Block Public Access, the public read bucket policy, CORS for the site and `localhost:3000`, the IAM policy JSON (`s3:PutObject` and `s3:DeleteObject` on `arn:aws:s3:::<bucket>/*` only), the Amplify Compute role and the local profile
+- [ ] Update ADMIN.md and CLAUDE.md for D1 to D3
+- [ ] Tests: unit tests for the rules, and a Playwright check that a signed-out request for an upload URL is refused
+- [ ] Verify on the real bucket: upload a team photo and a partner logo, then see both on the public site at 375px and 1280px. Try a 6 MB file, a GIF, an SVG, and a PUT with a different size from the signed one, and confirm each is refused
+
+Known gap: a file uploaded and then never saved stays in the bucket. A lifecycle rule cannot tell those apart from used files, so v1 accepts a few orphans.
 
 ## Contradictions in the docs
 

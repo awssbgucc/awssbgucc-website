@@ -7,6 +7,11 @@ for (const path of ['/styleguide', '/styleguide/preview']) {
   });
 }
 
+test('the dashboard redirects to sign in on a production build', async ({ page }) => {
+  await page.goto('/admin');
+  await expect(page).toHaveURL(/\/admin\/sign-in$/);
+});
+
 test('the sitemap lists public pages only', async ({ request }) => {
   const sitemap = await (await request.get('/sitemap.xml')).text();
   expect(sitemap).toContain('/partners');
