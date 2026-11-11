@@ -25,3 +25,48 @@ export const getPosts = cache(() =>
 export const getSitePost = cache((slug: string) =>
   db.post.findFirst({ where: { slug, status: 'PUBLISHED', externalUrl: null } }),
 );
+
+// Projects are public only once approved. The owner is named only if their profile is public.
+export const getProjects = cache(() =>
+  db.project.findMany({
+    where: { status: 'APPROVED' },
+    orderBy: [{ featured: 'desc' }, { reviewedAt: 'desc' }],
+    include: { owner: { select: { profile: { select: { displayName: true, handle: true, visibility: true, status: true } } } } },
+  }),
+);
+
+export const getProject = cache((slug: string) =>
+  db.project.findFirst({
+    where: { slug, status: 'APPROVED' },
+    include: { owner: { select: { profile: { select: { displayName: true, handle: true, visibility: true, status: true } } } } },
+  }),
+);
+
+export const getPublicResources = cache((eventId: string) =>
+  db.eventResource.findMany({ where: { eventId, access: 'PUBLIC' }, orderBy: { order: 'asc' } }),
+);
+
+/** Check-ins per event, for the public attendance figure where none was entered by hand. */
+export const getCheckInCounts = cache(async () => {
+  const rows = await db.checkIn.groupBy({ by: ['eventId'], _count: true });
+  return new Map(rows.map((row) => [row.eventId, row._count]));
+});
+
+export const getActivityTotals = cache(async () => {
+  const [checkIns, projects] = await Promise.all([db.checkIn.count(), db.project.count({ where: { status: 'APPROVED' } })]);
+  return { checkIns, projects };
+});
+
+export const getScd = cache(async () => {
+  const [sessions, speakers, faqs, sponsors] = await Promise.all([
+    db.scdSession.findMany({ orderBy: [{ startsAt: 'asc' }, { order: 'asc' }] }),
+    db.scdSpeaker.findMany({ where: { status: 'PUBLISHED' }, orderBy: { order: 'asc' } }),
+    db.scdFaq.findMany({ orderBy: { order: 'asc' } }),
+    db.partner.findMany({ where: { status: 'PUBLISHED', type: 'SPONSOR' }, orderBy: { order: 'asc' } }),
+  ]);
+  return { sessions, speakers, faqs, sponsors };
+});
+
+export const getPublicProfile = cache((handle: string) =>
+  db.memberProfile.findFirst({ where: { handle, visibility: 'PUBLIC', status: 'ACTIVE', onboardedAt: { not: null } } }),
+);

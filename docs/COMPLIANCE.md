@@ -14,7 +14,9 @@ These rules come from the AWS Student Builder Group Leader Handbook, the AWS Stu
 ### Logos
 
 1. Use only the logo files from Box, placed in `public/brand/`. Never redraw, recolour, stretch, crop, add effects to, or animate them. The one exception is the pixel chip in rule 4.
+   - Joel, 11 Nov 2026: trimming the empty Grey 850 panel around the wordmark lettering is approved, as is setting "University of Cape Coast" under it. The letter outlines stay untouched.
 2. Never use the standalone AWS smile logo or the "Powered by AWS" logo. We have no licence for them.
+   - Joel, 11 Nov 2026: our own published event flyers may be shown whole, as published, even where the artwork includes the AWS logo (the Freshers Onboarding flyer). The site itself still never places the logo.
 3. The SBG logo appears in the nav lockup and the footer. It is never larger than the content around it and never used as a background pattern.
 4. The pixel chip in `assets/pixel-art/sbg-chip.json` traces the official logo cell for cell. It may appear only on the 404 and admin sign-in pages, in the logo purple, at its exact proportions, static. It never stands in for the logo in the nav, footer, metadata or social images.
 
@@ -59,6 +61,7 @@ These rules come from the AWS Student Builder Group Leader Handbook, the AWS Stu
 19. No selling of products or services, and no competitor cloud content on any page, matching the handbook's event rules.
 20. Sponsors appear as logos with a link and a short line about what they provided. Never tie a sponsor to students opening accounts or buying products.
 21. Public bootcamp copy states the schedule and the goal only. Do not publish total week counts or planned breaks.
+   - Joel, 11 Nov 2026: the Zero to Cloud Practitioner bootcamp may be described as 12 weeks, with its certification voucher terms as the group published them (consistent attendance and 70% or higher on the AWS Skill Builder practice exam). Its flyer may be shown.
 
 ### Social sharing images
 

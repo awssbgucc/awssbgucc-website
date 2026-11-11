@@ -1,20 +1,26 @@
+import Image from 'next/image';
+import { Container } from '@/components/ui/Container';
+import { Cta } from '@/components/site/Cta';
 import { SiteChrome } from '@/components/site/SiteChrome';
-import { Button } from '@/components/ui/Button';
-import { Section } from '@/components/ui/Section';
 
-// TODO(joel): the pixel chip goes above the headline once the program contact confirms the logo trace is allowed.
+// The official chip from the brand kit, used here instead of the pixel trace (W7 in tasks/todo.md).
 export default function NotFound() {
   return (
     <SiteChrome>
-      <Section>
-        <div className="flex flex-col items-center text-center">
-          <h1 className="type-section">Page not found</h1>
-          <p className="mt-4">This page does not exist, or it moved.</p>
-          <Button href="/" className="mt-8">
-            Back to the home page
-          </Button>
-        </div>
-      </Section>
+      <section className="band band-grid">
+        <Container>
+          <div className="flex flex-col items-start gap-6 py-10">
+            <Image src="/brand/sbg-chip-purple.svg" alt="" width={72} height={72} unoptimized />
+            <p className="type-label text-text-muted">404</p>
+            <h1 className="page-title">Page not found</h1>
+            <p className="page-lead">This page does not exist, or it moved. The sessions and projects are still where they were.</p>
+            <div className="flex flex-wrap gap-4">
+              <Cta href="/">Back to the home page</Cta>
+              <Cta href="/events" variant="line">Browse events</Cta>
+            </div>
+          </div>
+        </Container>
+      </section>
     </SiteChrome>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { EventCard } from '@/components/site/EventCard';
+import '@/styles/public.css';
+import { EventRow } from '@/components/site/EventRow';
 import { EventDetail } from '@/components/site/EventDetail';
 import { PostCard } from '@/components/site/PostCard';
 import { PostDetail } from '@/components/site/PostDetail';
@@ -28,6 +29,9 @@ const event: Event = {
   photos: [],
   attendance: null,
   recapPostId: null,
+  checkInCode: null,
+  checkInOpensAt: null,
+  checkInClosesAt: null,
   status: 'PUBLISHED',
   updatedBy: null,
   createdAt: new Date(0),
@@ -53,11 +57,11 @@ export default function PreviewPage() {
   if (process.env.NODE_ENV === 'production') notFound();
 
   return (
-    <main>
+    <main className="public-site">
       <Section>
         <div className="grid gap-4 md:grid-cols-2">
-          <EventCard event={event} />
-          <EventCard event={{ ...event, id: 'sample-past', attendance: 12 }} recapSlug="sample" />
+          <EventRow event={event} />
+          <EventRow event={{ ...event, id: 'sample-past' }} attendance={12} recapSlug="sample" />
           <PostCard post={post} />
           <PostCard post={{ ...post, id: 'sample-external', externalUrl: 'https://www.linkedin.com/pulse/sample' }} />
         </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PostDetail } from '@/components/site/PostDetail';
-import { Section } from '@/components/ui/Section';
+import { Container } from '@/components/ui/Container';
 import { getPosts, getSitePost } from '@/lib/content/queries';
 
 type Props = { params: Promise<{ slug: string }> };
@@ -19,8 +19,10 @@ export default async function PostPage({ params }: Props) {
   const post = await getSitePost((await params).slug);
   if (!post) notFound();
   return (
-    <Section>
-      <PostDetail post={post} />
-    </Section>
+    <section className="band band-top">
+      <Container>
+        <PostDetail post={post} />
+      </Container>
+    </section>
   );
 }

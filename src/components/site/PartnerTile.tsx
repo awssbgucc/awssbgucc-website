@@ -1,25 +1,20 @@
 import Image from 'next/image';
+import { ArrowUpRight } from 'lucide-react';
 import type { Partner } from '@/lib/content/types';
 
 export function PartnerTile({ partner }: { partner: Partner }) {
-  const content = partner.logoUrl ? (
-    <Image
-      src={partner.logoUrl}
-      alt={partner.name}
-      width={140}
-      height={56}
-      className="max-h-14 w-auto object-contain opacity-70 brightness-0 invert transition duration-150 ease-brand hover:opacity-100 hover:filter-none"
-    />
-  ) : (
-    <span className="text-center font-semibold">{partner.name}</span>
-  );
-  const classes = 'flex min-h-24 items-center justify-center rounded-md border border-border bg-card p-6';
-
-  return partner.url ? (
-    <a href={partner.url} className={classes}>
-      {content}
-    </a>
-  ) : (
-    <div className={classes}>{content}</div>
+  const description = partner.description ?? (partner.name === 'CITSA' ? 'Running the Zero to Cloud Practitioner bootcamp with us.' : null);
+  return (
+    <article className="partner-tile">
+      {partner.logoUrl && <Image src={partner.logoUrl} alt={partner.name} width={180} height={80} className="max-h-16 w-auto object-contain" />}
+      <h3>
+        {partner.url ? (
+          <a href={partner.url} className="inline-flex items-center gap-3 hover:underline underline-offset-4">{partner.name}<ArrowUpRight size={18} aria-hidden /></a>
+        ) : (
+          partner.name
+        )}
+      </h3>
+      {description && <p>{description}</p>}
+    </article>
   );
 }

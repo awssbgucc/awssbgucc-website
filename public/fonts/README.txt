@@ -1,0 +1,1 @@
+Geist Sans and Geist Mono Latin variable WOFF2 files, copied unmodified from Next.js 15.5.28 next-devtools/server/font. Upstream: https://github.com/vercel/geist-font . Licensed under SIL OFL 1.1, see OFL.txt. These are not Amazon Ember assets.

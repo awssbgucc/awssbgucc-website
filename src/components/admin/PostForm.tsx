@@ -1,7 +1,7 @@
 import { savePost } from '@/app/admin/(protected)/posts/actions';
 import type { Post } from '@/lib/content/types';
 import { AdminForm } from './AdminForm';
-import { MarkdownField, SelectField, TextArea, TextField } from './fields';
+import { ImageField, MarkdownField, SelectField, TextArea, TextField } from './fields';
 
 const STATUSES = [
   { value: 'DRAFT', label: 'Draft' },
@@ -17,6 +17,7 @@ export function PostForm({ post }: { post?: Post }) {
       <TextField name="author" label="Author" defaultValue={post?.author} />
       <TextField name="externalUrl" label="External link" defaultValue={post?.externalUrl} help="For a post on LinkedIn or AWS Builder Center. Leave the body empty." />
       <MarkdownField name="body" label="Body" defaultValue={post?.body} help="Markdown." />
+      <ImageField name="coverImage" label="Cover image" folder="posts" recordId={post?.id} defaultValue={post?.coverImage} help="JPEG, PNG or WebP, up to 5 MB." />
       <SelectField name="status" label="Status" options={STATUSES} defaultValue={post?.status} />
     </AdminForm>
   );

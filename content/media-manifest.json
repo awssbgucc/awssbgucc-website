@@ -1,0 +1,156 @@
+{
+  "reviewedAsOf": "2026-11-11",
+  "notes": "Source files stay untouched in IMG/ and Event-banners/. scripts/prepare-media.py writes the web copies listed here, without metadata. consent: approved means Joel confirmed publication in chat (photos 10 Nov 2026, flyers and brand kit 11 Nov 2026, every flyer published 11 Nov 2026). Anything withheld has its reason.",
+  "photos": [
+    {
+      "id": "classroom",
+      "source": "IMG/20261031_185639.jpg",
+      "width": 1920,
+      "consent": "approved",
+      "provenance": "Zero to Cloud Practitioner watermark; filename date 31 Oct 2026, the week 3 session",
+      "alt": "A lecture room seen from the back rows, with two facilitators at the front beside a projected screen"
+    },
+    {
+      "id": "facilitators",
+      "source": "IMG/20261031_184704.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; 31 Oct 2026",
+      "alt": "Two facilitators standing at the front of the room beside a laptop, one explaining with open hands"
+    },
+    {
+      "id": "website-on-screen",
+      "source": "IMG/20261031_184512.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; 31 Oct 2026, the S3 website lab",
+      "alt": "Over the shoulder of a student whose laptop shows a website with a grid of listings"
+    },
+    {
+      "id": "code-on-screen",
+      "source": "IMG/20261031_184530.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; 31 Oct 2026",
+      "alt": "A student with braided hair working in a code editor while a facilitator presents at the front"
+    },
+    {
+      "id": "student-smiling",
+      "source": "IMG/20261031_185341.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; 31 Oct 2026",
+      "alt": "A student smiling at a laptop, with other students working on the benches behind"
+    },
+    {
+      "id": "student-focus",
+      "source": "IMG/20261031_185359.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; 31 Oct 2026",
+      "alt": "A student holding a phone beside an open laptop, concentrating"
+    },
+    {
+      "id": "room-working",
+      "source": "IMG/20261031_184722.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; 31 Oct 2026",
+      "alt": "Rows of students working on laptops across a lecture theatre"
+    },
+    {
+      "id": "kahoot",
+      "source": "IMG/20261031_190300.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Kahoot titled AWS Cloud Computing & Security Basics; matches the week 3 recap",
+      "alt": "A projected Kahoot podium titled AWS Cloud Computing and Security Basics"
+    },
+    {
+      "id": "prize",
+      "source": "IMG/20261031_190354.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Prize handover after the quiz; matches the week 3 recap",
+      "alt": "A facilitator handing a prize to a student after the quiz"
+    },
+    {
+      "id": "front-of-room",
+      "source": "IMG/20261024_184205.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; filename date 24 Oct 2026, week 2. Topic unknown",
+      "alt": "A facilitator speaking at the front while a student follows along on a laptop"
+    },
+    {
+      "id": "helping",
+      "source": "IMG/20261024_184256.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; 24 Oct 2026. Topic unknown",
+      "alt": "Students gathered around laptops along a bench, one leaning in to help"
+    },
+    {
+      "id": "smile-portrait",
+      "source": "IMG/20261024_184218.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; 24 Oct 2026",
+      "alt": "A student turning to the camera with a smile, classmates on the benches behind"
+    },
+    {
+      "id": "concentrating",
+      "source": "IMG/20261031_184759.jpg",
+      "width": 1200,
+      "consent": "approved",
+      "provenance": "Bootcamp watermark; 31 Oct 2026",
+      "alt": "A student concentrating behind a laptop in a crowded lecture room"
+    }
+  ],
+  "flyers": [
+    {
+      "id": "launch",
+      "source": "Event-banners/Laucnh and evet 1.png",
+      "width": 1600,
+      "event": "aws-sbg-ucc-launch",
+      "consent": "approved",
+      "status": "published",
+      "note": "Group lockup at the top includes the AWS logo inside the programme lockup, not standalone."
+    },
+    {
+      "id": "career",
+      "source": "Event-banners/Building Your AWS Career Certifications, Career Paths & Opportunities.png",
+      "width": 1600,
+      "event": "building-your-aws-career",
+      "consent": "approved",
+      "status": "published"
+    },
+    {
+      "id": "code-to-cloud",
+      "source": "Event-banners/Event4.jpeg",
+      "width": 1600,
+      "event": "from-code-to-cloud",
+      "consent": "approved",
+      "status": "published",
+      "note": "Matches the confirmed details: 9:30 AM to 1:00 PM, Computer Lab, Science Annex (Joel, 11 Nov 2026)."
+    },
+    {
+      "id": "freshers",
+      "source": "Event-banners/EVENT3.png",
+      "event": "freshers-onboarding",
+      "consent": "approved",
+      "status": "published",
+      "note": "Contains the AWS logo in the corner. Published on Joel's approval, 11 Nov 2026 (COMPLIANCE rule 2 note).",
+      "width": 1600
+    },
+    {
+      "id": "zero-to-cloud",
+      "source": "Event-banners/Z2C.jpg",
+      "event": "zero-to-cloud-practitioner-kickoff",
+      "consent": "approved",
+      "status": "published",
+      "note": "Prints A 12-WEEK BOOTCAMP. Published on Joel's approval, 11 Nov 2026 (COMPLIANCE rule 21 note). Used for the bootcamp programme, which has no event record.",
+      "width": 1600
+    }
+  ]
+}

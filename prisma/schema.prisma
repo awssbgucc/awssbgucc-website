@@ -70,9 +70,17 @@ model Event {
   attendance  Int? // entered after the event, from the attendance sheet
   recapPostId String?
   status      Status      @default(DRAFT)
+  // Check-in, opened by an editor at the venue. The code is short-lived, so it is stored as shown.
+  checkInCode     String?
+  checkInOpensAt  DateTime?
+  checkInClosesAt DateTime?
   updatedBy   String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+
+  checkIns   CheckIn[]
+  resources  EventResource[]
+  challenges Challenge[]
 }
 
 model TeamMember {
@@ -134,6 +142,12 @@ model SiteSettings {
   announcementActive Boolean  @default(false)
   scdPageEnabled     Boolean  @default(false)
   uccCrestApproved   Boolean  @default(false) // switch on only after UCC gives written approval
+  // Comma-separated email domains allowed to create a member account. Empty means any verified Google account.
+  memberEmailDomains String?
+  scdDate            DateTime?
+  scdVenue           String?
+  scdMapUrl          String?
+  scdRegisterUrl     String?
   updatedBy          String?
   updatedAt          DateTime @updatedAt
 }
@@ -150,6 +164,15 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+  profile       MemberProfile?
+  checkIns      CheckIn[]
+  submissions   Submission[]
+  projects      Project[]
+  ledger        LedgerEntry[]
+  achievements  MemberAchievement[]
+  redemptions   Redemption[]
+  notifications Notification[]
 
   @@map("user")
 }
@@ -199,4 +222,422 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+// Builder portal. Members sign in with Google like admins, but admin rights come only from AdminUser.
+// Deleting a user deletes everything below that belongs to them.
+
+enum MemberStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum Visibility {
+  PRIVATE // only the member and the core team
+  MEMBERS // signed-in members
+  PUBLIC // anyone, at /builders/[handle]
+}
+
+enum CheckInMethod {
+  CODE
+  EDITOR
+}
+
+enum ResourceKind {
+  SLIDES
+  REPO
+  LAB
+  RECORDING
+  DOCS
+  OTHER
+}
+
+enum ResourceAccess {
+  PUBLIC
+  MEMBERS
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  CHANGES_REQUESTED
+  REJECTED
+}
+
+enum ProjectStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AwardReason {
+  CHECK_IN
+  SUBMISSION_APPROVED
+  PROJECT_APPROVED
+  REFERRAL
+  ACHIEVEMENT
+  ADJUSTMENT
+  REDEMPTION
+  REFUND
+}
+
+enum AchievementCriterion {
+  SESSIONS_ATTENDED
+  SESSION_STREAK
+  SUBMISSIONS_APPROVED
+  PROJECTS_APPROVED
+  REFERRALS
+}
+
+enum RewardKind {
+  BANNER
+  ACCENT
+  FRAME
+  TITLE
+  PHYSICAL
+  OTHER
+}
+
+enum RedemptionStatus {
+  PENDING
+  FULFILLED
+  CANCELLED
+}
+
+enum PrivacyRequestKind {
+  EXPORT
+  DELETE
+  CORRECTION
+  OTHER
+}
+
+enum RequestStatus {
+  OPEN
+  DONE
+}
+
+model MemberProfile {
+  userId             String          @id
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  handle             String          @unique
+  displayName        String
+  programme          String?
+  level              String?
+  department         String?
+  interests          String[]
+  bio                String?
+  githubUrl          String?
+  linkedinUrl        String?
+  visibility         Visibility      @default(PRIVATE)
+  allowIndexing      Boolean         @default(false)
+  showOnLeaderboards Boolean         @default(false)
+  referralCode       String          @unique
+  referredById       String?
+  referredBy         MemberProfile?  @relation("Referrals", fields: [referredById], references: [userId], onDelete: SetNull)
+  referrals          MemberProfile[] @relation("Referrals")
+  // Keys from src/lib/platform/customise.ts. Anything that is not free must be owned through a redemption.
+  bannerKey          String          @default("grid")
+  accentKey          String          @default("lime")
+  frameKey           String          @default("none")
+  titleKey           String?
+  status             MemberStatus    @default(ACTIVE)
+  privacyAcceptedAt  DateTime?
+  onboardedAt        DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@index([referredById])
+}
+
+model CheckIn {
+  id         String        @id @default(cuid())
+  eventId    String
+  event      Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  method     CheckInMethod
+  recordedBy String? // editor email when method is EDITOR
+  createdAt  DateTime      @default(now())
+
+  @@unique([eventId, userId])
+  @@index([userId])
+}
+
+model EventResource {
+  id        String         @id @default(cuid())
+  eventId   String
+  event     Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  label     String
+  url       String
+  kind      ResourceKind
+  access    ResourceAccess @default(PUBLIC)
+  order     Int            @default(0)
+  createdAt DateTime       @default(now())
+
+  @@index([eventId])
+}
+
+model Challenge {
+  id                 String       @id @default(cuid())
+  slug               String       @unique
+  title              String
+  summary            String
+  brief              String // Markdown
+  requirements       String // Markdown
+  rules              String? // Markdown
+  startsAt           DateTime
+  endsAt             DateTime
+  status             Status       @default(DRAFT)
+  // Null uses the SUBMISSION_APPROVED award rule.
+  xp                 Int?
+  credits            Int?
+  maxScore           Int          @default(100)
+  leaderboardEnabled Boolean      @default(true)
+  eventId            String?
+  event              Event?       @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  updatedBy          String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  submissions        Submission[]
+}
+
+model Submission {
+  id          String            @id @default(cuid())
+  challengeId String
+  challenge   Challenge         @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  repoUrl     String
+  demoUrl     String?
+  notes       String?
+  status      SubmissionStatus  @default(PENDING)
+  score       Int?
+  feedback    String?
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  history     SubmissionEvent[]
+
+  @@unique([challengeId, userId])
+  @@index([status])
+}
+
+model SubmissionEvent {
+  id           String           @id @default(cuid())
+  submissionId String
+  submission   Submission       @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  status       SubmissionStatus
+  note         String?
+  actor        String // "member" or an editor email
+  createdAt    DateTime         @default(now())
+
+  @@index([submissionId])
+}
+
+model Project {
+  id         String        @id @default(cuid())
+  slug       String        @unique
+  title      String
+  summary    String
+  body       String? // Markdown
+  repoUrl    String?
+  demoUrl    String?
+  imageUrl   String?
+  stack      String[]
+  // Shown as "Built by". On a curated project, the editor confirms the people named agreed to it.
+  credits    String?
+  status     ProjectStatus @default(DRAFT)
+  featured   Boolean       @default(false)
+  ownerId    String?
+  owner      User?         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  reviewNote String?
+  reviewedBy String?
+  reviewedAt DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([status])
+  @@index([ownerId])
+}
+
+/// Every XP and credit change. The unique key stops the same thing being awarded twice.
+model LedgerEntry {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  xp        Int         @default(0)
+  credits   Int         @default(0)
+  reason    AwardReason
+  sourceId  String // the check-in, submission, project, achievement, redemption or adjustment it came from
+  note      String?
+  createdBy String? // editor email for adjustments
+  createdAt DateTime    @default(now())
+
+  @@unique([userId, reason, sourceId])
+  @@index([userId, createdAt])
+}
+
+model AwardRule {
+  reason      AwardReason @id
+  xp          Int
+  credits     Int
+  active      Boolean     @default(true)
+  description String
+  updatedBy   String?
+  updatedAt   DateTime    @updatedAt
+}
+
+model Achievement {
+  id          String               @id @default(cuid())
+  code        String               @unique
+  title       String
+  description String
+  criterion   AchievementCriterion
+  threshold   Int
+  xp          Int                  @default(0)
+  credits     Int                  @default(0)
+  active      Boolean              @default(true)
+  order       Int                  @default(0)
+  updatedBy   String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  awards      MemberAchievement[]
+}
+
+model MemberAchievement {
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  awardedAt     DateTime    @default(now())
+
+  @@id([userId, achievementId])
+}
+
+model Reward {
+  id             String       @id @default(cuid())
+  slug           String       @unique
+  name           String
+  description    String
+  kind           RewardKind
+  cost           Int
+  stock          Int? // null means no limit
+  perMemberLimit Int          @default(1)
+  // Off until the reward really exists. Physical rewards need a person to hand them over.
+  available      Boolean      @default(false)
+  value          String? // the customisation key for BANNER, ACCENT, FRAME and TITLE
+  order          Int          @default(0)
+  updatedBy      String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  redemptions    Redemption[]
+}
+
+model Redemption {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rewardId  String
+  reward    Reward           @relation(fields: [rewardId], references: [id], onDelete: Restrict)
+  cost      Int
+  status    RedemptionStatus
+  note      String?
+  handledBy String?
+  handledAt DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  body      String?
+  href      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+}
+
+model Announcement {
+  id          String    @id @default(cuid())
+  title       String
+  body        String
+  href        String?
+  status      Status    @default(DRAFT)
+  publishedAt DateTime?
+  expiresAt   DateTime?
+  updatedBy   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorEmail String
+  action     String // e.g. member.suspend, checkin.remove, ledger.adjust
+  entityType String
+  entityId   String
+  detail     String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([entityType, entityId])
+}
+
+/// Kept after an account is deleted, so the core team can show the request was handled. No relation on purpose.
+model PrivacyRequest {
+  id        String             @id @default(cuid())
+  userId    String?
+  email     String
+  kind      PrivacyRequestKind
+  details   String?
+  status    RequestStatus      @default(OPEN)
+  handledBy String?
+  handledAt DateTime?
+  createdAt DateTime           @default(now())
+
+  @@index([status])
+}
+
+/// Fixed-window counters, kept in the database because Amplify runs several server instances.
+model RateLimit {
+  key     String   @id
+  count   Int
+  resetAt DateTime
+}
+
+// Student Community Day. Shown at /scd only when SiteSettings.scdPageEnabled is on.
+
+model ScdSession {
+  id       String    @id @default(cuid())
+  startsAt DateTime
+  endsAt   DateTime?
+  title    String
+  speaker  String?
+  room     String?
+  order    Int       @default(0)
+}
+
+model ScdSpeaker {
+  id       String  @id @default(cuid())
+  name     String
+  role     String
+  org      String?
+  linkedin String?
+  order    Int     @default(0)
+  status   Status  @default(DRAFT)
+}
+
+model ScdFaq {
+  id       String @id @default(cuid())
+  question String
+  answer   String
+  order    Int    @default(0)
 }

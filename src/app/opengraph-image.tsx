@@ -20,7 +20,7 @@ export default function OpengraphImage() {
         color: '#e8ecf2',
       }}
     >
-      <div style={{ display: 'flex', fontSize: 96, letterSpacing: '-0.02em' }}>Build from Cape Coast.</div>
+      <div style={{ display: 'flex', fontSize: 96, letterSpacing: '-0.02em' }}>A campus of builders.</div>
       <div style={{ display: 'flex', marginTop: 32, fontSize: 36, color: '#9aa5b4' }}>{SITE_NAME}</div>
     </div>,
     size,

@@ -22,7 +22,7 @@ export default async function OverviewPage() {
   const now = new Date();
   const count = (model: { count: (args: { where: { status: 'DRAFT' | 'PUBLISHED' } }) => Promise<number> }) =>
     Promise.all([model.count({ where: { status: 'DRAFT' } }), model.count({ where: { status: 'PUBLISHED' } })]);
-  const [events, partners, posts, upcoming, missing] = await Promise.all([
+  const [events, partners, posts, upcoming, missing, queue] = await Promise.all([
     count(db.event),
     count(db.partner),
     count(db.post),
@@ -31,7 +31,22 @@ export default async function OverviewPage() {
       where: { attendance: null, endsAt: { lte: now, gte: new Date(now.getTime() - 14 * DAY) } },
       orderBy: { endsAt: 'desc' },
     }),
+    Promise.all([
+      db.memberProfile.count({ where: { onboardedAt: { not: null } } }),
+      db.checkIn.count({ where: { createdAt: { gte: new Date(now.getTime() - 7 * DAY) } } }),
+      db.submission.count({ where: { status: 'PENDING' } }),
+      db.project.count({ where: { status: 'PENDING' } }),
+      db.redemption.count({ where: { status: 'PENDING' } }),
+      db.privacyRequest.count({ where: { status: 'OPEN' } }),
+    ]),
   ]);
+  const [members, weekCheckIns, pendingSubmissions, pendingProjects, pendingRedemptions, openRequests] = queue;
+  const todo = [
+    { href: '/admin/submissions', label: 'Submissions to review', value: pendingSubmissions },
+    { href: '/admin/projects', label: 'Projects to review', value: pendingProjects },
+    { href: '/admin/rewards', label: 'Rewards to hand over', value: pendingRedemptions },
+    { href: '/admin/privacy', label: 'Privacy requests', value: openRequests },
+  ].filter((item) => item.value > 0);
 
   return (
     <>
@@ -40,6 +55,30 @@ export default async function OverviewPage() {
         <Count label="Events" drafts={events[0]} published={events[1]} />
         <Count label="Partners" drafts={partners[0]} published={partners[1]} />
         <Count label="Posts" drafts={posts[0]} published={posts[1]} />
+      </div>
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <div className="rounded-md border border-border bg-card p-4">
+          <p className="text-sm font-medium text-text-muted">Members</p>
+          <p className="mt-1 text-sm">
+            {members} onboarded, {weekCheckIns} check-ins in the last 7 days
+          </p>
+        </div>
+        <div className="rounded-md border border-border bg-card p-4">
+          <p className="text-sm font-medium text-text-muted">Waiting for someone</p>
+          {todo.length === 0 ? (
+            <p className="mt-1 text-sm">Nothing waiting.</p>
+          ) : (
+            <ul className="mt-1 text-sm">
+              {todo.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className={LINK}>
+                    {item.label}: {item.value}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
       <h2 className="mt-10 mb-3 text-lg font-semibold">Next three events</h2>
       {upcoming.length === 0 ? (
@@ -51,7 +90,10 @@ export default async function OverviewPage() {
               <Link href={`/admin/events/${event.id}`} className={LINK}>
                 {event.title}
               </Link>
-              <span className="text-sm text-text-muted">, {formatDate(event.startsAt)}</span>
+              <span className="text-sm text-text-muted">, {formatDate(event.startsAt)}, </span>
+              <Link href={`/admin/events/${event.id}/attendance`} className={`${LINK} text-sm`}>
+                check-in
+              </Link>
             </li>
           ))}
         </ul>

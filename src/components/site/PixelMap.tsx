@@ -27,11 +27,16 @@ const ringStyle = { '--ring-from': (3 * PITCH) / ringSize } as CSSProperties;
 
 const lineEndX = width + 24;
 
+// Phones show the southern rows only, so the lit Cape Coast cell is on the first screen.
+// From 768px the whole country shows; from 1280px its height is capped so the marker stays above the fold.
+const CROP_ROWS = 16;
+
 export function PixelMap() {
   return (
-    <figure className="mx-auto w-4/5 max-w-[420px] xl:mr-0 xl:w-full xl:max-w-[560px] xl:pr-40">
+    <figure className="pixel-map-figure mx-auto w-full max-w-[420px] md:w-4/5 xl:mr-0 xl:max-w-none xl:pr-40">
       <div className="relative">
-        <PixelGrid data={ghana} label="Map of Ghana with Cape Coast highlighted" styleFor={styleFor} fade>
+        <div className="relative overflow-hidden md:overflow-visible" style={{ aspectRatio: `${ghana.cols} / ${CROP_ROWS}` }} data-crop>
+        <PixelGrid data={ghana} label="Map of Ghana with Cape Coast highlighted" styleFor={styleFor} fade className="absolute inset-x-0 bottom-0 md:static">
           <rect className="pixel-marker" x={markerX} y={markerY} width={CELL} height={CELL} fill={LIME} />
           <rect
             className="pixel-ring-static pixel-ring"
@@ -56,6 +61,7 @@ export function PixelMap() {
             vectorEffect="non-scaling-stroke"
           />
         </PixelGrid>
+        </div>
         <figcaption
           className="pixel-map-label mt-4 text-center font-display text-sm whitespace-pre xl:absolute xl:mt-0 xl:ml-2 xl:-translate-y-2.5 xl:text-left"
           style={{ '--label-left': `${(lineEndX / width) * 100}%`, '--label-top': `${(markerCentreY / height) * 100}%` } as CSSProperties}

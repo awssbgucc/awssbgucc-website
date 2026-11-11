@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/site';
 import '@/styles/globals.css';
 
-const sans = Geist({ subsets: ['latin'], variable: '--font-sans-face' });
-const mono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono-face' });
+const sans = localFont({ src: '../../public/fonts/geist-latin.woff2', variable: '--font-sans-face', weight: '100 900', display: 'swap' });
+const mono = localFont({ src: '../../public/fonts/geist-mono-latin.woff2', variable: '--font-mono-face', weight: '100 900', display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

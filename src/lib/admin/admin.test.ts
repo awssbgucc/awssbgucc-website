@@ -115,8 +115,12 @@ describe('event publish rules', () => {
     expect(errorsFor({ ...event, status: 'DRAFT', meetupUrl: '', venue: '', summary: '', body: '' })).toEqual({});
   });
 
-  it('needs the end after the start, even for drafts', () => {
-    expect(errorsFor({ ...event, status: 'DRAFT', endsAt: event.startsAt }).endsAt).toBeDefined();
+  it('rejects an end before the start, even for drafts', () => {
+    expect(errorsFor({ ...event, status: 'DRAFT', endsAt: '2026-11-14T08:00' }).endsAt).toBeDefined();
+  });
+
+  it('accepts an end equal to the start, meaning no end time was published', () => {
+    expect(errorsFor({ ...event, endsAt: event.startsAt }).endsAt).toBeUndefined();
   });
 
   it('rejects http links and long summaries', () => {

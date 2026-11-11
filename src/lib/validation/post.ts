@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { optionalHttpsUrl, optionalText, requiredText, resolveSlug, status } from './shared';
+import { optionalHttpsUrl, optionalImageUrl, optionalText, requiredText, resolveSlug, status } from './shared';
 
 export const postSchema = z
   .object({
@@ -9,6 +9,7 @@ export const postSchema = z
     author: requiredText('Author'),
     body: optionalText,
     externalUrl: optionalHttpsUrl,
+    coverImage: optionalImageUrl,
     status,
   })
   .superRefine((post, ctx) => {

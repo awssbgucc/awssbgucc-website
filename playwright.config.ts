@@ -4,6 +4,9 @@ import { defineConfig } from '@playwright/test';
 // because next dev and next build share the .next folder and cannot run together.
 export default defineConfig({
   testDir: './e2e/dev',
+  // The first visit to each route compiles it in next dev, which takes over 30 seconds on a slow laptop.
+  timeout: 120_000,
+  workers: 1,
   use: { baseURL: 'http://localhost:3210' },
   projects: [
     { name: 'mobile', use: { viewport: { width: 375, height: 812 } } },

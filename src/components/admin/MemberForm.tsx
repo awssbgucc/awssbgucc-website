@@ -1,7 +1,7 @@
 import { saveMember } from '@/app/admin/(protected)/team/actions';
 import type { TeamMember } from '@/lib/content/types';
 import { AdminForm } from './AdminForm';
-import { CheckboxField, SelectField, TextField } from './fields';
+import { CheckboxField, ImageField, SelectField, TextField } from './fields';
 
 const GROUPS = [
   { value: 'LEADER', label: 'Group Leader' },
@@ -19,6 +19,7 @@ export function MemberForm({ member }: { member?: TeamMember }) {
       <TextField name="programme" label="Programme" defaultValue={member?.programme} />
       <TextField name="level" label="Level" defaultValue={member?.level} />
       <TextField name="linkedin" label="LinkedIn link" defaultValue={member?.linkedin} />
+      <ImageField name="photoUrl" label="Photo" folder="team" recordId={member?.id} defaultValue={member?.photoUrl} help="JPEG, PNG or WebP, up to 5 MB. Shown square, so a square photo fits best." />
       <CheckboxField name="active" label="Show on the public site" defaultChecked={member?.active ?? false} />
     </AdminForm>
   );

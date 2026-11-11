@@ -1,7 +1,7 @@
 import { savePartner } from '@/app/admin/(protected)/partners/actions';
 import type { Partner } from '@/lib/content/types';
 import { AdminForm } from './AdminForm';
-import { SelectField, TextField } from './fields';
+import { ImageField, SelectField, TextField } from './fields';
 
 const TYPES = [
   { value: 'CAMPUS', label: 'Campus partner' },
@@ -21,6 +21,7 @@ export function PartnerForm({ partner }: { partner?: Partner }) {
       <SelectField name="type" label="Type" options={TYPES} defaultValue={partner?.type} />
       <TextField name="url" label="Link" defaultValue={partner?.url} />
       <TextField name="description" label="Description" defaultValue={partner?.description} help="One line on what they do with us." />
+      <ImageField name="logoUrl" label="Logo" folder="partners" recordId={partner?.id} defaultValue={partner?.logoUrl} help="PNG or WebP with a transparent background, up to 5 MB. The site preserves its original colours." />
       <SelectField name="status" label="Status" options={STATUSES} defaultValue={partner?.status} />
     </AdminForm>
   );

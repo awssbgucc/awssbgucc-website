@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { dateTimeInput, optionalCount, optionalHttpsUrl, optionalText, requiredText, resolveSlug, status } from './shared';
+import { dateTimeInput, optionalCount, optionalHttpsUrl, optionalImageUrl, optionalText, requiredText, resolveSlug, status } from './shared';
 
 export const eventSchema = z
   .object({
@@ -13,12 +13,13 @@ export const eventSchema = z
     summary: optionalText.refine((value) => !value || value.length <= 200, 'Keep the summary to 200 characters.'),
     body: optionalText,
     meetupUrl: optionalHttpsUrl,
+    coverImage: optionalImageUrl,
     attendance: optionalCount,
     status,
   })
   .superRefine((event, ctx) => {
     const fail = (path: string, message: string) => ctx.addIssue({ code: 'custom', path: [path], message });
-    if (event.endsAt <= event.startsAt) fail('endsAt', 'The end must be after the start.');
+    if (event.endsAt < event.startsAt) fail('endsAt', 'The end cannot be before the start.');
     if (event.status !== 'PUBLISHED') return;
     if (!event.meetupUrl) fail('meetupUrl', 'Add the Meetup link before publishing.');
     if (event.format === 'IN_PERSON' && !event.venue) fail('venue', 'Add the venue before publishing an in-person event.');

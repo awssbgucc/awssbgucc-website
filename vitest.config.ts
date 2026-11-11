@@ -10,5 +10,7 @@ export default defineConfig({
   },
   test: {
     include: ['src/**/*.test.ts'],
+    // Database tests run with pnpm test:int, against a local database only.
+    exclude: ['src/**/*.int.test.ts', 'node_modules/**'],
   },
 });

@@ -232,37 +232,180 @@ Database decision for Joel: the AWS account is on a paid plan with no credits. R
 
 Left:
 
-- Phase 4 is not committed
+- Committed as dc33361
 
 ## Phase 5: uploads
 
 ### Decisions needed before I start
 
-- [ ] **D1. Credentials (W4).** No AWS keys in environment variables. Amplify rejects variable names that start with `AWS`, so the two in CLAUDE.md cannot be set there. On Amplify: an SSR Compute role with the one-bucket policy. Locally: an IAM user with the same policy, used through a named profile (`AWS_PROFILE=sbg-ucc`), which the SDK picks up by itself. CLAUDE.md and `.env.example` change to match.
-- [ ] **D2. No SVG in v1 (W4).** The browser uploads straight to S3, so the server never sees the bytes and cannot sanitise them without a second step that downloads and rewrites every SVG. `next/image` also refuses SVG unless `dangerouslyAllowSVG` is on. Logos become transparent PNG or WebP. ADMIN.md lines 147 and 149 change to match.
-- [ ] **D3. Partner logos: PNG or WebP only.** The partner tile turns logos into white shapes (`brightness-0 invert`), so a JPEG logo on a white background shows as a white box. Photos and covers take JPEG, PNG or WebP.
-- [ ] **D4. Uploads on the edit screen only.** Keys contain the record id (`team/<memberId>/...`), and a new record has no id until it is saved. The new form says "Save first, then add a photo." The alternative is to make the id when the new form opens, which leaves files behind when a form is abandoned.
-- [ ] **D5. Event gallery waits.** ADMIN.md lists gallery uploads, but DESIGN.md and CONTENT.md never say where the gallery shows. Proposal: this phase does team photos, partner logos, and event and post covers. The gallery comes back when it has a design, so we do not store photos that show nowhere.
-- [ ] **D6. The bucket.** eu-west-1 (af-south-1 is an opt-in region and costs more). Objects are public to read through a bucket policy, because `next/image` fetches them by URL. At our size it costs cents a month. Either I create the bucket, CORS rule, policies and IAM user with your `default` AWS CLI profile, or you create them by following DEPLOY.md. I need one or the other to meet the "done when" check.
-- [ ] **D7. Commit Phase 4 first**, as its own commit, so the two phases stay separate in the history.
+Joel, 4 Nov 2026: all seven approved as recommended. Use the CLI for the AWS setup. The `default` profile's keys were invalid, so Joel chose the `Builder-challenges` profile (account 694069618970).
+
+- [x] **D1. Credentials (W4).** No AWS keys in environment variables. Amplify rejects variable names that start with `AWS`, so the two in CLAUDE.md cannot be set there. On Amplify: an SSR Compute role with the one-bucket policy. Locally: an IAM user with the same policy, used through a named profile (`AWS_PROFILE=sbg-ucc`), which the SDK picks up by itself. CLAUDE.md and `.env.example` change to match.
+- [x] **D2. No SVG in v1 (W4).** The browser uploads straight to S3, so the server never sees the bytes and cannot sanitise them without a second step that downloads and rewrites every SVG. `next/image` also refuses SVG unless `dangerouslyAllowSVG` is on. Logos become transparent PNG or WebP. ADMIN.md lines 147 and 149 change to match.
+- [x] **D3. Partner logos: PNG or WebP only.** The partner tile turns logos into white shapes (`brightness-0 invert`), so a JPEG logo on a white background shows as a white box. Photos and covers take JPEG, PNG or WebP.
+- [x] **D4. Uploads on the edit screen only.** Keys contain the record id (`team/<memberId>/...`), and a new record has no id until it is saved. The new form says "Save first, then add a photo." The alternative is to make the id when the new form opens, which leaves files behind when a form is abandoned.
+- [x] **D5. Event gallery waits.** ADMIN.md lists gallery uploads, but DESIGN.md and CONTENT.md never say where the gallery shows. Proposal: this phase does team photos, partner logos, and event and post covers. The gallery comes back when it has a design, so we do not store photos that show nowhere.
+- [x] **D6. The bucket.** eu-west-1 (af-south-1 is an opt-in region and costs more). Objects are public to read through a bucket policy, because `next/image` fetches them by URL. At our size it costs cents a month. Either I create the bucket, CORS rule, policies and IAM user with your `default` AWS CLI profile, or you create them by following DEPLOY.md. I need one or the other to meet the "done when" check.
+- [x] **D7. Commit Phase 4 first**, as its own commit, so the two phases stay separate in the history.
 
 ### Plan
 
-- [ ] Add `@aws-sdk/client-s3` and `@aws-sdk/s3-request-presigner`
-- [ ] `src/lib/uploads/rules.ts`, pure and unit tested: allowed types for each kind, the 5 MB limit, the key builder `<folder>/<recordId>/<random>.<ext>`, and a check that a URL is in our bucket under the right record
-- [ ] `src/lib/uploads/s3.ts`: the S3 client, a presigned PUT that signs the content type and exact size so S3 refuses any other file, valid for 5 minutes, and a delete helper
-- [ ] A server action, not an API route, that calls `requireRole()`, checks the record exists, checks type and size, and returns the upload URL and the public URL
-- [ ] On save, zod accepts only a URL from our bucket under that record. After a save replaces or removes an image, and after a record is deleted, the old file is deleted from S3
-- [ ] `ImageField` in `src/components/admin/`: file picker, preview, status text, remove button. It checks type and size first for a quick message; the server checks again
-- [ ] Add the field to the team, partner, event and post forms, their schemas and actions
-- [ ] `images.remotePatterns` in `next.config.ts`, built from `S3_PUBLIC_BASE_URL`
-- [ ] `.env.example`: `S3_BUCKET`, `S3_REGION`, `S3_PUBLIC_BASE_URL`, and a note on `AWS_PROFILE`
-- [ ] `docs/DEPLOY.md`: bucket settings, Block Public Access, the public read bucket policy, CORS for the site and `localhost:3000`, the IAM policy JSON (`s3:PutObject` and `s3:DeleteObject` on `arn:aws:s3:::<bucket>/*` only), the Amplify Compute role and the local profile
-- [ ] Update ADMIN.md and CLAUDE.md for D1 to D3
-- [ ] Tests: unit tests for the rules, and a Playwright check that a signed-out request for an upload URL is refused
-- [ ] Verify on the real bucket: upload a team photo and a partner logo, then see both on the public site at 375px and 1280px. Try a 6 MB file, a GIF, an SVG, and a PUT with a different size from the signed one, and confirm each is refused
+- [x] Add `@aws-sdk/client-s3` and `@aws-sdk/s3-request-presigner`
+- [x] `src/lib/uploads/rules.ts`, pure and unit tested: allowed types for each kind, the 5 MB limit, the key builder `<folder>/<recordId>/<random>.<ext>`, and a check that a URL is in our bucket under the right record
+- [x] `src/lib/uploads/s3.ts`: the S3 client, a presigned PUT that signs the content type and exact size so S3 refuses any other file, valid for 5 minutes, and a delete helper
+- [x] The `/api/uploads` route (CLAUDE.md puts the presign under `api/`), which checks the signed-in admin, the record, type and size, and returns the upload URL and the public URL
+- [x] On save, zod accepts only a URL from our bucket under that record. After a save replaces or removes an image, and after a record is deleted, the old file is deleted from S3
+- [x] `ImageField` in `src/components/admin/`: file picker, preview, status text, remove button. It checks type and size first for a quick message; the server checks again
+- [x] Add the field to the team, partner, event and post forms, their schemas and actions
+- [x] `images.remotePatterns` in `next.config.ts`, built from `S3_PUBLIC_BASE_URL`
+- [x] `.env.example`: `S3_BUCKET`, `S3_REGION`, `S3_PUBLIC_BASE_URL`, and a note on `AWS_PROFILE`
+- [x] `docs/DEPLOY.md`: bucket settings, Block Public Access, the public read bucket policy, CORS for the site and `localhost:3000`, the IAM policy JSON (`s3:PutObject` and `s3:DeleteObject` on `arn:aws:s3:::<bucket>/*` only), the Amplify Compute role and the local profile
+- [x] Update ADMIN.md and CLAUDE.md for D1 to D3
+- [x] Tests: unit tests for the rules, and a Playwright check that a signed-out request for an upload URL is refused
+- [x] Verify on the real bucket: upload a team photo and a partner logo, then see both on the public site at 375px and 1280px. Try a 6 MB file, a GIF, an SVG, and a PUT with a different size from the signed one, and confirm each is refused
 
 Known gap: a file uploaded and then never saved stays in the bucket. A lifecycle rule cannot tell those apart from used files, so v1 accepts a few orphans.
+
+### Phase 5 review (4 Nov 2026)
+
+Created with the `Builder-challenges` profile, all tagged `project=sbg-ucc`: the bucket `sbg-ucc-uploads` in eu-west-1, its public read policy for the four folders, CORS for `localhost:3000`, the IAM policy `sbg-ucc-uploads` and the IAM user `sbg-ucc-uploads-dev`. The user's key is in the local `sbg-ucc` profile and was never printed. `.env` now has the S3 values and `AWS_PROFILE=sbg-ucc`.
+
+Checked on a throwaway local Postgres, the real bucket and a dev server on port 3001 (port 3000 was taken by another dev server for this project, which I left running). CORS allowed 3001 during the test and is back to 3000 only:
+
+- A team photo and a partner logo uploaded through the dashboard, saved, and showed on `/team` and `/partners` at 375px and 1280px, with alt text and no horizontal scroll
+- Refused in the browser: GIF, SVG, a 6 MB file, a JPEG logo, an SVG logo
+- Refused by the route: 6 MB, SVG logo, GIF photo, an unknown record, an unknown folder, a path in the record id, and a signed-out request (401, also a Playwright test)
+- Refused by S3: a PUT with a different size, a different type, or no type
+- Refused on save: a URL on another host, a URL under another record, and a nested path
+- Replacing an image deletes the old file, removing it saves null and deletes the file, and deleting a member deletes its photo
+- New forms show "Save first, then add an image."
+- The bucket was empty after the test
+- `pnpm typecheck`, `pnpm lint`, `pnpm test` (61 tests) and `pnpm check:copy` pass. Playwright: 34 dev tests pass
+
+Not checked: `pnpm build` and the production Playwright tests, because `next build` would overwrite the `.next` folder that the running dev server on port 3000 uses. Run them once that server is stopped. Event and post cover uploads use the same field and checks as team and partners but were not clicked through.
+
+Changes from the plan or the docs:
+
+- The SDK leaves `content-type` out of a presigned PUT's signature unless it is named, so S3 accepted a GIF on a PNG URL in the first test. The presign now signs it, and S3 refuses a wrong type
+- After the security review, sign-in now also needs a Google-verified email, in both Better Auth hooks and in `requireRole()`
+- ADMIN.md, DESIGN.md (logo formats) and CLAUDE.md (environment variables) updated for D1 to D3. New: docs/DEPLOY.md
+- The Amplify SSR Compute role is written up in DEPLOY.md but not created, because it needs the Amplify app (Phase 7)
+
+Left:
+
+- Phase 5 is not committed
+- Joel's own check: upload a real team photo and a partner logo, and see both on the public site
+
+## Product direction review (5 Nov 2026)
+
+Research only. No application code, schema, dependencies or authoritative docs were changed. Read `docs/REFERENCE_AUDIT_GEU.md` first, then `docs/PRODUCT_REDESIGN_PROPOSAL.md`.
+
+### Done
+
+- [x] Read CLAUDE.md, BUILD_PROMPT.md, every file in docs/, tasks/lessons.md and tasks/todo.md
+- [x] Inspected the repo: schema, tokens, home page, auth, routes, components
+- [x] Ran the current site against Neon and looked at home, events, team, blog and admin at 1366px and 375px
+- [x] Inspected 17 public GEU routes and the 4 portal routes reachable while signed out. No account created, nothing submitted
+- [x] Wrote `docs/REFERENCE_AUDIT_GEU.md` and `docs/PRODUCT_REDESIGN_PROPOSAL.md`
+- [x] Saved screenshots in `docs/research/geu/` and `docs/research/ucc-current/`
+
+### Not done, and why
+
+- [ ] Signed-in portal features: they need an account, and I will not create one. Joel's screenshots did not reach this environment
+- [ ] True phone testing: the browser window would not resize, so phone width was checked in a 390px frame (GEU) and a 375px frame (ours)
+
+### For Joel to decide (proposal section 14)
+
+- [ ] Q1 Add the builder portal as a third surface, staged
+- [ ] Q2 Sign-up open to any verified Google account, or a UCC student domain only
+- [ ] Q3 Check-in method: venue code plus editor corrections, Meetup list, or both
+- [ ] Q4 Public member profiles: allowed, opt-in only
+- [ ] Q5 Sequence: deploy the current site first (possibly before Sat 14 Nov 2026), or the design revision first
+- [ ] Q6 Typography role change, editorial home, participation grid
+- [ ] Q7 Curated `/projects` page before member submissions
+- [ ] Q8 Check-in count replaces hand-entered attendance where check-in was used
+- [ ] Q9 One dark theme across all three surfaces in v1
+- [ ] Q10 Named owners for member data requests and submission reviews
+- [ ] Q11 Ask UCC about Data Protection Act registration and members under 18 before Phase 8
+- [ ] Q12 Keep `docs/research/` out of git, or delete it after review
+- [ ] Q13 Consented photos from the August to October sessions
+- [ ] Q14 Share the portal screenshots as files if the audit should cover signed-in features
+
+### After approval, before any code
+
+- [ ] Update CLAUDE.md, DESIGN.md, CONTENT.md, ADMIN.md and BUILD_PROMPT.md as listed in proposal section 13, one file at a time, each shown to Joel
+- [ ] Write the plan for the first approved phase here as checkable items, then stop for Joel
+
+## Full platform build (5 Nov 2026)
+
+Joel, 5 Nov 2026: build the complete platform now (public site, builder portal, admin, redesign), working through milestones without stopping. No commit, push, deploy or paid resources without approval. Phase 5 work stays as it is.
+
+Development and tests run on a throwaway local Postgres (PGlite on port 5433, data in the session scratchpad). Both `.env` and `.env.local` point at the Neon `main` branch, which holds real data, so no fixture ever goes there. The new migration is not applied to Neon.
+
+- [x] M1 Foundations: schema and migration, platform services (ledger, awards, achievements, levels, streaks, check-in, rate limits, audit, notifications), member auth beside the unchanged admin allowlist, unit tests
+- [x] M2 Design system: typography roles, form primitives, empty states, badges, progress, portal shell with sidebar and mobile bar
+- [x] M3 Builder portal: sign-in, onboarding, dashboard, sessions and check-in, challenges and submissions, projects, progress, rewards and customisation, profile and privacy, community, notifications
+- [x] M4 Admin: members, attendance and QR, resources and photos, challenges and reviews, projects, achievements, award rules, rewards and redemptions, announcements, reports, audit log, privacy requests
+- [x] M5 Public site: editorial home, events with recaps, galleries and resources, projects, programmes, member profiles, contact, privacy, code of conduct, Community Day
+- [x] M6 Verification on the local database and a production build (5 Nov 2026, see the final verification below and docs/FINAL_VERIFICATION.md). Live integrations are still open
+
+### Platform build review (5 Nov 2026)
+
+Passed:
+
+- `pnpm typecheck`, `pnpm lint` (ESLint and check:copy, 0 warnings), `pnpm test` (195 unit tests, including `src/lib/admin/guards.test.ts`, which fails if any admin or portal action skips its guard)
+- `pnpm test:int` on the local database: 9 engine tests (concurrent check-ins pay once, two redemptions at once cannot spend the same credits, refunds, stock and per-member limits, achievements once, review approval once, score limits, editor add and remove with audit)
+- Every portal route 200 with a member session; signed out, the portal redirects to /sign-in
+- Every admin route 200 with an admin session; a member session is redirected to /admin/sign-in?error=NO_ACCESS on all 24 admin routes
+- Check-in in the browser: wrong code refused, right code gave +50 XP, +10 credits and the First session achievement
+- Headless screenshots of 20 pages at 375, 768, 1280 and 1440: no horizontal scroll, after fixing /builder/progress at 375
+- Cape Coast marker above the fold at 1366 by 577 and at 375 by 812
+
+Not done:
+
+- [x] (done 5 Nov 2026, final verification) Playwright dev suite: the run was stopped when the machine ran low on memory. Workers exited (0xC0000142) and the first tests timed out while routes compiled. 3 passed before it stopped; the end-to-end flow tests (onboarding, check-in, review, redemption, privacy, event creation, phone navigation) never ran. Timeout raised to 120s and one worker. Rerun with the local database up
+- [x] (done 5 Nov 2026, final verification) Production build and the production checks
+- [ ] A hydration attribute warning appeared on some pages during the first cold compile in dev and did not reproduce on a warm server. Check on the production build
+- [ ] Real Google sign-in for a member: needs the OAuth consent screen published
+- [ ] Member project image uploads: code done, not exercised against S3; the bucket policy needs `projects/*` (docs/DEPLOY.md)
+- [ ] Migration and seed on Neon: not applied (docs/DEPLOY.md)
+
+For Joel:
+
+- [ ] Review the XP and credit values in `prisma/seed-data.ts`, the privacy notice and the code of conduct (both TODO(joel))
+- [ ] Decide whether member sign-up is open to any Google account or limited to a domain (Site settings)
+- [ ] Data Protection Act check before the portal opens
+- [ ] New dependency: `qrcode` 1.5.4 (and `@types/qrcode`), for the venue QR code
+
+### Final verification (5 Nov 2026)
+
+Full report: `docs/FINAL_VERIFICATION.md`. Screenshots: `review/screenshots/` (git-ignored).
+
+Done:
+
+- [x] Typecheck, lint and check:copy, 195 unit tests, 9 database tests: all pass
+- [x] Production build passes (55 static pages)
+- [x] Playwright on the production build: 62 passed, 0 failed, 14 skipped by design (one-viewport tests). Production checks 4 of 4. Dev-only styleguide tests 4 of 4 on next dev
+- [x] New end-to-end tests in `e2e/dev/boundaries.spec.ts` (rejection, own records only, check-in limit, suspension, refund, export and deletion) and the admin phone menu
+- [x] Screenshots of 28 pages at 375, 768, 1280 and 1440, with console, overflow, heading and label checks: clean
+- [x] Fixed: project images left in S3 after account deletion; refund without confirmation; admin nav on phones; no current page in admin nav; sign-in button below the fold on phones; focus ring on the onboarding heading; no h1 on public profiles; privacy notice wording on what deletion keeps
+- [x] Local database: PGlite needs `--max-connections=100` for `next build`, and stops on a dropped client connection (docs/DEPLOY.md updated)
+
+Not done:
+
+- [ ] Real Google sign-in for a member and an admin (consent screen, redirect URIs)
+- [ ] Real S3 project upload (bucket policy `projects/*` read, CORS production origin)
+- [ ] Neon backup branch, migration and seed
+- [ ] Amplify deploy
+- [ ] Hydration attribute warning: seen once on a fresh `next dev` (profile, event edit), not reproduced in three more tries or on the production build. Capture the full console message if it appears again
+- [ ] Lighthouse, screen reader and real phone testing
+- [ ] Browser tests for project review, referrals, announcements, reports, privacy request handling and the editor role
+
+For Joel (also in the report, section 12):
+
+- [ ] Sign-up domain, draft project images public by URL, reviewer emails in exports, editors deleting events
+- [ ] Data Protection Act review, retention period, members under 18, code of conduct review
+- [ ] XP, credit and reward values
 
 ## Contradictions in the docs
 
@@ -408,3 +551,58 @@ Every event is a Draft and publishing needs a Meetup URL, so events, the next ev
 - July 2026 security update: https://better-auth.com/blog/security-update-july-2026
 - Prisma config reference: https://www.prisma.io/docs/orm/reference/prisma-config-reference
 - Next.js versions: https://versionlog.com/nextjs/
+
+
+## Public redesign, 10 Nov 2026
+
+Authorised by Joel's complete redesign request. Preserve existing uncommitted work, application models, auth and production data. No commit, push or deployment.
+
+- [x] Read project guidance and inspect current implementation in Chromium
+- [x] Inventory five flyers, 24 photographs and 341 archive entries
+- [x] Reconcile announcements and current indexed Meetup listings
+- [x] Document provenance, publication gaps and visual direction
+- [x] Implement photographic local preview and approved-media fallback
+- [x] Prepare create-only local content import and admin publishing handoff
+- [x] Redesign homepage, event listing and detail pages
+- [x] Redesign remaining public pages and navigation
+- [x] Verify four viewport widths, portal and admin regressions
+- [x] Run TypeScript, lint, copy rules, unit, database, browser and build checks
+- [x] Capture final full-page screenshots and record remaining release gates
+
+Review: publication permission for every supplied bootcamp photograph was confirmed in chat. Four optimised derivatives are used, with no event/date attribution inferred. All original image hashes are unchanged. Final checks: 197 unit tests, 9 local database tests, 72 selected browser tests passed with 14 intentional viewport skips; TypeScript, ESLint, copy checks and production build passed. Two historical-title copy warnings remain. Sixteen public pages and nine authenticated routes were captured at four widths. The mobile focus-wrap defect found during testing is fixed.
+
+No production writes, commit, push or deployment. Career artwork remains local-only; other flyers and official archive assets are withheld for the reasons in docs/ASSET_CONTENT_INVENTORY.md. The 14 Nov flyer conflicts with indexed Meetup time/room details; exact room requires organiser reconfirmation. Content import and publication instructions, evidence and integration limits are recorded in docs/PUBLIC_REDESIGN.md. Community Day remains disabled.
+
+## Creative redesign, 11 Nov 2026
+
+Authorised by Joel's complete creative redesign request (work through without stopping for a proposal). No commit, push, deploy or production write. Reference date for upcoming and past: 11 Nov 2026.
+
+Findings before work:
+
+- Events page empty: `prisma/seed.ts` creates no events, the review import only writes to a loopback database, and the dev server on :3000 reads `.env`, which points at Neon. Neon therefore has no published events unless someone added them in the admin. A read-only Neon query was blocked by the permission system and was not retried.
+- Official kit: wordmark (Ember Mono outlines on Grey 850 #161D26), chip programme icon, 11 pixel icons, virtual backgrounds and a slide template. They show one system: hairline grid, filled cells stepping upward, chip beside wordmark. Palette from SVG fills: Grey 850 #161D26, Purple #AD5CFF, Mint #00E582, Blue #42B4FF, Magenta #FF57E9, Amber #FF9900, White.
+- Photos: the 31 Oct files show a Kahoot titled "AWS Cloud Computing & Security Basics" and prize handovers, matching the Week 3 bootcamp recap.
+
+Plan:
+
+- [x] docs/research/COMMUNITY_SOURCE_ARCHIVE.md: verbatim source text, URLs, attribution
+- [x] docs/research/COMMUNITY_CONTENT_INVENTORY.md: structured facts with source and state
+- [x] docs/research/ASSET_INVENTORY.md: brand kit, flyers, photos, usage and conflicts, contact sheets
+- [x] docs/research/DESIGN_REFERENCES.md and CREATIVE_DIRECTIONS.md: three directions, choice and reasons
+- [x] Optimised, metadata-free derivatives: flyers in public/media/events, photos in public/media/community, brand in public/brand
+- [x] Content pipeline: review states in content/community-history.json, import with explicit local preview publishing, documented production path (drafts only, run by Joel)
+- [x] Tokens: official SBG palette added; shared Logo uses the official wordmark and chip
+- [x] Motion: CSS and one small IntersectionObserver helper, no new library; reduced motion respected
+- [x] Homepage rebuilt; events list and detail; projects list, detail, empty state; about; team; partners; blog; contact; nav, footer, mobile menu
+- [x] Builder portal and admin sign-in branding aligned
+- [x] Update public e2e tests; typecheck, lint, check:copy, unit, build, Playwright with one worker
+- [x] Screenshots at 375, 768, 1280, 1440; visual review doc; report
+
+Review, 11 Nov 2026: full report in `docs/research/REDESIGN_REVIEW.md`.
+
+- Verified: typecheck, lint and copy (0 errors), 206 unit tests, production build, 76 browser tests on the production build (0 failed, 14 skipped by design), 4 production checks, 4 dev-only styleguide tests, axe 0 violations on 18 routes at 375 and 1440, visual sweep at 375, 768, 1280 and 1440, throttled phone measurements.
+- Not done: Lighthouse, real phones, screen reader, Safari and Firefox; nothing written to Neon; nothing committed.
+- Open for Joel: the 11 items under "Waiting on Joel" in the review, and running the drafts-only Neon import (`docs/research/CONTENT_PIPELINE.md`).
+- Note: a build or dev run with `NEXT_DIST_DIR` makes Next rewrite `tsconfig.json`; restore it with `git show HEAD:tsconfig.json > tsconfig.json`.
+
+Follow-up, 11 Nov 2026 (Joel's decisions): From Code to Cloud set to 9:30 AM to 1:00 PM, Computer Lab, New Science Annex; bootcamp shown as a 12-week programme with voucher terms and its flyer, kickoff event record removed; Freshers and Zero to Cloud flyers published; wordmark trim approved; decisions noted in COMPLIANCE.md rules 1, 2 and 21. Admin team test added and passing. Fixed: initials tiles lost their role colour. Rechecked: 206 unit tests, typecheck, lint, production build, 77 browser tests passed (15 skipped by design), axe 0 violations. Joel to update the From Code to Cloud Meetup listing and run the drafts-only Neon import.

@@ -205,3 +205,8 @@ Every event's `meetupUrl` is TODO(joel) until the listing link is pasted in.
 ### Site settings
 
 Seed from the Global table above. `scdPageEnabled` is false.
+
+
+## Source review, 10 Nov 2026
+
+The supplied announcements and photographs support the public editorial redesign. See ASSET_CONTENT_INVENTORY.md for the timeline, source URLs, disagreements and photo consent. The review payload is content/community-history.json. It is not an automatic production seed. The existing CMS remains authoritative for publication. The live-indexed From Code to Cloud listing gives a noon finish, superseding the older 1 PM table entry for the local review.

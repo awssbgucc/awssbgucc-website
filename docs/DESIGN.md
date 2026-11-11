@@ -139,7 +139,7 @@ Large display-font number, small muted label under it. Used in a row of three or
 
 ### Partner logo
 
-Logos sit in a row on `--color-card` tiles, rendered in white at 70% opacity, full color on hover. Each links to the partner. Uploads are normalised to SVG or transparent PNG.
+Logos sit in a row on `--color-card` tiles, rendered in white at 70% opacity, full color on hover. Each links to the partner. Logos are uploaded as transparent PNG or WebP.
 
 ## The pixel map (signature element)
 
@@ -222,3 +222,67 @@ The dashboard uses the same tokens but no signature elements. It is a work tool:
 - Tables for lists, with status pills (Draft in muted, Published in lime).
 - Forms in a single column, 640px max width, labels above fields, help text under them.
 - Destructive actions are red text buttons (`#f87171`) behind a confirm step built in the page, never a browser `confirm()` dialog.
+
+## Changes, 5 Nov 2026
+
+Joel asked for the design to go further when the builder portal was added. These override the sections above where they differ.
+
+### Typography roles
+
+| Role | Face | Notes |
+|---|---|---|
+| Hero headline | Mono | Unchanged, the signature line |
+| Section headlines (`.type-section`) | Sans, 600, -0.02em | 28 / 40px. Faster to read than mono at this size |
+| Labels, dates, times, venues, counts, codes (`.type-label` and `font-display`) | Mono | Mono now means "a recorded fact" |
+| Eyebrows | Mono, uppercase, muted | Via `.type-label` |
+| Body | Sans | Unchanged |
+
+### Layout
+
+- Editorial home: hero, next session strip, recorded numbers (only when more than one is real), About on a 5 and 7 split, programmes as rows with their next or latest session, the last session with photos, member projects, team, partners, benefits as a definition list, and a closing block with the portal.
+- Lists of dated things are rows with a mono date column (`EventRow`, `DatedRow`), not card grids. Cards are for objects: a project, a reward, a person.
+- Every list has an empty state (`EmptyState`): a mono label, one plain line, and the next action.
+
+### The pixel map
+
+- Phones show the southern 16 rows, so the lit Cape Coast cell and its label are on the first screen. From 768px the whole country shows. From 1280px the map's height is capped by the viewport height, so the marker stays above the fold on short laptop screens.
+
+### The portal
+
+- Same tokens and type as the public site. No light theme.
+- Desktop: a 256px left sidebar grouped Build, Record, Community, with the member's initials and handle at the bottom. Phones: a top bar and a five-item bottom bar (Home, Sessions, Check in, Challenges, More), with More opening a full sheet.
+- Profile customisation is built from tokens only: banners (`.banner-*` in globals.css), accent colours, frames and titles. No photos of members.
+- Motion: a 250ms fade-up on each portal view, a single lime flash on a successful check-in, nothing under reduced motion.
+
+### New components
+
+`EmptyState`, `Badge` and `StatusBadge`, `Progress`, `Avatar`, `Stat`, `ParticipationGrid`, `ActivityCalendar` in `src/components/ui/`; `EventRow`, `EventBrowser`, `ProjectCard`, `ProjectBrowser`, `Gallery` in `src/components/site/`; the portal shell and `Panel`, `PageTitle`, `DatedRow` in `src/components/builder/`.
+
+
+## Public editorial revision, 10 Nov 2026
+
+The complete redesign request supersedes earlier public composition restrictions. The hero is photographic with large sans type. The Ghana map supports the About section. Programmes use a large bootcamp panel and smaller build-session and talk treatments. Community photography uses a static staggered grid. Event artwork is contained to preserve text. Public layout rules are scoped in public.css, preserving portal and admin density. Existing brand tokens remain unchanged.
+
+Geist Sans and Mono are self-hosted using the unmodified Latin WOFF2 files bundled with Next.js 15.5.28, with the upstream SIL OFL licence retained in public/fonts. This removes the build-time Google Fonts dependency. The archive's Amazon Ember binaries are not used.
+
+## Build grid redesign, 11 Nov 2026
+
+Supersedes the 10 Nov editorial revision for the public site. Reasons and the two rejected directions are in `docs/research/CREATIVE_DIRECTION.md`. Assets and conflicts are in `docs/research/ASSET_INVENTORY.md`.
+
+- **System.** The official SBG grid: hairline cells on Grey 850, solid blocks in the programme palette, stepped like the official virtual backgrounds. The Ghana map is the same grid at a smaller scale.
+- **Tokens.** Added `--color-sbg-purple` #ad5cff, `--color-sbg-mint` #00e582, `--color-sbg-blue` #42b4ff, `--color-sbg-magenta` #ff57e9 from the brand kit SVG fills. `--color-purple` and `--color-logo-purple` now equal official Purple; `--color-lime` now carries official Mint, so live and next states (map marker, check-in, current page) use the brand colour across site, portal and admin. Amber is not a token (COMPLIANCE rule 10).
+- **Colour meanings.** Mint: now or next. Purple: the programme, bootcamp. Blue: talks and learning. Magenta: build sessions and projects. Blocks carry Grey 850 text.
+- **Logo.** Official chip (Purple) and white wordmark from `public/brand/`, with "University of Cape Coast" in Geist Mono beneath. The pixel chip trace is no longer used.
+- **Type.** Geist Mono for headings and facts, Geist for reading. Headlines are large and tight (-0.045em to -0.065em).
+- **Icons.** The 11 official pixel icons, drawn from `assets/pixel-art/sbg-icons.json` by `SbgIcon`, in palette colours only. lucide-react stays for interface arrows and controls.
+- **Motion.**
+  - Hero lines rise and the hero grid builds cell by cell in steps.
+  - Scroll reveals come in three kinds: rise, a stepped mask for images, and staggered children.
+  - Staircase blocks grow in steps.
+  - Bootcamp story panels widen on hover.
+  - The explorer's panel and icon rebuild when its tab changes.
+  - The mobile menu opens and closes in steps.
+  - The header compacts on scroll, where scroll-driven animation is supported.
+  - The map ring pulses three times, then stops.
+  - Everything is CSS plus `RevealObserver`, one IntersectionObserver; no animation library. Under reduced motion nothing is hidden or moving.
+- **Rules kept.** No glow, gradients on text, floating blobs or lift-on-hover. Cards respond with a border change, an image scale or a growing corner block, never a shadow.

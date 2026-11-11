@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { checkbox, optionalHttpsUrl, optionalText, requiredText } from './shared';
+import { checkbox, optionalHttpsUrl, optionalImageUrl, optionalText, requiredText } from './shared';
 
 export const teamSchema = z.object({
   name: requiredText('Name'),
@@ -8,5 +8,6 @@ export const teamSchema = z.object({
   programme: optionalText,
   level: optionalText,
   linkedin: optionalHttpsUrl,
+  photoUrl: optionalImageUrl,
   active: checkbox,
 });

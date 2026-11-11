@@ -1,0 +1,159 @@
+{
+  "reviewedAsOf": "2026-11-11",
+  "about": "Reviewed records for the website, built from docs/research/COMMUNITY_SOURCE_ARCHIVE.md. review.state: verified (every published field has a first-party source), needs-confirmation (publishable, with a conflict or derived fact named in review.notes), draft-only (cannot be published yet, reason in review.notes). The Zero to Cloud Practitioner bootcamp is a programme, not an event record: Joel, 11 Nov 2026. scripts/import-community-history.ts reads this file. It creates drafts and never edits an existing record.",
+  "events": [
+    {
+      "slug": "aws-sbg-ucc-launch",
+      "title": "AWS Student Builder Group UCC Launch: Your Cloud Journey Starts Here",
+      "tag": "TALK",
+      "format": "ONLINE",
+      "startsAt": "2026-08-22T20:00:00Z",
+      "endsAt": "2026-08-22T20:00:00Z",
+      "venue": "Online, Google Meet",
+      "summary": "Day One of the group: what we are building at UCC, the basics of cloud computing, and practical advice from guest speaker Isaac Tandoh.",
+      "meetupUrl": "https://www.meetup.com/aws-sbg-at-university-of-cape-coast/events/316142878/",
+      "coverImage": "/media/events/launch.webp",
+      "recapPostSlug": "the-day-the-community-began",
+      "review": {
+        "state": "verified",
+        "sources": [
+          "S6",
+          "S7",
+          "S11",
+          "S12",
+          "S16"
+        ],
+        "notes": "No end time in any source. endsAt equals startsAt, so the site shows the start time only."
+      },
+      "body": "## Day One\n\nThe launch introduced the AWS Student Builder Group at University of Cape Coast to students interested in cloud computing, AWS, DevOps and technology in general. It was free and open to everyone, with no AWS experience needed.\n\n## Guest speaker\n\nIsaac Tandoh, AWS Cloud Trainer and DevOps Engineer, shared how cloud and AWS are used in real work and how students can start learning. Matthew Ntsiful also joined and shared his experience and encouragement.\n\n## What we covered\n\n- Who we are, why the group exists and what we have planned\n- The fundamentals of cloud computing\n- Practical insights on AWS and DevOps\n- How to start, and how to get involved\n- Live questions and answers\n\nIn the group's words afterwards: \"Day One is officially in the books. Now, we build!\"\n"
+    },
+    {
+      "slug": "building-your-aws-career",
+      "title": "Building Your AWS Career: Certifications, Career Paths & Opportunities",
+      "tag": "TALK",
+      "format": "ONLINE",
+      "startsAt": "2026-09-26T20:00:00Z",
+      "endsAt": "2026-09-26T21:30:00Z",
+      "venue": "Online, Google Meet",
+      "summary": "A conversation with Nathaniel Agbenyenu about certifications, cloud careers and the practical skills that matter beyond them.",
+      "meetupUrl": "https://www.meetup.com/aws-sbg-at-university-of-cape-coast/events/316677261/",
+      "coverImage": "/media/events/career.webp",
+      "recapPostSlug": "certifications-are-part-of-the-path",
+      "review": {
+        "state": "verified",
+        "sources": [
+          "S4",
+          "S5",
+          "S9",
+          "S12",
+          "S16"
+        ],
+        "notes": "Speaker title follows the Meetup listing (S9); the flyer and announcement give a shorter title. RSVP counts conflict (61, 63) and are not used."
+      },
+      "body": "## Turning interest into a plan\n\nOur second event was about where AWS certifications fit in a cloud career, the paths open to students, and how to start building towards them from wherever you are now.\n\n## Guest speaker\n\nNathaniel Agbenyenu: Senior DevOps Engineer, Cloud Security and FinOps Lead at IT Consortium, and Co-Lead of AWS User Group Accra.\n\n## The plan for the evening\n\n- The AWS certification pathway, from Foundational to Associate, Professional and Specialty\n- Career insights from Nathaniel's own work\n- Free AWS learning resources and opportunities for students\n- Live questions and answers\n\n## What stayed with us\n\nCertifications can be part of the path, but they are not the goal. Practical skills, real experience and steady learning matter just as much. Nathaniel closed with a line the group still repeats: \"We don't give up over here.\"\n"
+    },
+    {
+      "slug": "freshers-onboarding",
+      "title": "AWS SBG UCC Freshers Onboarding: Introduction to AWS & Cloud Computing",
+      "tag": "TALK",
+      "format": "ONLINE",
+      "startsAt": "2026-10-10T19:00:00Z",
+      "endsAt": "2026-10-10T20:30:00Z",
+      "venue": "Online",
+      "summary": "A first session for freshers and new members: the community, the basics of cloud computing, and how to start learning at UCC.",
+      "meetupUrl": "https://www.meetup.com/aws-sbg-at-university-of-cape-coast/events/316888223/",
+      "coverImage": "/media/events/freshers.webp",
+      "recapPostSlug": null,
+      "review": {
+        "state": "verified",
+        "sources": [
+          "S3",
+          "S10",
+          "S11",
+          "S16"
+        ],
+        "notes": "The listing says online without naming the platform. Flyer published on Joel's approval, 11 Nov 2026."
+      },
+      "body": "## Start here\n\nThis session was for freshers and anyone new to the group, and open to every UCC student interested in AWS, cloud computing, AI, software development, DevOps or technology in general. No experience needed.\n\n## Facilitators\n\nCore team members Kelvin Opoku and Evans Opoku explained the fundamentals of cloud computing with simple analogies and real examples.\n\n## On the programme\n\n- What cloud computing is, and what AWS is\n- Why cloud skills matter for students\n- Certifications and career opportunities\n- A short live demo\n- How to get started with AWS Builder Center\n- What is coming next in the group\n- Questions and activities\n\nIn the group's words: \"You don't have to know everything before you start. What matters is your willingness to learn, practise, collaborate, and keep building.\"\n"
+    },
+    {
+      "slug": "from-code-to-cloud",
+      "title": "From Code to Cloud: Build and Deploy Your First Project on AWS",
+      "tag": "BUILD",
+      "format": "IN_PERSON",
+      "startsAt": "2026-11-14T09:30:00Z",
+      "endsAt": "2026-11-14T13:00:00Z",
+      "venue": "Computer Lab, New Science Annex, University of Cape Coast",
+      "summary": "Build a personal portfolio, host it on Amazon S3 and work through a broken deployment together. Bring a laptop.",
+      "meetupUrl": "https://www.meetup.com/aws-sbg-at-university-of-cape-coast/events/317174221/",
+      "coverImage": "/media/events/code-to-cloud.webp",
+      "recapPostSlug": null,
+      "review": {
+        "state": "verified",
+        "sources": [
+          "S9",
+          "S11",
+          "S12",
+          "S14",
+          "S16"
+        ],
+        "notes": "Joel confirmed on 11 Nov 2026: 9:30 AM to 1:00 PM, Computer Lab, New Science Annex. This matches the flyer; the Meetup listing showed a noon finish and the lecture theatre."
+      },
+      "body": "## Take a project off your laptop\n\nOur first in-person build session takes a personal portfolio from a folder on your laptop to a live website on Amazon S3. Along the way we break a deployment on purpose, read the errors and fix the permissions together.\n\n## The plan\n\n- AWS accounts and the AWS Management Console\n- Static website hosting with Amazon S3\n- Troubleshooting deployment and permission errors\n- A demonstration of AI coding tools, with a starter you can customise\n\n## Bring\n\nA laptop and charger, a short bio, and the projects and links you want on your portfolio. Check the Meetup listing for account set-up steps before you come.\n\n## Where\n\nThe Computer Lab in the New Science Annex, University of Cape Coast, from 9:30 AM to 1:00 PM.\n"
+    }
+  ],
+  "posts": [
+    {
+      "slug": "first-website-on-amazon-s3",
+      "title": "Our first website on Amazon S3",
+      "excerpt": "Week 3 of the bootcamp: compute and storage, a Hostel Finder website on Amazon S3, a fight with bucket policies, and a Kahoot to finish.",
+      "author": "AWS SBG UCC",
+      "publishedAt": null,
+      "coverImage": "/media/community/website-on-screen.webp",
+      "review": {
+        "state": "verified",
+        "sources": [
+          "S1",
+          "S13"
+        ],
+        "notes": "Session date Sat 31 Oct 2026 is derived from the post timestamp and photo filenames; Joel approved publishing on 11 Nov 2026. The body does not state the date."
+      },
+      "body": "## From concepts to a working website\n\nIn week 3 of the Zero to Cloud Practitioner bootcamp, we started with compute and storage, using everyday examples to show where each service fits in an application. Then came the lab: deploying a Hostel Finder website on Amazon S3 and making it reachable on the internet.\n\n## Learning through the errors\n\nIt was not smooth sailing. Bucket configurations and policies tripped people up. Participants worked through them with help from each other and the facilitators, and the group reported that every participant finished with a live website.\n\n## A podium to finish\n\nThe session closed with a Kahoot quiz on everything from the first three weeks. The top three took home AWS swag.\n\n## Next\n\nThe recap announced Amazon EC2 and AWS Lambda for the following Saturday.\n\n[Read the original post on LinkedIn](https://www.linkedin.com/company/aws-ucc/posts/)\n"
+    },
+    {
+      "slug": "certifications-are-part-of-the-path",
+      "title": "Certifications are part of the path, not the goal",
+      "excerpt": "Notes from our second event: Nathaniel Agbenyenu on certifications, cloud careers and the skills that matter beyond them.",
+      "author": "AWS SBG UCC",
+      "publishedAt": null,
+      "coverImage": null,
+      "review": {
+        "state": "verified",
+        "sources": [
+          "S4",
+          "S9"
+        ],
+        "notes": "Written from the LinkedIn recap. No attendance figure stated."
+      },
+      "body": "## The conversation\n\nOn Saturday 26 September 2026, Nathaniel Agbenyenu took the community through AWS certifications, cloud career paths, the skills that matter beyond certifications, and the opportunities open to students who want to work in cloud computing.\n\n## The point that stuck\n\nCertifications can be part of the path. They are not the end goal. Building practical skills, getting real experience and learning continuously matter just as much.\n\n## The closing line\n\n\"We don't give up over here.\"\n\n## What came next\n\nThe group went on to run freshers onboarding in October and to start the Zero to Cloud Practitioner bootcamp with CITSA.\n\n[See the event](/events/building-your-aws-career)\n"
+    },
+    {
+      "slug": "the-day-the-community-began",
+      "title": "The day AWS SBG UCC began",
+      "excerpt": "On 22 August 2026, students came together online to launch a builder community at the University of Cape Coast.",
+      "author": "AWS SBG UCC",
+      "publishedAt": null,
+      "coverImage": null,
+      "review": {
+        "state": "verified",
+        "sources": [
+          "S6",
+          "S7",
+          "S8"
+        ],
+        "notes": "No attendance figure or end time stated."
+      },
+      "body": "## Our first gathering\n\nOn Saturday 22 August 2026, the group held its launch on Google Meet at 8:00 PM. We introduced the community, the basics of cloud computing, and our plans for students to learn and build together.\n\n## Learning from people in the field\n\nGuest speaker Isaac Tandoh, AWS Cloud Trainer and DevOps Engineer, shared practical advice on starting out. Matthew Ntsiful also contributed his experience and encouragement.\n\n## What came next\n\nA careers conversation in September, freshers onboarding in October, the Zero to Cloud Practitioner bootcamp with CITSA, and our first in-person build session in November.\n\n[See the launch event](/events/aws-sbg-ucc-launch)\n"
+    }
+  ]
+}

@@ -31,3 +31,12 @@ next-env.d.ts
 # keep the example env file
 !.env.example
 .neon
+
+# local review screenshots (fixture data, admin email visible)
+/review/
+
+# Supplied originals and restricted brand archive; approved derivatives live in public/community
+/IMG/
+/Event-banners/
+/01- Creative Assets _ Fonts, Icons, Etc. (1).zip
+/.next-review/

@@ -35,3 +35,18 @@ export function initials(name: string) {
   const parts = name.trim().split(/\s+/);
   return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
 }
+
+/** The public attendance figure: the number entered by hand, or else the check-in count. Never an estimate. */
+export function attendanceFor(event: Event, checkIns: Map<string, number>) {
+  if (event.attendance !== null) return event.attendance;
+  const count = checkIns.get(event.id) ?? 0;
+  return count > 0 ? count : null;
+}
+
+/** "Built by": the owner only when their profile is public, otherwise the curated credit line, otherwise nothing. */
+export function projectCredit(project: { credits: string | null; owner: { profile: { displayName: string; handle: string; visibility: string; status: string } | null } | null }) {
+  const profile = project.owner?.profile;
+  if (profile && profile.visibility === 'PUBLIC' && profile.status === 'ACTIVE') return { name: profile.displayName, handle: profile.handle };
+  if (project.credits) return { name: project.credits, handle: null };
+  return null;
+}

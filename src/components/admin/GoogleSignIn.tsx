@@ -3,12 +3,8 @@
 import { Button } from '@/components/ui/Button';
 import { authClient } from '@/lib/auth-client';
 
-export function GoogleSignIn() {
-  return (
-    <Button
-      onClick={() => authClient.signIn.social({ provider: 'google', callbackURL: '/admin', errorCallbackURL: '/admin/sign-in' })}
-    >
-      Sign in with Google
-    </Button>
-  );
+type GoogleSignInProps = { callbackURL?: string; errorCallbackURL?: string; label?: string };
+
+export function GoogleSignIn({ callbackURL = '/admin', errorCallbackURL = '/admin/sign-in', label = 'Sign in with Google' }: GoogleSignInProps) {
+  return <Button onClick={() => authClient.signIn.social({ provider: 'google', callbackURL, errorCallbackURL })}>{label}</Button>;
 }

@@ -13,7 +13,9 @@ The dashboard lets the core team keep the site current without code. It is a sma
 | Site settings | Links (Meetup, WhatsApp, Builder Center, socials, email), manual stats, announcement bar, UCC crest switch. The SCD page switch comes with the SCD content, in a later phase. |
 | Admin users | Admins only: add or remove people, set their role. |
 
-Out of scope for v1: comments, member accounts, RSVPs, newsletters, analytics dashboards, multi-language.
+Added 5 Nov 2026 (see docs/PLATFORM.md): member accounts and the builder portal; check-in with a code and QR on `/admin/events/[id]/attendance`; event materials and photo galleries; members, challenges, submissions, projects, rewards and redemptions, achievements, award rules, announcements, reports, audit log, privacy requests and Community Day content.
+
+Still out of scope: comments, RSVPs (Meetup keeps them), email newsletters, multi-language.
 
 ## Access
 
@@ -143,12 +145,15 @@ Shared zod schemas in `src/lib/validation/`. On top of the field rules:
 
 ## Uploads
 
-- The browser asks a server action for a presigned PUT URL, then uploads straight to S3. The server never streams file bytes.
-- Allowed: JPEG, PNG, WebP, SVG (logos only). Max 5 MB.
-- Keys: `events/<eventId>/<random>.<ext>`, `team/<memberId>/<random>.<ext>`, `partners/<partnerId>/<random>.<ext>`, `posts/<postId>/<random>.<ext>`.
-- SVG uploads are sanitised before they are saved; strip scripts and event handlers.
+- The browser asks `/api/uploads` for a presigned PUT URL, then uploads straight to S3. The server never streams file bytes.
+- Allowed: JPEG, PNG and WebP for photos and covers. PNG and WebP for partner logos, which need a transparent background because the partner tile shows them in white. Max 5 MB.
+- No SVG in v1. The server never sees the bytes, so it cannot sanitise them, and `next/image` refuses SVG by default.
+- The presigned URL signs the content type and exact size, so S3 refuses any other file. It lasts 5 minutes.
+- Keys: `events/<eventId>/<random>.<ext>`, `team/<memberId>/<random>.<ext>`, `partners/<partnerId>/<random>.<ext>`, `posts/<postId>/<random>.<ext>`. Uploads are on the edit screen only, because a new record has no id until it is saved.
+- On save, an image URL must be in our bucket under that record. A replaced or removed image, and the images of a deleted record, are deleted from S3.
 - Images render through `next/image` with the bucket's domain in `remotePatterns`.
-- The IAM user can only `PutObject` and `DeleteObject` on this one bucket.
+- The app's credentials can only `PutObject` and `DeleteObject` on this one bucket: the Amplify SSR Compute role in production, a named AWS profile locally. See docs/DEPLOY.md.
+- The event photo gallery waits until it has a design. v1 uploads team photos, partner logos, and event and post covers.
 
 ## Publishing
 
@@ -170,4 +175,4 @@ Shared zod schemas in `src/lib/validation/`. On top of the field rules:
 
 ## Audit
 
-Every write sets `updatedBy` to the signed-in email. A full audit log is not needed in v1.
+Every write sets `updatedBy` to the signed-in email. Since member data arrived (5 Nov 2026), sensitive actions also write an `AuditLog` row, readable at `/admin/audit` by admins.

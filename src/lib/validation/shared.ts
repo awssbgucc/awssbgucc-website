@@ -27,6 +27,13 @@ export const optionalHttpsUrl = z
 
 export const requiredHttpsUrl = z.string().trim().refine(isHttps, 'Use a full link starting with https://');
 
+/** Ownership of the URL is checked in the save action, which knows the record id. */
+export const optionalImageUrl = z
+  .string()
+  .trim()
+  .optional()
+  .transform((value) => value || null);
+
 export const status = z.enum(['DRAFT', 'PUBLISHED']);
 
 export const checkbox = z.string().optional().transform((value) => value === 'on');

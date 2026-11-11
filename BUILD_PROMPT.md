@@ -110,6 +110,19 @@ Walk me through deploying to AWS Amplify Hosting step by step using docs/DEPLOY.
 
 ---
 
+## Revised plan, 5 Nov 2026
+
+Joel asked for the complete platform rather than a staged MVP. Built in one pass, in milestones recorded in tasks/todo.md:
+
+1. Foundations: schema, award engine, member auth beside the admin allowlist
+2. Design system: typography roles, portal primitives and shell
+3. Builder portal
+4. Dashboard for the whole platform
+5. Public site redesign
+6. Verification
+
+What remains before launch is in tasks/todo.md under the platform build review. Phases 6 (polish) and 7 (deploy) below still apply.
+
 ## Later
 
 - Student Community Day content models and admin screens (agenda, speakers, sponsors, FAQ), then switch on `/scd`.

@@ -2,7 +2,7 @@ import { saveEvent } from '@/app/admin/(protected)/events/actions';
 import type { Event } from '@/lib/content/types';
 import { dateToAccraInput } from '@/lib/validation/shared';
 import { AdminForm } from './AdminForm';
-import { MarkdownField, SelectField, TextArea, TextField } from './fields';
+import { ImageField, MarkdownField, SelectField, TextArea, TextField } from './fields';
 
 const TAGS = [
   { value: 'BOOTCAMP', label: 'Bootcamp' },
@@ -30,11 +30,12 @@ export function EventForm({ event }: { event?: Event }) {
       <SelectField name="tag" label="Tag" options={TAGS} defaultValue={event?.tag} />
       <SelectField name="format" label="Format" options={FORMATS} defaultValue={event?.format} />
       <TextField name="startsAt" label="Start" type="datetime-local" defaultValue={event && dateToAccraInput(event.startsAt)} help="Ghana time." />
-      <TextField name="endsAt" label="End" type="datetime-local" defaultValue={event && dateToAccraInput(event.endsAt)} help="Ghana time." />
+      <TextField name="endsAt" label="End" type="datetime-local" defaultValue={event && dateToAccraInput(event.endsAt)} help="Ghana time. If no end time was ever published, enter the start time and only the start will show." />
       <TextField name="venue" label="Venue" defaultValue={event?.venue} help="Needed to publish an in-person event." />
       <TextArea name="summary" label="Summary" defaultValue={event?.summary} help="Shown on cards. 200 characters at most." />
       <MarkdownField name="body" label="Body" defaultValue={event?.body} help="Markdown." />
       <TextField name="meetupUrl" label="Meetup link" defaultValue={event?.meetupUrl} help="Needed to publish." />
+      <ImageField name="coverImage" label="Cover image" folder="events" recordId={event?.id} defaultValue={event?.coverImage} help="JPEG, PNG or WebP, up to 5 MB." />
       <TextField name="attendance" label="Attendance" type="number" defaultValue={event?.attendance} help="After the event, from the attendance sheet." />
       <SelectField name="status" label="Status" options={STATUSES} defaultValue={event?.status} />
     </AdminForm>
