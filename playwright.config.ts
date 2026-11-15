@@ -1,9 +1,12 @@
 import { defineConfig } from '@playwright/test';
 
-// Runs against the dev server. The production checks live in playwright.prod.config.ts,
-// because next dev and next build share the .next folder and cannot run together.
+// Runs against the dev server: the shared flows in e2e/dev, plus e2e/dev-only, which needs pages that exist only
+// under next dev (the styleguide). The same flows also run on the production build in playwright.prod.config.ts,
+// a separate run because next dev and next build share the .next folder and cannot run together.
 export default defineConfig({
-  testDir: './e2e/dev',
+  testDir: './e2e',
+  testMatch: ['dev/**/*.spec.ts', 'dev-only/**/*.spec.ts'],
+  testIgnore: ['**/prod/**'],
   // The first visit to each route compiles it in next dev, which takes over 30 seconds on a slow laptop.
   timeout: 120_000,
   workers: 1,

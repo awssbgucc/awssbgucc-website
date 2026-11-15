@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
+import { NavigationSettled } from '@/components/site/motion/NavigationSettled';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/site';
 import '@/styles/globals.css';
 
@@ -20,7 +21,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   // The font classes sit on <html> so the @theme font variables resolve at :root.
   return (
     <html lang="en-GB" className={`${sans.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <NavigationSettled />
+      </body>
     </html>
   );
 }

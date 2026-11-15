@@ -1,6 +1,6 @@
 'use client';
 import { Menu, X } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Cta } from './Cta';

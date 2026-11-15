@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 
 // The official SBG chip and wordmark from the brand kit (public/brand, made by scripts/prepare-media.py), with the
 // campus name under the wordmark as the handbook describes for a group lockup. Neither file is recoloured or redrawn.

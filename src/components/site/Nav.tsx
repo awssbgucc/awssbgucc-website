@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import { Container } from '@/components/ui/Container';
 import { getSiteSettings } from '@/lib/content/queries';
 import { Cta } from './Cta';

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
 import { PageIntro } from '@/components/site/PageIntro';

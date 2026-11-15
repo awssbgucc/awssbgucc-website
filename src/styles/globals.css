@@ -182,6 +182,33 @@ body {
   }
 }
 
+/* Portal feedback. Every one of these marks a state the server has already confirmed. Off under reduced motion. */
+.checkin-cell { display: inline-block; width: 14px; height: 14px; background: var(--color-lime); }
+.checkin-cell.is-duplicate { background: transparent; box-shadow: inset 0 0 0 2px var(--color-lime); }
+.redeem-done { display: inline-flex; align-items: center; gap: 8px; }
+.redeem-cell { width: 10px; height: 10px; background: var(--color-lime); }
+.achievement-earned { position: relative; }
+.achievement-earned::after { content: ''; position: absolute; top: -1px; right: -1px; width: 10px; height: 10px; background: var(--color-lime); border-top-right-radius: var(--radius-md); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The participation cell builds in steps, the same way cells build on the public site. */
+  .checkin-cell { animation: cell-build-portal 480ms steps(4, end) both 120ms; }
+  .redeem-done { animation: view-in 250ms var(--ease-brand) both; }
+  .redeem-cell { animation: cell-build-portal 360ms steps(3, end) both; }
+  .progress-fill { transform-origin: left; animation: progress-in 700ms var(--ease-brand) both 150ms; }
+  .achievement-earned::after { animation: cell-build-portal 400ms steps(4, end) both 300ms; }
+  .step-in:not([hidden]) { animation: view-in 250ms var(--ease-brand) both; }
+}
+
+@keyframes cell-build-portal {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0); }
+}
+
+@keyframes progress-in {
+  from { transform: scaleX(0); }
+}
+
 /* Markdown bodies for events and posts */
 .prose-site > * + * {
   margin-top: 1em;

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import type { Event } from '@/lib/content/types';
 import { countdown, dateParts, formatDate, formatTimeRange } from '@/lib/format';
 import { AWS_EVENT_TERMS_URL } from '@/lib/site';
@@ -41,10 +41,10 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
             <span className={`swatch swatch-${tone}`} aria-hidden="true" />
             {TAG_LABEL[event.tag]} / {past ? 'Past session' : live ? 'Happening now' : 'Upcoming session'}
           </p>
-          <h1 className="event-title">{event.title}</h1>
+          <h1 className="event-title" data-vt-dest="title">{event.title}</h1>
           <p className="event-summary">{event.summary}</p>
         </div>
-        <div className={`event-date block-${past ? tone : 'mint'}`}>
+        <div className={`event-date block-${past ? tone : 'mint'}`} data-vt-dest="date">
           <span className="type-label">{when.weekday}</span>
           <span className="event-date-day">{when.day}</span>
           <span className="type-label">{when.month} {when.year}</span>
@@ -65,7 +65,7 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
 
       {event.coverImage && (
         <figure className="event-flyer">
-          <div className="flyer-frame" data-reveal="mask">
+          <div className="flyer-frame" data-reveal="mask" data-vt-dest="art">
             <Image src={event.coverImage} alt={`Flyer for ${event.title}`} fill priority sizes="(min-width: 1280px) 1100px, 100vw" />
           </div>
           <figcaption>

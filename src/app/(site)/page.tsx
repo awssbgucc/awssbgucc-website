@@ -5,12 +5,14 @@ import { BootcampStory } from '@/components/site/home/BootcampStory';
 import { Closing } from '@/components/site/home/Closing';
 import { DisciplineExplorer } from '@/components/site/home/DisciplineExplorer';
 import { HeroMosaic } from '@/components/site/home/HeroMosaic';
+import { PhotoReel } from '@/components/site/home/PhotoReel';
 import { Staircase } from '@/components/site/home/Staircase';
 import { PartnerTile } from '@/components/site/PartnerTile';
 import { ProjectCard, ProjectSlots } from '@/components/site/ProjectCard';
 import { SectionHead } from '@/components/site/SectionHead';
 import { TeamCard } from '@/components/site/TeamCard';
-import { DISCIPLINES } from '@/lib/content/disciplines';
+import { boardRecords, DISCIPLINES } from '@/lib/content/disciplines';
+import { allPhotos, photo, photoDate } from '@/lib/content/media';
 import { getEvents, getPartners, getPosts, getProjects, getSiteSettings, getTeam } from '@/lib/content/queries';
 import { pastEvents, projectCredit, upcomingEvents } from '@/lib/content/selectors';
 import { formatDate } from '@/lib/format';
@@ -22,10 +24,15 @@ export default async function HomePage() {
   const past = pastEvents(events, now);
   const sitePosts = posts.filter((p) => !p.externalUrl);
   const recaps = new Map(sitePosts.map((p) => [p.id, p.slug]));
-  const published = [...events.map((e) => `event:${e.slug}`), ...sitePosts.map((p) => `post:${p.slug}`)];
+  const records = boardRecords(DISCIPLINES, events, sitePosts);
   const weekThree = sitePosts.find((p) => p.slug === 'first-website-on-amazon-s3');
   const first = [...events].sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime())[0];
   const campus = partners.filter((p) => p.type === 'CAMPUS');
+  const reel = allPhotos().map((id) => {
+    const image = photo(id);
+    const date = photoDate(id);
+    return { src: image.src, alt: image.alt, wide: image.width > image.height, date, caption: date ? `${image.alt}. ${date}.` : image.alt };
+  });
 
   return (
     <>
@@ -53,7 +60,9 @@ export default async function HomePage() {
       <section className="band" aria-label="Inside the bootcamp">
         <Container>
           <BootcampStory recapSlug={weekThree?.slug} />
+          <p className="type-label reel-label">Weeks 2 and 3, every approved photo in the order it was taken</p>
         </Container>
+        <PhotoReel photos={reel} />
       </section>
 
       <section className="band band-alt" aria-labelledby="explore-title">
@@ -61,7 +70,7 @@ export default async function HomePage() {
           <SectionHead label="More than certifications" title={<>What you can<br />build here.</>} id="explore-title">
             AWS connects all of them. Each area shows whether we have covered it in a session yet, or whether it is still open for members to take on.
           </SectionHead>
-          <DisciplineExplorer disciplines={DISCIPLINES} published={published} />
+          <DisciplineExplorer disciplines={DISCIPLINES} records={records} />
         </Container>
       </section>
 

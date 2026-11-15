@@ -1,4 +1,5 @@
 import '@/styles/public.css';
+import '@/styles/motion.css';
 import type { ReactNode } from 'react';
 import { AnnouncementBar } from './AnnouncementBar';
 import { Footer } from './Footer';

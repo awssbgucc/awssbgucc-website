@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-for (const path of ['/styleguide', '/styleguide/preview']) {
+for (const path of ['/styleguide', '/styleguide/preview', '/styleguide/motion']) {
   test(`${path} returns 404 in production`, async ({ page }) => {
     const response = await page.goto(path);
     expect(response?.status()).toBe(404);

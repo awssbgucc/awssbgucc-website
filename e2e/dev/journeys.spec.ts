@@ -199,6 +199,67 @@ async function waitForPublic(page: import('@playwright/test').Page, path: string
   throw new Error(`${path} did not update within three minutes`);
 }
 
+/** Whether the public archive links to an event. Upcoming and past are separate tabs, so both are checked. */
+async function archiveLinks(page: import('@playwright/test').Page, slug: string) {
+  const link = page.locator(`a[href="/events/${slug}"]`);
+  if ((await link.count()) > 0) return true;
+  await page.getByRole('button', { name: /^Upcoming/ }).click();
+  return (await link.count()) > 0;
+}
+
+// Public pages refresh on the 60-second timer (Joel's decision W2; Amplify has no on-demand revalidation), so a
+// change made in the dashboard must reach the archive and the event page within a refresh, in both directions.
+test('an event an admin unpublishes and then deletes leaves the public site within a refresh', async ({ page, context, baseURL }, info) => {
+  test.skip(info.project.name !== 'desktop', 'One run is enough.');
+  test.setTimeout(600_000);
+  await signIn(context, await makeAdmin('editor'), baseURL!);
+  const slug = `e2e-gone-${Date.now().toString(36)}`;
+  await page.goto('/admin/events/new');
+  await page.getByLabel('Title').fill('E2E session to withdraw');
+  await page.getByLabel('Slug').fill(slug);
+  await page.getByLabel('Start', { exact: true }).fill('2030-02-02T09:30');
+  await page.getByLabel('End', { exact: true }).fill('2030-02-02T12:00');
+  await page.getByLabel('Venue').fill('LT5');
+  await page.getByLabel('Summary').fill('A test session.');
+  await page.getByRole('textbox', { name: 'Body' }).fill('The body.');
+  await page.getByLabel('Meetup link').fill('https://www.meetup.com/aws-sbg-at-university-of-cape-coast');
+  await page.getByLabel('Status').selectOption('PUBLISHED');
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(page).toHaveURL(/\/admin\/events$/);
+  const [{ id }] = await sql<{ id: string }>(`SELECT id FROM "Event" WHERE slug = $1`, [slug]);
+
+  // Published: the event page renders and the archive picks it up.
+  expect((await page.goto(`/events/${slug}`))?.status()).toBe(200);
+  await waitForPublic(page, '/events', () => archiveLinks(page, slug));
+
+  // Unpublished in the dashboard: it leaves the archive, and its page stops rendering.
+  await page.goto(`/admin/events/${id}`);
+  await page.getByLabel('Status').selectOption('DRAFT');
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(page).toHaveURL(/\/admin\/events$/);
+  await waitForPublic(page, '/events', async () => !(await archiveLinks(page, slug)));
+  await waitForStatus(page, `/events/${slug}`, 404);
+
+  // Deleted in the dashboard: the record is gone and the page stays gone.
+  await page.goto(`/admin/events/${id}`);
+  await page.getByRole('button', { name: 'Delete event' }).click();
+  await page.getByRole('button', { name: 'Yes, delete event' }).click();
+  await expect(page).toHaveURL(/\/admin\/events$/);
+  expect(await sql(`SELECT id FROM "Event" WHERE id = $1`, [id])).toHaveLength(0);
+  expect((await page.goto(`/events/${slug}`))?.status()).toBe(404);
+  await page.goto('/events');
+  expect(await archiveLinks(page, slug)).toBe(false);
+});
+
+/** Reloads until a public page answers with the given status, within the same three minutes as waitForPublic. */
+async function waitForStatus(page: import('@playwright/test').Page, path: string, status: number) {
+  for (let attempt = 0; attempt < 36; attempt++) {
+    if ((await page.goto(path))?.status() === status) return;
+    await page.waitForTimeout(5000);
+  }
+  throw new Error(`${path} did not answer ${status} within three minutes`);
+}
+
 test('an admin adds a team member, who appears publicly, and can edit and hide them', async ({ page, context, baseURL }, info) => {
   test.skip(info.project.name !== 'desktop', 'One run is enough.');
   test.setTimeout(480_000);

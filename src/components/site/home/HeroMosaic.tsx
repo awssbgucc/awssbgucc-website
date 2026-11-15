@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import type { CSSProperties } from 'react';
 import { Container } from '@/components/ui/Container';
 import { DISCIPLINES } from '@/lib/content/disciplines';
@@ -7,10 +6,20 @@ import { photo } from '@/lib/content/media';
 import type { Event } from '@/lib/content/types';
 import { countdown, dateParts } from '@/lib/format';
 import { Cta } from '../Cta';
+import { BuildField } from '../motion/BuildField';
+import { PixelReveal } from '../motion/PixelReveal';
+import { Link } from '../motion/TransitionLink';
 
 const i = (index: number) => ({ '--i': index }) as CSSProperties;
+// Each photo cell builds in at 260 ms plus 85 ms per cell, and its pixel layers resolve on the same clock.
+const at = (index: number) => 260 + index * 85;
 
-/** The opening grid: the official SBG cell system holding real photographs, the chip and the next date. */
+/**
+ * The opening grid: the official SBG cell system holding real photographs, the chip and the next date. On arrival each
+ * photo resolves from brand-coloured pixels into the picture (PixelReveal), the hairline grid behind answers the
+ * pointer (BuildField), and the mint cursor after the headline blinks three times: the mint cell means "here and now"
+ * across the site. See docs/MOTION_SYSTEM.md.
+ */
 export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string; next?: Event; latest?: Event; now: Date }) {
   const main = photo('classroom');
   const portrait = photo('student-smiling');
@@ -21,6 +30,7 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="hero-field" aria-hidden="true" />
+      <BuildField />
       <Container>
         <p className="hero-meta">
           <span>AWS Student Builder Group</span>
@@ -31,7 +41,7 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
           <div className="hero-copy">
             <h1 id="hero-title" className="hero-title">
               <span className="hero-line"><span style={i(0)}>A campus</span></span>{' '}
-              <span className="hero-line"><span style={i(1)}>of builders.</span></span>
+              <span className="hero-line"><span style={i(1)}>of builders.<span className="hero-cursor" aria-hidden="true" /></span></span>
             </h1>
             <p className="hero-lead">
               We are the AWS Student Builder Group at University of Cape Coast: a student-led community, open to every department, where we learn
@@ -46,6 +56,7 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
           <div className="hero-mosaic">
             <figure className="cell cell-photo m-main" style={i(0)}>
               <Image src={main.src} alt={main.alt} fill priority sizes="(min-width: 1024px) 34vw, 100vw" style={{ objectPosition: '55% 40%' }} />
+              <PixelReveal id="classroom" position="55% 40%" delay={at(0)} />
               <figcaption>Zero to Cloud Practitioner, Sat 31 Oct 2026</figcaption>
             </figure>
             <div className="cell cell-chip m-chip" style={i(1)}>
@@ -53,6 +64,7 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
             </div>
             <figure className="cell cell-photo m-portrait" style={i(2)}>
               <Image src={portrait.src} alt={portrait.alt} fill sizes="(min-width: 1024px) 17vw, 1px" />
+              <PixelReveal id="student-smiling" delay={at(2)} />
             </figure>
             {featured && when ? (
               <Link href={`/events/${featured.slug}`} className={`cell m-next ${next ? 'block-mint' : 'block-blue'}`} style={i(3)}>
@@ -70,6 +82,7 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
             <div className="cell block-blue m-blue" style={i(4)} aria-hidden="true" />
             <figure className="cell cell-photo m-detail" style={i(5)}>
               <Image src={detail.src} alt={detail.alt} fill sizes="(min-width: 1024px) 12vw, 1px" />
+              <PixelReveal id="code-on-screen" delay={at(5)} />
             </figure>
             <div className="cell block-magenta m-magenta" style={i(6)} aria-hidden="true" />
             <p className="cell m-note" style={i(7)}>

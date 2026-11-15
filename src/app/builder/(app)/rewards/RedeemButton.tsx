@@ -18,7 +18,8 @@ export function RedeemButton({ rewardId, cost, disabledReason }: { rewardId: str
   const [state, action] = useActionState<RedeemState>(redeemReward.bind(null, rewardId), {});
   const [asking, setAsking] = useState(false);
 
-  if (state.ok) return <p role="status" className="text-sm font-medium text-lime">Redeemed</p>;
+  // Only after the server confirms the redemption does the stamp build in.
+  if (state.ok) return <p role="status" className="redeem-done text-sm font-medium text-lime"><span className="redeem-cell" aria-hidden="true" />Redeemed</p>;
   if (disabledReason) return <p className="text-sm text-text-muted">{disabledReason}</p>;
   if (!asking) {
     return (

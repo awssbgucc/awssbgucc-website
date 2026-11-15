@@ -1,0 +1,334 @@
+/*
+ * Motion system for the public site. The language and every effect's spec live in docs/MOTION_SYSTEM.md.
+ *
+ * Two kinds of timing:
+ *   build: steps(), for things being made (cells, blocks, traces). Snaps like the official grid.
+ *   move: --ease-brand, for things changing place (pages, photos, panels).
+ * Rules: content is never hidden unless a motion rule hides it, and every hiding rule sits behind
+ * prefers-reduced-motion: no-preference. globals.css also switches every animation off under reduced motion.
+ */
+.public-site {
+  --dur-tap: 120ms;
+  --dur-hover: 200ms;
+  --dur-move: 420ms;
+  --dur-build: 560ms;
+  --dur-scene: 900ms;
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --build: steps(6, end);
+}
+
+/* ---------- Hero: pixel to picture ---------- */
+.pixel-reveal { position: absolute; inset: 0; pointer-events: none; }
+.pixel-level { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; opacity: 0; }
+.cell-photo figcaption { z-index: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  /* Each layer is shown only while its animation runs (fill backwards covers the delay), coarsest on top.
+     Brand colours first, then the photo's own colours at 8 and 16 cells across, then the photograph. */
+  .pixel-level { animation: pixel-hold steps(1, end) backwards; animation-delay: 0ms; }
+  .pixel-level-0 { z-index: 3; animation-duration: calc(var(--px-delay) + 520ms); }
+  .pixel-level-1 { z-index: 2; animation-duration: calc(var(--px-delay) + 760ms); }
+  .pixel-level-2 { z-index: 1; animation-duration: calc(var(--px-delay) + 980ms); }
+}
+@keyframes pixel-hold { from, to { opacity: 1; } }
+
+/* ---------- Hero: build field and cursor ---------- */
+.build-field {
+  position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.95), rgb(0 0 0 / 0.5) 70%, transparent);
+}
+.hero-cursor { display: inline-block; width: 0.42em; height: 0.78em; margin-left: 0.08em; vertical-align: -0.04em; background: var(--color-sbg-mint); }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-cursor { animation: cursor-blink 1060ms steps(1, end) 1300ms 3; }
+}
+@keyframes cursor-blink { 50% { opacity: 0; } }
+
+/* Leaving the hero: the photo cells drift at different rates, so the grid gains depth as it scrolls away.
+   Scroll-driven where supported; elsewhere nothing moves. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+    .hero-mosaic .cell-photo > img {
+      animation: photo-settle 1400ms var(--ease-brand) both, cell-drift linear both;
+      animation-delay: calc(var(--i) * 85ms + 260ms), 0ms;
+      animation-timeline: auto, view();
+      animation-range: normal, exit 0% exit 100%;
+    }
+    .m-main { --drift: -6%; }
+    .m-portrait { --drift: -14%; }
+    .m-detail { --drift: -22%; }
+  }
+}
+@keyframes cell-drift { to { translate: 0 var(--drift, -8%); } }
+
+/* ---------- Route transitions ---------- */
+/* The header stays put while the page under it changes. */
+.site-header { view-transition-name: site-header; }
+::view-transition-group(site-header) { animation: none; }
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: route-out 160ms var(--ease-exit) both; }
+  ::view-transition-new(root) { animation: route-in 420ms var(--ease-brand) both; }
+  /* Shared elements move with the brand ease; the rest of the page only fades. */
+  ::view-transition-group(vt-art), ::view-transition-group(vt-title), ::view-transition-group(vt-date), ::view-transition-group(vt-photo) { animation-duration: 520ms; animation-timing-function: var(--ease-brand); }
+  ::view-transition-old(vt-art), ::view-transition-new(vt-art), ::view-transition-old(vt-photo), ::view-transition-new(vt-photo) { height: 100%; object-fit: cover; }
+  ::view-transition-old(vt-title) { animation: route-out 200ms var(--ease-exit) both; }
+  ::view-transition-new(vt-title) { animation: route-in 420ms var(--ease-brand) both; }
+  /* Photo viewer opening, stepping and closing: the page under the photo only fades briefly. */
+  html[data-vt='photo']::view-transition-old(root), html[data-vt='photo']::view-transition-new(root),
+  html[data-vt='photo-step']::view-transition-old(root), html[data-vt='photo-step']::view-transition-new(root) { animation-duration: 220ms; }
+  html[data-vt='photo-step']::view-transition-group(vt-photo) { animation-duration: 280ms; }
+}
+@keyframes route-out { to { opacity: 0; } }
+@keyframes route-in { from { opacity: 0; transform: translateY(14px); } }
+/* Destination of a card's morph: only named after the old page has been captured, so names never clash. */
+html[data-vt-phase='new'] [data-vt-dest='art'] { view-transition-name: vt-art; }
+html[data-vt-phase='new'] [data-vt-dest='title'] { view-transition-name: vt-title; }
+html[data-vt-phase='new'] [data-vt-dest='date'] { view-transition-name: vt-date; }
+/* An arriving shared image is already in place, so it skips its own mask reveal. */
+html[data-vt-phase='new'] [data-vt-dest='art'][data-reveal] { clip-path: none; transition: none; }
+
+/* ---------- Technology board ---------- */
+/* minmax(0, ...) and min-width 0, so the scrolling rail never widens the board past the screen. */
+.explorer { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+.board { position: relative; min-width: 0; }
+.board-tiles, .board-rail { position: relative; z-index: 1; }
+.board-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.board-tile {
+  position: relative; display: flex; flex-direction: column; gap: 4px; min-height: 148px; padding: 12px;
+  text-align: left; border: 1px solid var(--color-border-strong); background: var(--color-bg); color: var(--color-text-muted); overflow: hidden;
+  transition: color var(--dur-hover), border-color var(--dur-hover), background-color var(--dur-hover);
+}
+.band-alt .board-tile { background: var(--color-bg-alt); }
+.board-tile:hover { color: var(--color-white); border-color: var(--color-text-muted); }
+.board-tile[aria-selected='true'] { color: var(--color-white); border-color: var(--tone); }
+.board-tile-title { margin-top: 16px; font-family: var(--font-display); font-size: 15px; line-height: 1.2; letter-spacing: -0.02em; color: inherit; }
+.board-tile-status { font-size: 12px; }
+.board-count { color: var(--color-text-muted); }
+/* The fill block says how far the group has got with an area. */
+.board-fill { flex: none; width: 28px; height: 28px; margin-bottom: auto; transition: width var(--dur-build) var(--build), height var(--dur-build) var(--build); }
+.status-covered .board-fill { background: var(--tone); }
+.status-scheduled .board-fill { background: linear-gradient(to top, var(--tone) 50%, transparent 50%); box-shadow: inset 0 0 0 2px var(--tone); }
+.status-announced .board-fill { box-shadow: inset 0 0 0 2px var(--tone); }
+.status-explore .board-fill { border: 2px dashed var(--color-text-muted); }
+.board-tile[aria-selected='true'] .board-fill { width: 56px; }
+.tone-purple { --tone: var(--color-sbg-purple); }
+.tone-mint { --tone: var(--color-sbg-mint); }
+.tone-blue { --tone: var(--color-sbg-blue); }
+.tone-magenta { --tone: var(--color-sbg-magenta); }
+.tone-white { --tone: var(--color-white); }
+
+.board-traces { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; display: none; }
+.board-trace { fill: none; stroke: var(--tone); stroke-width: 2; stroke-dasharray: calc(var(--length) * 1px); stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .board-trace { animation: trace-draw 620ms steps(10, end) both; }
+  .board-tile[aria-selected='true'] .board-fill { transition-delay: 0ms; }
+}
+@keyframes trace-draw { from { stroke-dashoffset: calc(var(--length) * 1px); } }
+
+.board-rail { margin-top: 28px; }
+.board-rail-label { margin-top: 10px; }
+.board-rail ol { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(148px, 1fr); gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.board-stop { position: relative; display: flex; flex-direction: column; gap: 6px; min-height: 100%; padding: 12px; border: 1px solid var(--color-border); background: var(--color-bg-alt); color: var(--color-text-muted); transition: color var(--dur-hover), border-color var(--dur-hover); }
+.board-stop .type-label { font-size: 10px; }
+.board-stop-title { font-family: var(--font-display); font-size: 14px; line-height: 1.25; letter-spacing: -0.02em; color: var(--color-text); }
+.board-stop-cell { width: 12px; height: 12px; border: 1px solid var(--color-border-strong); transition: background-color var(--dur-hover); }
+.board-rail .is-lit .board-stop { border-color: var(--tone); color: var(--color-text); }
+.board-rail .is-lit .board-stop-cell { background: var(--tone); border-color: var(--tone); }
+.board-stop:hover { color: var(--color-white); border-color: var(--color-text-muted); }
+.board-stop:hover .board-stop-title { text-decoration: underline; text-underline-offset: 4px; }
+@media (min-width: 768px) { .board-tiles { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1024px) {
+  .explorer { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 48px; align-items: start; }
+  .board-traces { display: block; }
+  .board-rail { margin-top: 96px; }
+  .board-rail ol { overflow: visible; grid-auto-flow: row; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); }
+  .explorer-panel { position: sticky; top: 104px; }
+}
+
+/* ---------- Staircase: progress climbing to now ---------- */
+.stair-block { position: relative; }
+.stair-block::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--color-white); transform-origin: left; }
+.stair-block-next::after { background: var(--color-bg); }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .staircase { view-timeline-name: --stairs; }
+    .stair-block::after {
+      animation: step-complete linear both;
+      animation-timeline: --stairs;
+      animation-range: cover calc(18% + var(--i) * 7%) cover calc(24% + var(--i) * 7%);
+    }
+  }
+}
+@keyframes step-complete { from { transform: scaleX(0); } }
+
+/* ---------- Photos: viewer, filmstrip, wall ---------- */
+.photo-viewer { position: fixed; inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 0; border: 0; background: rgb(22 29 38 / 0.97); color: var(--color-text); }
+.photo-viewer[open] { display: flex; flex-direction: column; }
+.photo-viewer::backdrop { background: rgb(0 0 0 / 0.7); }
+.photo-viewer-top, .photo-viewer-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; }
+.photo-viewer-stage { position: relative; flex: 1; min-height: 0; touch-action: pan-y; }
+.photo-viewer-image { object-fit: contain; view-transition-name: vt-photo; }
+.photo-viewer-caption { max-width: 72ch; font-size: 14px; color: var(--color-text-muted); }
+.photo-viewer-steps { display: flex; gap: 8px; flex: none; }
+.photo-viewer-button { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border: 1px solid var(--color-border-strong); color: var(--color-white); transition: background-color var(--dur-hover), border-color var(--dur-hover); }
+.photo-viewer-button:hover { background: rgb(255 255 255 / 0.08); border-color: var(--color-text-muted); }
+
+.reel-label { margin-top: 56px; color: var(--color-text-muted); }
+.photo-reel { container-type: inline-size; margin-top: 16px; padding-inline: 16px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.photo-reel:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: -2px; }
+.reel-track { display: flex; gap: 12px; width: max-content; padding-bottom: 8px; }
+.reel-track li { flex: none; width: 210px; scroll-snap-align: start; }
+.reel-track li.reel-wide { width: 372px; }
+.reel-photo { position: relative; display: block; width: 100%; height: 280px; overflow: hidden; background: var(--color-card); }
+.reel-photo img { object-fit: cover; transition: transform 700ms var(--ease-brand), filter var(--dur-hover); }
+.reel-photo:hover img { transform: scale(1.04); }
+.reel-photo::after { content: ''; position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; background: var(--color-sbg-mint); transform: scale(0); transform-origin: bottom right; transition: transform 240ms steps(3, end); }
+.reel-photo:hover::after, .reel-photo:focus-visible::after { transform: scale(1); }
+.reel-date { margin-top: 8px; color: var(--color-text-muted); font-size: 10px; }
+@media (min-width: 1024px) {
+  .photo-reel { padding-inline: max(32px, calc((100vw - var(--public-max)) / 2 + 32px)); }
+  .reel-track li { width: 300px; }
+  .reel-track li.reel-wide { width: 532px; }
+  .reel-photo { height: 400px; }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+    /* The timeline belongs to the reel itself, measured against the page; clip, unlike hidden, adds no scroller. */
+    .photo-reel { view-timeline: --reel block; }
+    .photo-reel:not(:focus-within) { overflow-x: clip; }
+    .photo-reel:not(:focus-within) .reel-track { animation: reel-drift linear both; animation-timeline: --reel; animation-range: cover 10% cover 90%; }
+  }
+}
+@keyframes reel-drift { to { transform: translateX(calc(-100% + 100cqw - 64px)); } }
+
+.photo-wall .wall-photo { display: block; width: 100%; cursor: zoom-in; }
+.photo-wall figure:has(.wall-photo:focus-visible) { outline: 2px solid var(--color-cyan); outline-offset: 4px; }
+.gallery-thumb img { transition: transform 700ms var(--ease-brand); }
+.gallery-thumb:hover img { transform: scale(1.04); }
+
+/* ---------- Navigation ---------- */
+.nav-links { position: relative; }
+.nav-marker-slot { position: absolute; left: 0; top: 50%; width: 0; height: 0; pointer-events: none; }
+.nav-marker { position: absolute; left: 0; top: -3px; width: 6px; height: 6px; background: var(--color-sbg-mint); opacity: 0; transition: transform 320ms var(--ease-brand), opacity var(--dur-hover); }
+.nav-marker[data-shown='true'] { opacity: 1; }
+/* Once the live marker runs, the static one on the current link steps aside. */
+.nav-links[data-marker='live'] .nav-link[aria-current='page']::before { display: none; }
+@media (prefers-reduced-motion: reduce) { .nav-marker { transition: none; } }
+
+/* A link into the Builder Portal fills in steps while the portal loads, so the click visibly registered. */
+.nav-link[data-pending='true']::after { transform: scaleX(1); animation: portal-pending 900ms steps(6, end) infinite; }
+.cta[data-pending='true'] { animation: cta-pending 900ms steps(6, end) infinite; background-image: linear-gradient(rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.16)); }
+@keyframes portal-pending { from { transform: scaleX(0); } }
+@keyframes cta-pending { from { background-size: 0% 100%; } to { background-size: 100% 100%; } }
+
+/* Mobile menu: the current page carries the mint cell, and the stepped strip builds as the sheet opens. */
+.mobile-sheet-links a[aria-current='page']::after { content: ''; width: 10px; height: 10px; margin-left: auto; align-self: center; background: var(--color-sbg-mint); }
+@media (prefers-reduced-motion: no-preference) {
+  .mobile-sheet[open] .mobile-sheet-steps span { animation: cell-build 420ms steps(4, end) both; }
+  .mobile-sheet[open] .mobile-sheet-steps span:nth-child(1) { animation-delay: 260ms; }
+  .mobile-sheet[open] .mobile-sheet-steps span:nth-child(2) { animation-delay: 340ms; }
+  .mobile-sheet[open] .mobile-sheet-steps span:nth-child(3) { animation-delay: 420ms; }
+  .mobile-sheet[open] .mobile-sheet-steps span:nth-child(4) { animation-delay: 500ms; }
+  .mobile-sheet[open] .mobile-sheet-actions { animation: rise-in 420ms var(--ease-brand) both 320ms; }
+}
+
+/* Footer: the stepped strip grows as the footer arrives, scroll-linked where supported. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .footer-steps span { transform-origin: top; animation: step-grow linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
+  }
+}
+@keyframes step-grow { from { transform: scaleY(0); } }
+
+/* ---------- Projects ---------- */
+/* The stack reads left to right on hover: each chip lights in turn, the corner block grows to meet them. */
+.project-card .chip-row li { transition: border-color var(--dur-hover), color var(--dur-hover); transition-delay: calc(var(--i, 0) * 60ms); }
+.project-card:hover .chip-row li { border-color: var(--color-sbg-magenta); color: var(--color-white); }
+/* Empty state: the three slots are drawn as dashed outlines, then each fills its number cell in turn. */
+.project-slots li { position: relative; }
+.project-slots li::before { content: ''; position: absolute; inset: 8px; border: 1px dashed var(--color-border-strong); pointer-events: none; opacity: 0; transition: opacity var(--dur-hover); }
+.project-slots li:hover::before { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .motion-ready .project-slots[data-inview] .type-label { animation: slot-mark 560ms steps(4, end) both; animation-delay: calc(var(--i, 0) * 160ms + 300ms); }
+}
+@keyframes slot-mark { from { opacity: 0; transform: translateY(6px); } }
+
+/* ---------- Event editions (Community Day and later special events) ---------- */
+.edition-hero { position: relative; padding: 40px 0 56px; border-bottom: 1px solid var(--color-border-strong); overflow: hidden; }
+.edition-hero .max-w-\[1200px\] { position: relative; }
+.edition-label { color: var(--ed-accent); }
+.edition-layout { display: grid; gap: 40px; margin-top: 20px; }
+.edition-title { font-family: var(--font-display); font-weight: 500; font-size: clamp(34px, 6vw, 76px); line-height: 1; letter-spacing: -0.055em; color: var(--color-white); text-wrap: balance; }
+.edition-facts { display: grid; gap: 1px; margin-top: 28px; background: var(--color-border-strong); border: 1px solid var(--color-border-strong); }
+.edition-facts > div { padding: 14px 16px; background: var(--color-bg); }
+.edition-facts dt { font-family: var(--font-display); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
+.edition-facts dd { margin-top: 6px; color: var(--color-white); }
+.edition-action { margin-top: 28px; }
+.edition-terms { margin-top: 14px; font-size: 13px; color: var(--color-text-muted); }
+.edition-terms a { text-decoration: underline; text-underline-offset: 4px; }
+.edition-art { position: relative; aspect-ratio: 16 / 9; margin: 0; border: 1px solid var(--color-border-strong); }
+.edition-art img { object-fit: contain; }
+/* Motif: six steps in the edition's colours, the last one mint for "the day". */
+.edition-motif { display: grid; grid-template-columns: repeat(6, 1fr); align-items: end; gap: 6px; height: 220px; }
+.edition-motif span { height: calc((var(--i) + 1) * 16.6%); background: var(--ed-accent); }
+.edition-motif span:nth-child(even) { background: var(--ed-second); }
+.edition-motif span:last-child { background: var(--color-sbg-mint); }
+@media (min-width: 640px) { .edition-facts { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) {
+  .edition-hero { padding: 64px 0 80px; }
+  .edition-layout { grid-template-columns: 1.3fr 1fr; align-items: end; gap: 64px; }
+  .edition-motif { height: 360px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .edition-title { animation: rise-in 800ms var(--ease-brand) both; }
+  .edition-facts > div { animation: rise-in 600ms var(--ease-brand) both; }
+  .edition-facts > div:nth-child(2) { animation-delay: 90ms; }
+  .edition-facts > div:nth-child(3) { animation-delay: 180ms; }
+  .edition-motif span { transform-origin: bottom; animation: cell-build 520ms steps(5, end) both; animation-delay: calc(var(--i) * 110ms + 200ms); }
+  .edition-art { animation: cell-build 700ms steps(8, end) both 200ms; }
+}
+
+.edition-agenda .filter-chips { margin-bottom: 20px; }
+.agenda-list { border-top: 1px solid var(--color-border-strong); }
+.agenda-row { display: grid; grid-template-columns: 84px 12px 1fr; gap: 16px; align-items: start; padding: 18px 4px; border-bottom: 1px solid var(--color-border); transition: opacity var(--dur-hover); }
+.agenda-time { font-family: var(--font-display); font-size: 14px; color: var(--color-white); }
+.agenda-time span { display: block; color: var(--color-text-muted); }
+.agenda-cell { width: 12px; height: 12px; margin-top: 5px; border: 1px solid var(--color-border-strong); }
+.agenda-title { font-weight: 600; color: var(--color-white); }
+.agenda-meta { margin-top: 4px; font-size: 14px; color: var(--color-text-muted); }
+.agenda-now { color: var(--color-sbg-mint); margin-bottom: 4px; }
+.agenda-row.is-past { opacity: 0.55; }
+.agenda-row.is-past .agenda-cell { background: var(--ed-accent, var(--color-sbg-purple)); border-color: transparent; }
+.agenda-row.is-live .agenda-cell { background: var(--color-sbg-mint); border-color: transparent; }
+@media (prefers-reduced-motion: no-preference) {
+  .agenda-row.is-live .agenda-cell { animation: cursor-blink 1060ms steps(1, end) 3; }
+}
+@media (min-width: 768px) { .agenda-row { grid-template-columns: 140px 12px 1fr; } }
+
+.edition-speakers { display: grid; gap: 28px 20px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.edition-speaker-block { display: flex; align-items: flex-end; aspect-ratio: 1; padding: 14px; font-family: var(--font-display); font-size: 48px; letter-spacing: -0.06em; line-height: 1; }
+.edition-speaker-name { margin-top: 14px; font-family: var(--font-display); font-size: 19px; letter-spacing: -0.03em; color: var(--color-white); }
+.edition-speaker-role { margin-top: 4px; font-size: 14px; color: var(--color-text-muted); }
+.edition-split { display: grid; gap: 48px; }
+.edition-venue { font-size: 20px; color: var(--color-white); margin-bottom: 12px; }
+.edition-faqs { border-top: 1px solid var(--color-border-strong); }
+.edition-faqs details { border-bottom: 1px solid var(--color-border); }
+.edition-faqs summary { display: flex; align-items: center; min-height: 56px; cursor: pointer; font-weight: 600; color: var(--color-white); }
+.edition-faqs p { padding-bottom: 18px; color: var(--color-text-muted); }
+.edition-past { display: grid; gap: 8px; }
+@media (min-width: 1024px) { .edition-split { grid-template-columns: 1fr 1.4fr; gap: 80px; } }
+
+/* ---------- Closing map: Ghana assembles row by row ---------- */
+/* Rows slide in from alternating sides in steps, north to south, then Cape Coast flashes and pulses three times
+   (globals.css). Same timing source as the map's existing fade, so it still waits until the map is in view. */
+@media (prefers-reduced-motion: no-preference) {
+  .closing-map .pixel-fade .pixel-row { animation-name: pixel-row-build; animation-duration: 380ms; animation-timing-function: steps(4, end); }
+  .closing-map .pixel-fade .pixel-row:nth-child(even) { animation-name: pixel-row-build-reverse; }
+}
+@keyframes pixel-row-build { from { opacity: 0; transform: translateX(-40px); } }
+@keyframes pixel-row-build-reverse { from { opacity: 0; transform: translateX(40px); } }
+/* The marker flash and pulse also wait for the map to come into view. */
+[data-fade='waiting'] .pixel-marker, [data-fade='waiting'] .pixel-ring { animation: none; }
+
+/* Dev-only concept page (/styleguide/motion) */
+.concept-label { padding: 12px 16px; font-family: var(--font-display); font-size: 12px; color: var(--color-bg); background: var(--color-sbg-mint); }
+.concept-held { margin-top: 28px; display: grid; gap: 10px; color: var(--color-text); }
+.concept-held .type-label { display: block; color: var(--color-text-muted); }

@@ -606,3 +606,32 @@ Review, 11 Nov 2026: full report in `docs/research/REDESIGN_REVIEW.md`.
 - Note: a build or dev run with `NEXT_DIST_DIR` makes Next rewrite `tsconfig.json`; restore it with `git show HEAD:tsconfig.json > tsconfig.json`.
 
 Follow-up, 11 Nov 2026 (Joel's decisions): From Code to Cloud set to 9:30 AM to 1:00 PM, Computer Lab, New Science Annex; bootcamp shown as a 12-week programme with voucher terms and its flyer, kickoff event record removed; Freshers and Zero to Cloud flyers published; wordmark trim approved; decisions noted in COMPLIANCE.md rules 1, 2 and 21. Admin team test added and passing. Fixed: initials tiles lost their role colour. Rechecked: 206 unit tests, typecheck, lint, production build, 77 browser tests passed (15 skipped by design), axe 0 violations. Joel to update the From Code to Cloud Meetup listing and run the drafts-only Neon import.
+
+## Motion and interaction, 13 Nov 2026
+
+Authorised by Joel's motion brief (work through without stopping for routine creative decisions). No commit, push, deploy, Neon write or AWS change. Preserve the 11 Nov redesign.
+
+- [x] Record Updata One, Heapcon (home, 2026, 2025, 2024, 2023, 2022) and GEU in Chromium: desktop, phone, reduced motion
+- [x] docs/research/MOTION_REFERENCE_AUDIT.md: observed versus inferred, pattern table, fit for UCC
+- [x] Baseline: production build sizes and throttled phone vitals before any change
+- [x] Three hero concepts tried in the hero slot (dev-only route), recorded, one chosen
+- [x] docs/MOTION_SYSTEM.md: identity, timing tokens, signatures, per-effect spec, reduced motion, budgets
+- [x] Hero: pixel to picture reveal, pointer build field, cursor block
+- [x] Scroll: staircase climb, section entrances by kind, scroll-linked photo reel
+- [x] Technology board with traces to real sessions and stories, phone and keyboard usable
+- [x] Events: animated tab and filter changes, flyer hover preview, list to detail transition, gallery viewer
+- [x] Special event editions: theme config and components, Community Day page on it, still gated
+- [x] Navigation: route transitions, sliding nav marker, mobile menu, portal hand-off feedback
+- [x] Projects: filter transitions, card interaction, empty state
+- [x] Portal: check-in success after server confirmation, progress and achievement reveals
+- [x] Verify: typecheck, lint, copy, unit, browser (one worker), build; 375, 768, 1280, 1440; reduced motion; recordings; vitals after
+
+Review, 13 Nov 2026: full report in `docs/research/MOTION_REVIEW.md`; system in `docs/MOTION_SYSTEM.md`.
+
+- Verified on the final production build: typecheck; lint and copy (0 errors, 6 known title warnings); 214 unit tests; browser suite 92 passed, 16 skipped by design, 2 dev-only failures that pass on next dev (4 dev-only tests passed); axe 0 violations on 9 pages at 375 and 1440, plus viewer and board states; captures at 375, 768, 1280 and 1440 with no errors; 12 recordings with no page or hydration errors; throttled phone vitals against a baseline rebuilt from the last commit (LCP 1.1 to 1.7 s, CLS at most 0.0015, tap INP proxy 96 to 176 ms).
+- Cost: home first load JS 114 to 120 kB, motion.css 4.7 kB gzipped, no new dependencies; home main-thread time on a slow phone roughly doubles (about 400 to about 750 ms).
+- Not done: real phones, Safari and Firefox, Lighthouse, field INP; Community Day checked only with labelled samples on /styleguide/motion; no approved projects to exercise project cards.
+- Follow-up: the old .explorer-tab rules in public.css are now unused and can be deleted in a later tidy-up.
+- Nothing committed, pushed, deployed or written to Neon or AWS.
+
+Final review, 13 Nov 2026 (Joel's pre-commit pass): flyer preview and filter view transitions removed after recordings showed overlap; hero tap limited to the open grid; transition timer fixed; dev-only tests moved to e2e/dev-only; production config now runs e2e/prod plus the shared flows; event caching confirmed as the agreed 60-second timer (W2), with a new unpublish-and-delete regression test passing on the production build; research stills kept local. Dev config could not finish its admin, boundary and journey groups under next dev on this laptop's memory; those flows passed on the production build. Details in docs/research/MOTION_REVIEW.md. Nothing committed.

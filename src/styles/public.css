@@ -193,7 +193,7 @@
   .hero-lead, .hero-actions { animation: rise-in 700ms var(--ease-brand) both; animation-delay: 380ms; }
   .hero-actions { animation-delay: 480ms; }
   .hero-mosaic > .cell { animation: cell-build 640ms steps(6, end) both; animation-delay: calc(var(--i) * 85ms + 260ms); }
-  .hero-mosaic .cell-photo img { animation: photo-settle 1400ms var(--ease-brand) both; animation-delay: calc(var(--i) * 85ms + 260ms); }
+  .hero-mosaic .cell-photo > img { animation: photo-settle 1400ms var(--ease-brand) both; animation-delay: calc(var(--i) * 85ms + 260ms); }
   .hero-fields li { animation: rise-in 500ms var(--ease-brand) both; animation-delay: calc(700ms + var(--n, 0) * 40ms); }
 }
 @keyframes line-rise { from { transform: translateY(105%); } }

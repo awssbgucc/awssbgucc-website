@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import { notFound } from 'next/navigation';
 import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
@@ -35,7 +35,7 @@ export default async function ProjectPage({ params }: Props) {
         </nav>
         <header className="project-hero">
           <div>
-            <h1 className="event-title">{project.title}</h1>
+            <h1 className="event-title" data-vt-dest="title">{project.title}</h1>
             <p className="event-summary">{project.summary}</p>
           </div>
           <dl className="project-facts">
@@ -60,7 +60,7 @@ export default async function ProjectPage({ params }: Props) {
           </dl>
         </header>
         {project.imageUrl && (
-          <div className="project-hero-shot" data-reveal="mask">
+          <div className="project-hero-shot" data-reveal="mask" data-vt-dest="art">
             <Image src={project.imageUrl} alt={`${project.title}, screenshot or architecture`} fill priority sizes="(min-width: 1280px) 1280px, 100vw" />
           </div>
         )}

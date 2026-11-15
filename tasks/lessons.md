@@ -45,3 +45,13 @@ Rule: when content is ready, finish the path to the database the site reads, or 
 
 What happened: the copy read like a Cloud Practitioner course, although Student Builder Groups cover software, AI, data, security and more.
 Rule: position the group around building with technology. Separate what we have run (with sources) from areas open to explore, and never claim the second as the first.
+
+## Measuring LCP after a scripted scroll
+
+What happened: the first motion baseline reported a 4 s home LCP; the script had scrolled the page first, and a script's scroll does not end LCP, so photos further down became late candidates.
+Rule: read LCP at rest before any scripted scrolling, and confirm a surprising vitals number with a waterfall before acting on it.
+
+## Overflow hidden by overflow-x: clip
+
+What happened: the technology board grew to 944 px on phones, but `.public-site { overflow-x: clip }` cut it off, so the page-width check passed while half the board was unreachable.
+Rule: in grids that hold horizontal scrollers, use minmax(0, 1fr) tracks; check element widths, not only document scroll width.

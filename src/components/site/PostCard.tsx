@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import { externalLabel } from '@/lib/content/selectors';
 import type { Post } from '@/lib/content/types';
 import { formatDate } from '@/lib/format';
@@ -9,9 +9,9 @@ export function PostCard({ post, feature = false }: { post: Post; feature?: bool
   const href = post.externalUrl ?? `/blog/${post.slug}`;
   const external = !!post.externalUrl;
   return (
-    <article className={`post-card ${feature ? 'post-card-feature' : ''} ${post.coverImage ? '' : 'post-card-plain'}`}>
+    <article className={`post-card ${feature ? 'post-card-feature' : ''} ${post.coverImage ? '' : 'post-card-plain'}`} data-vt-source="">
       {post.coverImage && (
-        <div className="post-cover">
+        <div className="post-cover" data-vt="art">
           <Image src={post.coverImage} alt="" fill sizes={feature ? '(min-width: 1024px) 55vw, 100vw' : '(min-width: 768px) 40vw, 100vw'} style={{ objectPosition: focusFor(post.coverImage) }} />
         </div>
       )}

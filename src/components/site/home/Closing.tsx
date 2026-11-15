@@ -1,4 +1,5 @@
 import { Container } from '@/components/ui/Container';
+import { FadeOnView } from '@/components/ui/FadeOnView';
 import { Cta } from '../Cta';
 import { PixelMap } from '../PixelMap';
 import { SbgIcon, type SbgIconName, type SbgTone } from '../SbgIcon';
@@ -39,7 +40,10 @@ export function Closing({ meetupUrl }: { meetupUrl: string }) {
             </ul>
           </div>
           <div className="closing-map" id="about">
-            <PixelMap />
+            {/* The map assembles when it scrolls into view, not at load while it is off screen. */}
+            <FadeOnView>
+              <PixelMap />
+            </FadeOnView>
           </div>
         </div>
       </Container>

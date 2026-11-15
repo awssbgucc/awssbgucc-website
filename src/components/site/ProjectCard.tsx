@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 
 export type ProjectCardData = {
   slug: string;
@@ -14,8 +14,8 @@ export type ProjectCardData = {
 /** A project always shows its image: approval needs one. */
 export function ProjectCard({ project, credit, size = 'normal' }: { project: ProjectCardData; credit?: string | null; size?: 'normal' | 'large' }) {
   return (
-    <article className={`project-card ${size === 'large' ? 'project-card-large' : ''}`}>
-      <div className="project-shot">
+    <article className={`project-card ${size === 'large' ? 'project-card-large' : ''}`} data-vt-source="">
+      <div className="project-shot" data-vt="art">
         {project.imageUrl && (
           <Image src={project.imageUrl} alt="" fill sizes={size === 'large' ? '(min-width: 1024px) 60vw, 100vw' : '(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw'} />
         )}
@@ -24,7 +24,7 @@ export function ProjectCard({ project, credit, size = 'normal' }: { project: Pro
       <div className="project-body">
         {project.stack.length > 0 && (
           <ul className="chip-row" aria-label="Built with">
-            {project.stack.slice(0, 4).map((name) => <li key={name}>{name}</li>)}
+            {project.stack.slice(0, 4).map((name, index) => <li key={name} style={{ '--i': index } as React.CSSProperties}>{name}</li>)}
           </ul>
         )}
         <h3>

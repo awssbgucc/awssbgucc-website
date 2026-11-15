@@ -81,7 +81,7 @@ export default async function ProgressPage() {
               const at = earned.get(a.id);
               const current = Math.min(counts[a.criterion], a.threshold);
               return (
-                <li key={a.id} className={`rounded-md border p-4 ${at ? 'border-lime/40' : 'border-border'}`}>
+                <li key={a.id} className={`rounded-md border p-4 ${at ? 'achievement-earned border-lime/40' : 'border-border'}`}>
                   <div className="flex items-start justify-between gap-2">
                     <p className={`font-semibold ${at ? 'text-white' : 'text-text-muted'}`}>{a.title}</p>
                     {at ? <Badge tone="lime">Earned</Badge> : <span className="font-display text-xs text-text-muted">{current}/{a.threshold}</span>}

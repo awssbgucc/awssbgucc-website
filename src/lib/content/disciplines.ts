@@ -127,3 +127,26 @@ export const DISCIPLINES: Discipline[] = [
     evidence: [],
   },
 ];
+
+export type BoardRecord = { key: string; kind: Evidence['kind']; slug: string; title: string; date: string | null };
+
+/**
+ * The published sessions and stories that any area points at: the rail the technology board draws its traces to.
+ * Dated records come first, oldest first; stories without a publish date follow in the order given. Records nobody
+ * points at are left out, so the board never shows an empty claim. Pass published records only.
+ */
+export function boardRecords(
+  disciplines: Discipline[],
+  events: { slug: string; title: string; startsAt: Date }[],
+  posts: { slug: string; title: string; publishedAt: Date | null }[],
+): BoardRecord[] {
+  const wanted = new Set(disciplines.flatMap((d) => d.evidence.map((e) => `${e.kind}:${e.slug}`)));
+  const records: (BoardRecord & { at: number })[] = [];
+  for (const e of events) {
+    if (wanted.has(`event:${e.slug}`)) records.push({ key: `event:${e.slug}`, kind: 'event', slug: e.slug, title: e.title.split(':')[0], date: e.startsAt.toISOString(), at: e.startsAt.getTime() });
+  }
+  for (const p of posts) {
+    if (wanted.has(`post:${p.slug}`)) records.push({ key: `post:${p.slug}`, kind: 'post', slug: p.slug, title: p.title, date: p.publishedAt?.toISOString() ?? null, at: p.publishedAt?.getTime() ?? Infinity });
+  }
+  return records.sort((a, b) => (a.at === b.at ? 0 : a.at - b.at)).map(({ key, kind, slug, title, date }) => ({ key, kind, slug, title, date }));
+}

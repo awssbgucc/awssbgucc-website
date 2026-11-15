@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import type { CSSProperties } from 'react';
 import { focusFor } from '@/lib/content/media';
 import type { Event } from '@/lib/content/types';
@@ -12,6 +12,8 @@ const ICON = { BOOTCAMP: 'ladder', BUILD: 'wrench', TALK: 'speaker', NETWORKING:
 /**
  * Published events, oldest first, as a staircase: each session is one step higher than the last, like the stepped
  * blocks in the official SBG backgrounds. The next session is the top step, in mint.
+ * As the staircase crosses the screen, a white line completes along the top of each step in turn, oldest first, and
+ * the top step's line is mint: progress climbing to now. Scroll-linked where the browser supports it, otherwise static.
  */
 export function Staircase({ events, now, recaps }: { events: Event[]; now: Date; recaps: Map<string, string> }) {
   const steps = [...events].sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime()).slice(-6);
@@ -24,8 +26,8 @@ export function Staircase({ events, now, recaps }: { events: Event[]; now: Date;
         const recap = event.recapPostId ? recaps.get(event.recapPostId) : undefined;
         return (
           <li key={event.id} className="stair" style={{ '--i': index } as CSSProperties}>
-            <article className="stair-card">
-              <div className="stair-art">
+            <article className="stair-card" data-vt-source="">
+              <div className="stair-art" data-vt="art">
                 {event.coverImage ? (
                   <Image src={event.coverImage} alt="" fill sizes="(min-width: 1024px) 220px, 70vw" style={{ objectPosition: focusFor(event.coverImage) }} />
                 ) : (
@@ -42,7 +44,7 @@ export function Staircase({ events, now, recaps }: { events: Event[]; now: Date;
               <p className="stair-meta">{TAG_LABEL[event.tag]}, {event.format === 'IN_PERSON' ? 'on campus' : 'online'}</p>
               {recap && <Link href={`/blog/${recap}`} className="stair-recap">Read the recap</Link>}
             </article>
-            <div className={`stair-block block-${upcoming ? 'mint' : TAG_TONE[event.tag]}`} aria-hidden="true" />
+            <div className={`stair-block block-${upcoming ? 'mint' : TAG_TONE[event.tag]} ${upcoming ? 'stair-block-next' : ''}`} aria-hidden="true" />
           </li>
         );
       })}

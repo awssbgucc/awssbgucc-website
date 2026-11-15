@@ -98,7 +98,7 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
         </h1>
         <p className="mt-3 max-w-[56ch] text-text-muted lg:hidden">{STEPS[step].why}</p>
 
-        <fieldset ref={(el) => { fieldsets.current[0] = el; }} hidden={step !== 0} className="mt-8 flex max-w-[560px] flex-col gap-6">
+        <fieldset ref={(el) => { fieldsets.current[0] = el; }} hidden={step !== 0} className="step-in mt-8 flex max-w-[560px] flex-col gap-6">
           <legend className="sr-only">About you</legend>
           <Field id="displayName" label="Your name" error={err('displayName')}>
             <input id="displayName" name="displayName" required maxLength={60} defaultValue={v('displayName', name)} autoComplete="name" aria-invalid={!!err('displayName')} aria-describedby={describe('displayName')} className={INPUT} />
@@ -124,7 +124,7 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
           </div>
         </fieldset>
 
-        <fieldset ref={(el) => { fieldsets.current[1] = el; }} hidden={step !== 1} className="mt-8 flex max-w-[640px] flex-col gap-6">
+        <fieldset ref={(el) => { fieldsets.current[1] = el; }} hidden={step !== 1} className="step-in mt-8 flex max-w-[640px] flex-col gap-6">
           <legend className="sr-only">What you want to build</legend>
           <div role="group" aria-labelledby="interests-label">
             <p id="interests-label" className="mb-3 text-sm font-medium">
@@ -154,7 +154,7 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
           </div>
         </fieldset>
 
-        <fieldset ref={(el) => { fieldsets.current[2] = el; }} hidden={step !== 2} className="mt-8 flex max-w-[640px] flex-col gap-6">
+        <fieldset ref={(el) => { fieldsets.current[2] = el; }} hidden={step !== 2} className="step-in mt-8 flex max-w-[640px] flex-col gap-6">
           <legend className="sr-only">Privacy</legend>
           <div role="radiogroup" aria-labelledby="visibility-label">
             <p id="visibility-label" className="mb-3 text-sm font-medium">

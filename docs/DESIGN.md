@@ -285,4 +285,5 @@ Supersedes the 10 Nov editorial revision for the public site. Reasons and the tw
   - The header compacts on scroll, where scroll-driven animation is supported.
   - The map ring pulses three times, then stops.
   - Everything is CSS plus `RevealObserver`, one IntersectionObserver; no animation library. Under reduced motion nothing is hidden or moving.
+  - Superseded on 13 Nov 2026 by `docs/MOTION_SYSTEM.md`: still no animation library, now with view transitions, scroll-driven CSS and one canvas. Read that file before adding motion.
 - **Rules kept.** No glow, gradients on text, floating blobs or lift-on-hover. Cards respond with a border change, an image scale or a growing corner block, never a shadow.

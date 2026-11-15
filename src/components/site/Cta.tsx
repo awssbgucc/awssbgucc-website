@@ -1,5 +1,5 @@
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import type { ReactNode } from 'react';
 
 type Variant = 'solid' | 'mint' | 'line' | 'arrow';

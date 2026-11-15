@@ -5,6 +5,7 @@ import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
 import { Staircase } from '@/components/site/home/Staircase';
 import { PageIntro } from '@/components/site/PageIntro';
+import { PhotoWall } from '@/components/site/PhotoWall';
 import { PixelMap } from '@/components/site/PixelMap';
 import { SectionHead } from '@/components/site/SectionHead';
 import { getEvents, getPosts, getSiteSettings } from '@/lib/content/queries';
@@ -103,17 +104,10 @@ export default async function AboutPage() {
           <SectionHead label="Zero to Cloud Practitioner" title="Saturdays, in pictures." id="gallery-title">
             Photographs from the bootcamp, shared with the permission of the group.
           </SectionHead>
-          <div className="photo-wall" data-reveal="steps">
-            {GALLERY.map((item, index) => {
-              const image = photo(item.id);
-              return (
-                <figure key={item.id} className={`wall-${item.shape}`} style={{ '--i': index } as CSSProperties}>
-                  <div className="wall-photo"><Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 33vw, 50vw" /></div>
-                  <figcaption>{item.caption}</figcaption>
-                </figure>
-              );
-            })}
-          </div>
+          <PhotoWall
+            label="Bootcamp photographs"
+            photos={GALLERY.map((item) => ({ ...photo(item.id), caption: item.caption, shape: item.shape }))}
+          />
         </Container>
       </section>
 

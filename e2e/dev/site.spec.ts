@@ -49,13 +49,6 @@ test('unknown pages show the 404', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible();
 });
 
-test('event and post layouts render from sample records', async ({ page }) => {
-  await page.goto('/styleguide/preview');
-  await expect(page.getByRole('link', { name: 'RSVP on Meetup' })).toBeVisible();
-  await expect(page.getByText(/12 attended/)).toBeVisible();
-  await expect(page.getByText(/LinkedIn/)).toBeVisible();
-});
-
 test('Cape Coast has its place in the closing section', async ({ page }) => {
   await page.goto('/');
   const map = page.locator('#about').getByRole('img', { name: 'Map of Ghana with Cape Coast highlighted' });

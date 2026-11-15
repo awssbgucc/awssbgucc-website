@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Button } from '@/components/ui/Button';
+import { CountUp } from '@/components/ui/CountUp';
 import { checkIn, type CheckInState } from '../../actions/sessions';
 
 const INPUT = 'w-full min-h-12 rounded-sm border border-border-strong bg-bg px-3 py-2 text-base text-text aria-[invalid=true]:border-danger';
@@ -20,15 +21,20 @@ function Submit() {
 export function CheckInForm({ sessions, event, code }: { sessions: { slug: string; title: string }[]; event: string; code: string }) {
   const [state, action] = useActionState<CheckInState, FormData>(checkIn, {});
 
+  // Shown only after the server action has recorded the check-in: the cell lights and the rewards count up then.
   if (state.result) {
     const { title, xp, credits, duplicate } = state.result;
     return (
-      <div role="status" className="flash-lime max-w-xl rounded-md border border-lime/40 p-6">
-        <p className="type-label text-lime">{duplicate ? 'Already checked in' : 'Checked in'}</p>
+      <div role="status" className="checkin-done flash-lime max-w-xl rounded-md border border-lime/40 p-6">
+        <div className="flex items-center gap-3">
+          <span className={`checkin-cell ${duplicate ? 'is-duplicate' : ''}`} aria-hidden="true" />
+          <p className="type-label text-lime">{duplicate ? 'Already checked in' : 'Checked in'}</p>
+        </div>
         <p className="mt-2 text-xl font-semibold text-white">{title}</p>
         {!duplicate && (xp > 0 || credits > 0) && (
           <p className="mt-2 font-display text-sm text-text-muted">
-            +{xp} XP, +{credits} credits
+            <span className="sr-only">+{xp} XP, +{credits} credits</span>
+            +<CountUp value={xp} /> XP, +<CountUp value={credits} /> credits
           </p>
         )}
         <div className="mt-6 flex flex-wrap gap-3">

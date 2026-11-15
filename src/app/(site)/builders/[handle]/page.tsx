@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import { notFound } from 'next/navigation';
 import { ProfileCard } from '@/components/builder/ProfileCard';
 import { ProjectCard } from '@/components/site/ProjectCard';

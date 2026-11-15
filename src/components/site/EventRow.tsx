@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/components/site/motion/TransitionLink';
 import { ArrowRight } from 'lucide-react';
 import { focusFor } from '@/lib/content/media';
 import type { Event } from '@/lib/content/types';
@@ -14,13 +14,13 @@ export function EventRow({ event, attendance, recapSlug }: { event: Event; atten
   const when = dateParts(event.startsAt);
   const tone = TAG_TONE[event.tag];
   return (
-    <article className={`event-row tone-${tone}`}>
-      <div className="row-date">
+    <article className={`event-row tone-${tone}`} data-vt-source="">
+      <div className="row-date" data-vt="date">
         <span className="type-label">{when.weekday}</span>
         <span className="row-day">{when.day}</span>
         <span className="type-label">{when.month} {when.year}</span>
       </div>
-      <div className="row-thumb" aria-hidden="true">
+      <div className="row-thumb" aria-hidden="true" data-vt="art">
         {event.coverImage ? (
           <Image src={event.coverImage} alt="" fill sizes="200px" style={{ objectPosition: focusFor(event.coverImage) }} />
         ) : (

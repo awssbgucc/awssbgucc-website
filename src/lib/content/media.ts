@@ -1,4 +1,5 @@
 import manifest from '../../../content/media-manifest.json';
+import { formatDate } from '@/lib/format';
 
 // Approved photographs and flyers, prepared by scripts/prepare-media.py. Provenance and consent live in the manifest.
 
@@ -32,4 +33,18 @@ const FOCUS: Record<string, string> = {
 
 export function focusFor(src: string | null | undefined) {
   return (src && FOCUS[src]) || '50% 50%';
+}
+
+/** The day a photo was taken, from the camera's file name (IMG/20261031_185639.jpg), as "Sat 31 Oct 2026". */
+export function photoDate(id: PhotoId) {
+  const entry = manifest.photos.find((p) => p.id === id);
+  const match = entry?.source.match(/(\d{4})(\d{2})(\d{2})_/);
+  if (!match) return null;
+  const [, y, m, d] = match;
+  return formatDate(new Date(Date.UTC(Number(y), Number(m) - 1, Number(d), 12)));
+}
+
+/** Every approved photo, oldest first by file name. */
+export function allPhotos() {
+  return manifest.photos.filter((p) => p.consent === 'approved').sort((a, b) => a.source.localeCompare(b.source)).map((p) => p.id as PhotoId);
 }
