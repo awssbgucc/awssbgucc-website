@@ -83,7 +83,7 @@ html[data-vt-phase='new'] [data-vt-dest='art'] { view-transition-name: vt-art; }
 html[data-vt-phase='new'] [data-vt-dest='title'] { view-transition-name: vt-title; }
 html[data-vt-phase='new'] [data-vt-dest='date'] { view-transition-name: vt-date; }
 /* An arriving shared image is already in place, so it skips its own mask reveal. */
-html[data-vt-phase='new'] [data-vt-dest='art'][data-reveal] { clip-path: none; transition: none; }
+html[data-vt-phase='new'] [data-vt-dest='art'][data-reveal] > * { clip-path: none; transition: none; }
 
 /* ---------- Technology board ---------- */
 /* minmax(0, ...) and min-width 0, so the scrolling rail never widens the board past the screen. */

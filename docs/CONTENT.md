@@ -4,6 +4,19 @@ The copy and seed data for v1. Use the copy as written. Anything marked `TODO(jo
 
 Editable items are flagged **[admin]**. They live in the database and are seeded from this file, so the team can change them later without a deploy.
 
+**Current copy, 15 Nov 2026.** The page copy below is the October starting point. The site has since been redesigned, and the live copy now lives in these places, which are the ones to edit:
+
+| Copy | Source of truth |
+|---|---|
+| Events and recap posts | The database, through the admin. Reviewed text for import: `content/community-history.json` |
+| Home, about, events, projects, team, partners, writing, contact, footer, 404 | The page and component files under `src/app/(site)/` and `src/components/site/` |
+| Technology board areas | `src/lib/content/disciplines.ts` |
+| Photo alt text and provenance | `content/media-manifest.json`; captions in the page that shows the photo |
+| Site description and metadata | `src/lib/site.ts` and each page's `metadata` |
+| Links, email, announcement bar | Site Settings in the admin |
+
+How to write it: `CONTENT_VOICE_GUIDE.md`. What changed in the 15 Nov pass and why: `EDITORIAL_REVIEW.md`.
+
 ## Global
 
 | Item | Value |

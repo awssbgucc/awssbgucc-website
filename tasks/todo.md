@@ -635,3 +635,72 @@ Review, 13 Nov 2026: full report in `docs/research/MOTION_REVIEW.md`; system in 
 - Nothing committed, pushed, deployed or written to Neon or AWS.
 
 Final review, 13 Nov 2026 (Joel's pre-commit pass): flyer preview and filter view transitions removed after recordings showed overlap; hero tap limited to the open grid; transition timer fixed; dev-only tests moved to e2e/dev-only; production config now runs e2e/prod plus the shared flows; event caching confirmed as the agreed 60-second timer (W2), with a new unpublish-and-delete regression test passing on the production build; research stills kept local. Dev config could not finish its admin, boundary and journey groups under next dev on this laptop's memory; those flows passed on the production build. Details in docs/research/MOTION_REVIEW.md. Nothing committed.
+
+## Editorial review, 15 Nov 2026
+
+Authorised by Joel's editorial brief (audit and implement, no stopping for a proposal). Copy only: no layout, motion, schema or auth changes. No commit, push, deploy or Neon write.
+
+Findings before work:
+
+- Internal rules leak into public copy in at least ten places: RSVP versus attendance, photo permission, project review and consent, "from our Meetup listings", "every approved photo", "told from the group's recap", team profile approval, blog review, attendance "taken on the day"
+- From Code to Cloud (Sat 14 Nov 2026) still reads as upcoming in its body, and the AI board area still says "On the calendar"
+- No recap text or photographs from From Code to Cloud exist in the repo, IMG/, Event-banners/ or the media manifest; the page can only describe the published plan
+- Bootcamp weeks have no Meetup listings, so they cannot be event records (COMPLIANCE rule 17, Joel 11 Nov 2026); they stay in the programme band, which gains the dated weeks we have evidence for
+- The import script only creates, so improved copy never reaches a database that already holds the old records
+
+Plan:
+
+- [x] Audit every public string: home, about, events, event detail, projects, team, partners, blog, contact, footer, nav, 404, sign-in, metadata
+- [x] Rewrite or remove copy in components and page files; keep legal lines (footer compliance line, AWS Event Terms, privacy, achievements disclaimer)
+- [x] Rewrite event and post records in content/community-history.json from the sources; From Code to Cloud in the past tense, plan only, no outcomes
+- [x] Discipline board: AI status after 14 Nov, wording of each area
+- [x] Import script: `--refresh` updates the text of records the import still owns (updatedBy "content import"), never status, never admin-edited records
+- [x] Apply to the local database and check the pages at 375 and 1280
+- [x] docs/EDITORIAL_REVIEW.md, docs/CONTENT_VOICE_GUIDE.md, CONTENT.md pointer, lessons.md
+- [x] typecheck, lint, check:copy, unit tests (one worker)
+- [ ] Public browser tests: stopped by the system on low memory, see the review
+
+Review, 15 Nov 2026: full write-up in `docs/EDITORIAL_REVIEW.md`; guide in `docs/CONTENT_VOICE_GUIDE.md`.
+
+- Verified: typecheck; lint and check:copy (0 errors, 11 warnings, all the launch event's real title); 215 unit tests, including a new one that keeps review and consent wording out of event and post text; `--refresh` on a local database (dry run, apply, second run changes nothing, an admin-edited record is left alone); 13 public routes read and checked for horizontal overflow in a 375 px frame, event pages at 1280.
+- Not verified: the public Playwright run (site, redesign, motion) against the local server. 20 passed, 10 failed on timeouts and one 500 on an unchanged page as memory ran out, 33 never ran, then the system stopped the server, database and run. None of the failures was a copy assertion. Rerun with nothing else on the machine: `pnpm test:e2e`.
+- Joel's dev server on :3000 (reads `.env`, so Neon) was left running and untouched. Nothing written to Neon, nothing committed.
+
+## From Code to Cloud photographs, 16 Nov 2026
+
+Authorised by Joel's brief: finish the event page and use the approved photos on the home page. No commit, push, deploy or Neon write.
+
+- [x] Extract `IMG/aws_FCC-5.zip` to `IMG/fcc-originals/` without overwriting; 77 files, 75 unique
+- [x] Contact sheets from reduced decodes; select 21 (cover, 20-photo gallery, home picks); record the selection and the venue discrepancy in `docs/ASSET_CONTENT_INVENTORY.md`
+- [x] Web copies through `scripts/prepare-media.py event-photos`: WebP, sRGB, no metadata; pixel previews for the hero
+- [x] Event record: past-tense recap from the photos only, photo list, notes; source S17
+- [x] Event page: cover photo after the event, flyer in the side column, gallery that keeps upright photos whole, per-photo alt text in the viewer
+- [x] Home: hero photos, build day section with three photos
+- [x] Import: create and `--refresh` event photos; local test of create, rerun, refresh and an admin-edited record
+- [x] Tests: photo files, sizes, metadata, event ownership, gallery limit; e2e hero selectors moved to the new photo
+- [x] typecheck, lint, check:copy, unit tests; Playwright one worker, one spec at a time
+- [x] Look at the event page and home at 1280 and 375
+
+Review, 16 Nov 2026:
+
+- Verified: typecheck; lint and check:copy (0 errors, 11 warnings, the launch title); 217 unit tests; import on a disposable local database (create, rerun changes nothing, refresh adds photos, an admin-edited record is skipped); event page, home, events and the launch page checked in a browser at 1280 and in a 375 px frame (no horizontal page scroll); photo viewer opens, steps and closes.
+- Playwright against a local review server, one worker: site, motion, redesign, boundaries, admin and styleguide pass on desktop and mobile; three mobile and desktop tests that failed once passed on a single rerun. Not passing: three desktop admin journeys (create event, add team member, review submission). The server returns the 303 redirect, but on this laptop in 5.2 to 6.5 s, past the test's 5 s wait. Unrelated to this change; rerun on a quieter machine.
+- Fixed on the way: mask reveals that start below the fold never showed in Chrome (clip moved to the children).
+- The review server hit its own 1.5 GB heap cap once during the admin journeys; restarted once at 2 GB. Server and database stopped afterwards; `.next-fcc`, the temporary Playwright config and test results removed; tsconfig restored. Joel's :3000 server untouched. Nothing written to Neon, nothing committed.
+
+Follow-up, 16 Nov 2026 (Joel's facts: 76 check-ins, the run sheet, closed at 2:00 PM after getting into the lab at 10:00 AM, the Patron did not come):
+
+- [x] Event record: 10:00 AM to 2:00 PM, attendance 76, "What we did" from the run sheet without the Patron's slot or the listing's AI demonstration; source S18
+- [x] Import `--refresh` now also carries times and attendance on records the import still owns (never status or links); tested locally: dry run, apply, rerun changes nothing
+- [x] Technology board: compute and security covered by Lab 2 and the bucket policy exercise; AI no longer points at From Code to Cloud; motion test now checks the Data tab, which is still open
+- [x] Checked: typecheck, lint and check:copy (0 errors), 217 unit tests, site, motion and redesign specs on desktop and mobile (62 passed), event page text rendered from the local database
+- [x] Kelvin's full name: Kelvin Opoku Boateng; Meetup listing left as it is, the event is over (Joel, 16 Nov 2026)
+
+## Content on Neon, 16 Nov 2026
+
+Joel saw no From Code to Cloud page and no build day photos on :3000. Cause: :3000 reads Neon, and Neon has no published events (home shows the "next date goes up on Meetup" fallback, /events/from-code-to-cloud is 404). The code and the 21 photos are in place; the records were only ever loaded into local databases. A read-only dry run against Neon was blocked by the permission system.
+
+- [x] Neon backup branch `backup-before-content-import-2026-11-16`, then the import with `--apply --refresh --remote-drafts`: Neon held none of the 7 records; all 7 created (Joel: "run them and get it done")
+- [x] Published the 4 events and 3 posts by status only (updatedBy stays "content import", so `--refresh` can still update their text). Post dates stay empty, as in the JSON
+- [x] Checked against Neon at 1280 in Chrome: event page (cover, What we did, flyer, gallery), home (most recent session card, build day photos), /events lists all 4
+- [ ] 375 against Neon: not done; the Chrome extension disconnected and Joel's :3000 dev server stopped responding (about 1 GB, no reply in 100 s). Same code was checked at 375 on a local database on 16 Nov

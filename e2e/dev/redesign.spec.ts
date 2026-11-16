@@ -14,7 +14,7 @@ test('reduced motion shows every section finished, with no hidden reveals', asyn
 
 test('the hero shows real photographs and the next session or the latest one', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.hero-mosaic img[src*="classroom"]')).toBeVisible();
+  await expect(page.locator('.hero-mosaic img[src*="fcc-lab-bench"]')).toBeVisible();
   await expect(page.locator('.m-next')).toContainText(/Next session|Most recent session|Sessions/);
 });
 

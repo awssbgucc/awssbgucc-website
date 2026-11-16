@@ -21,7 +21,7 @@ test('hero pixel layers are gone once the entrance has played', async ({ page })
   // Cells hidden on phones never render, so their layers never animate; only rendered cells count.
   const visible = await page.locator('.hero-mosaic .pixel-level').evaluateAll((els) => els.filter((el) => el.closest('.cell')!.checkVisibility() && getComputedStyle(el).opacity !== '0').length);
   expect(visible).toBe(0);
-  await expect(page.locator('.hero-mosaic img[src*="classroom"]').first()).toBeVisible();
+  await expect(page.locator('.hero-mosaic img[src*="fcc-lab-bench"]').first()).toBeVisible();
 });
 
 test('the technology board links every area to published records only', async ({ page }) => {
@@ -31,7 +31,7 @@ test('the technology board links every area to published records only', async ({
   const links = rail.getByRole('link');
   expect(await links.count()).toBeGreaterThan(0);
   for (const href of await links.evaluateAll((els) => els.map((el) => el.getAttribute('href')))) expect(href).toMatch(/^\/(events|blog)\//);
-  await page.getByRole('tab', { name: /Security/ }).click();
+  await page.getByRole('tab', { name: /Data and analytics/ }).click();
   await expect(page.getByRole('tabpanel')).toContainText('Open to explore');
   await expect(rail.locator('.is-lit')).toHaveCount(0);
 });

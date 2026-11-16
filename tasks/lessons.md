@@ -25,6 +25,16 @@ Rule: if a fact is missing, leave TODO(joel) and render nothing. Never fill the 
 What happened: the platform build was reported as complete while the Playwright flows and the production build had not run; Joel had to say it was not verified.
 Rule: say "done" only for what a test or a browser check exercised; list everything else as implemented but not verified, with the reason.
 
+## Recaps written before the run sheet
+
+What happened: the From Code to Cloud recap was first written from the photos alone, with the advertised times. Joel then supplied the run sheet, the check-in count and the real times (into the lab at 10:00 AM, closed at 2:00 PM) (16 Nov 2026).
+Rule: before writing a recap, ask for the run sheet, the check-in count and the actual start and end. Photos show what happened, not when or what was planned.
+
+## A reveal that hides the thing it watches
+
+What happened: the mask reveal set `clip-path: inset(0 0 100% 0)` on the observed element. Chrome's IntersectionObserver counts the element's own clip-path, so it reported zero intersection and anything that started below the fold stayed hidden (16 Nov 2026).
+Rule: never hide an observed element with its own clip-path. Clip its children, and check a reveal below the fold, not only in the first screen.
+
 ## Test infrastructure on a low-memory laptop
 
 What happened: next dev restarted itself on memory, and the local PGlite server rejected connections over its limit and stopped on a dropped client, so tests failed for reasons that were not in the app.
@@ -40,6 +50,7 @@ Rule: use every supplied asset the rules allow; for each one held back, name the
 
 What happened: verified events sat in a JSON file and a local preview database, so the Events page Joel looked at stayed empty.
 Rule: when content is ready, finish the path to the database the site reads, or hand Joel the exact command, and check the page against that database.
+Repeated 16 Nov 2026: the From Code to Cloud work was checked on a local database only, while Neon had no published events, so Joel saw a 404 and a home page without the build day section. Before calling content work done, say plainly whether Neon has it, and if not, put the import and publish steps first in the reply.
 
 ## Narrow positioning
 
@@ -50,6 +61,16 @@ Rule: position the group around building with technology. Separate what we have 
 
 What happened: the first motion baseline reported a 4 s home LCP; the script had scrolled the page first, and a script's scroll does not end LCP, so photos further down became late candidates.
 Rule: read LCP at rest before any scripted scrolling, and confirm a surprising vitals number with a waterfall before acting on it.
+
+## Internal rules written as public copy
+
+What happened: the site told visitors where dates came from, that RSVPs are not attendance, that photos had permission and that projects are reviewed; Joel had to ask for a full editorial pass (15 Nov 2026).
+Rule: apply content rules silently. Public copy says what happened and what to do next; a rule appears only when the reader needs it to act or the law requires it. Check with `docs/CONTENT_VOICE_GUIDE.md`.
+
+## Event copy that outlives the date
+
+What happened: From Code to Cloud still read as upcoming the day after it ran, and the board still had AI "on the calendar".
+Rule: when an event passes, change its body to the past tense, label the plan "On the agenda", and update any status that depended on the date.
 
 ## Overflow hidden by overflow-x: clip
 

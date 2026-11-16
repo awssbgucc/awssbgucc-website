@@ -3,7 +3,7 @@ import { ArrowUpRight } from 'lucide-react';
 import type { Partner } from '@/lib/content/types';
 
 export function PartnerTile({ partner }: { partner: Partner }) {
-  const description = partner.description ?? (partner.name === 'CITSA' ? 'Running the Zero to Cloud Practitioner bootcamp with us.' : null);
+  const description = partner.description ?? (partner.name === 'CITSA' ? 'The Computer Science and Information Technology Student Association. We run the Zero to Cloud Practitioner bootcamp together.' : null);
   return (
     <article className="partner-tile">
       {partner.logoUrl && <Image src={partner.logoUrl} alt={partner.name} width={180} height={80} className="max-h-16 w-auto object-contain" />}

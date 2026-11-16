@@ -38,7 +38,7 @@ export function FeatureEvent({ event, now, headingLevel = 2 }: { event: Event; n
           <div className="flyer-frame" data-reveal="mask">
             <Image src={event.coverImage} alt={`Flyer for ${event.title}`} fill sizes="(min-width: 1280px) 520px, (min-width: 768px) 45vw, 100vw" />
           </div>
-          <figcaption>Original flyer</figcaption>
+          <figcaption>Event flyer</figcaption>
         </figure>
       )}
     </article>

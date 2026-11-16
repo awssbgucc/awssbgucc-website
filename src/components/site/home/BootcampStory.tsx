@@ -3,13 +3,13 @@ import type { CSSProperties } from 'react';
 import { photo, type PhotoId } from '@/lib/content/media';
 import { Cta } from '../Cta';
 
-// Week 3 of the bootcamp, as the group's own recap tells it (source S1). The photos carry the bootcamp watermark
+// Week 3 of the bootcamp, from the group's recap (source S1). The photos carry the bootcamp watermark
 // and the 31 Oct filenames; see docs/research/ASSET_INVENTORY.md.
 const BEATS: { id: PhotoId; step: string; title: string; text: string }[] = [
-  { id: 'facilitators', step: 'Concepts', title: 'Compute and storage, in plain terms', text: 'Facilitators broke the services down with everyday examples before anyone touched a console.' },
-  { id: 'website-on-screen', step: 'The lab', title: 'A Hostel Finder site, live on Amazon S3', text: 'Each participant deployed the website and made it reachable on the internet.' },
-  { id: 'student-focus', step: 'The errors', title: 'Bucket policies pushed back', text: 'Configurations failed. People read the errors and helped each other through them.' },
-  { id: 'kahoot', step: 'The podium', title: 'A Kahoot on three weeks of work', text: 'The day closed with a quiz, and AWS swag for the top three.' },
+  { id: 'facilitators', step: 'Concepts', title: 'Compute and storage, in plain terms', text: 'The session opened with the two services explained through real-life examples.' },
+  { id: 'website-on-screen', step: 'The lab', title: 'A Hostel Finder site, live on Amazon S3', text: 'By the end of the session, every participant had the site live on the internet.' },
+  { id: 'student-focus', step: 'The errors', title: 'Bucket policies pushed back', text: 'Some configurations and bucket policies failed at first. Participants troubleshot them together until they worked.' },
+  { id: 'kahoot', step: 'The podium', title: 'A Kahoot on three weeks of work', text: 'A quiz on everything from the first three weeks, with AWS swag for the podium.' },
 ];
 
 export function BootcampStory({ recapSlug }: { recapSlug?: string }) {
@@ -17,12 +17,12 @@ export function BootcampStory({ recapSlug }: { recapSlug?: string }) {
     <div className="bootcamp">
       <div className="bootcamp-intro" data-reveal="rise">
         <div>
-          <p className="type-label text-lavender">Zero to Cloud Practitioner, with CITSA</p>
-          <h2 className="section-title">Saturdays at LT5, laptops open.</h2>
+          <p className="type-label text-lavender">Bootcamp, with CITSA</p>
+          <h2 className="section-title">Zero to Cloud Practitioner</h2>
           <p>
-            A 12-week bootcamp towards the AWS Certified Cloud Practitioner exam, one practical Saturday at a time. Concepts first, then a lab where
-            everyone builds and deploys. At the end, participants who attended consistently and score 70% or higher on the official AWS Skill
-            Builder practice exam are eligible for a certification exam voucher.
+            Twelve Saturdays of preparation for the AWS Certified Cloud Practitioner exam (CLF-C02), run with the Computer Science and Information
+            Technology Student Association. Sessions mix exam topics with practical work on AWS services. Participants who attend consistently and
+            score 70% or higher on the official AWS Skill Builder practice exam are eligible for a certification exam voucher.
           </p>
         </div>
         <dl className="fact-grid fact-grid-tight">
@@ -49,8 +49,8 @@ export function BootcampStory({ recapSlug }: { recapSlug?: string }) {
         })}
       </div>
       <div className="bootcamp-foot">
-        <p className="type-label text-text-muted">Week 3, Sat 31 Oct 2026. Told from the group&apos;s recap.</p>
-        {recapSlug && <Cta href={`/blog/${recapSlug}`} variant="arrow">Read the full week 3 story</Cta>}
+        <p className="type-label text-text-muted">Week 3, Sat 31 Oct 2026</p>
+        {recapSlug && <Cta href={`/blog/${recapSlug}`} variant="arrow">Read the week 3 recap</Cta>}
       </div>
     </div>
   );

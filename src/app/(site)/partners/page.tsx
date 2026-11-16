@@ -7,7 +7,7 @@ import { SectionHead } from '@/components/site/SectionHead';
 import { getPartners, getSiteSettings } from '@/lib/content/queries';
 import type { PartnerType } from '@/lib/content/types';
 
-export const metadata: Metadata = { title: 'Partners' };
+export const metadata: Metadata = { title: 'Partners', description: 'The student associations and organisations the AWS Student Builder Group at University of Cape Coast works with.' };
 
 const GROUPS: { type: PartnerType; title: string }[] = [
   { type: 'CAMPUS', title: 'Campus partners' },
@@ -21,7 +21,7 @@ export default async function PartnersPage() {
     <>
       <section className="band band-top">
         <Container>
-          <PageIntro label="Working together" title="Partners" intro="Campus associations and organisations that work with us to bring practical tech skills to more students." />
+          <PageIntro label="Working together" title="Partners" intro="The student associations and organisations we work with at the University of Cape Coast." />
           {GROUPS.map(({ type, title }) => {
             const group = partners.filter((partner) => partner.type === type);
             if (group.length === 0) return null;

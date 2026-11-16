@@ -13,10 +13,10 @@ export default async function BlogPage() {
   return (
     <section className="band band-top">
       <Container>
-        <PageIntro label="Recaps and notes" title="Writing" intro="What happened at our sessions, in our own words, and what we learned along the way." />
+        <PageIntro label="Recaps and notes" title="Writing" intro="Recaps from our sessions and notes on what we learned." />
         {/* TODO(joel): confirm this empty state line (W9 in tasks/todo.md). */}
         {!first ? (
-          <EmptyState label="No posts yet">Recaps and build notes will appear here once they have been reviewed.</EmptyState>
+          <EmptyState label="No posts yet">Recaps from our sessions will be posted here.</EmptyState>
         ) : (
           <>
             <PostCard post={first} feature />

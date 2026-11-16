@@ -163,7 +163,7 @@ Counts are not hard-coded anywhere on the site. Member count lives in Site setti
 | DevOps | Launch insights from Isaac Tandoh | Discussed (S6) |
 | Security basics | Kahoot title "AWS Cloud Computing & Security Basics" | Touched on, photo evidence only (S13) |
 | Amazon EC2, AWS Lambda | Bootcamp week 4 plan | Announced (S1) |
-| AI coding tools | From Code to Cloud plan | Announced (S14) |
+| AI coding tools | From Code to Cloud plan | Announced (S14); not on the run sheet and not run (S18) |
 | Artificial intelligence, business analytics, digital transformation, software development | Named as interests in the group announcement and event listings | Interest only (S6, S8, S10) |
 | Data engineering, mobile, systems architecture, generative AI and agents, hackathons | Not in any source | Interest areas from the AWS SBG programme brief; shown as open to explore, never as run |
 

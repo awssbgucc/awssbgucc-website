@@ -14,7 +14,7 @@ const WHAT_YOU_DO = [
   ['Check in', 'Enter the code shown in the room, and the session goes on your record.'],
   ['Get the materials', 'Slides, repositories and lab guides from each session.'],
   ['Build and submit', 'Take on challenges and get feedback from the technical team.'],
-  ['Ship projects', 'Approved projects appear on the public showcase, with your consent.'],
+  ['Share projects', 'Put what you build on the public projects page.'],
 ];
 
 export default async function MemberSignInPage({ searchParams }: Props) {
@@ -40,7 +40,7 @@ export default async function MemberSignInPage({ searchParams }: Props) {
               ))}
             </ul>
           </div>
-          <p className="text-sm text-text-muted">RSVPs stay on Meetup. The portal records what you do at and after each session.</p>
+          <p className="text-sm text-text-muted">You still RSVP for events on Meetup. The portal keeps a record of what you do at and after each session.</p>
         </section>
         <section className="flex items-center px-6 py-12 lg:px-12">
           <div className="w-full max-w-sm">

@@ -1,6 +1,7 @@
 import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
 import { FeatureEvent } from '@/components/site/FeatureEvent';
+import { Gallery } from '@/components/site/Gallery';
 import { BootcampStory } from '@/components/site/home/BootcampStory';
 import { Closing } from '@/components/site/home/Closing';
 import { DisciplineExplorer } from '@/components/site/home/DisciplineExplorer';
@@ -12,10 +13,13 @@ import { ProjectCard, ProjectSlots } from '@/components/site/ProjectCard';
 import { SectionHead } from '@/components/site/SectionHead';
 import { TeamCard } from '@/components/site/TeamCard';
 import { boardRecords, DISCIPLINES } from '@/lib/content/disciplines';
-import { allPhotos, photo, photoDate } from '@/lib/content/media';
+import { allPhotos, eventPhoto, photo, photoDate, type EventPhotoId } from '@/lib/content/media';
 import { getEvents, getPartners, getPosts, getProjects, getSiteSettings, getTeam } from '@/lib/content/queries';
 import { pastEvents, projectCredit, upcomingEvents } from '@/lib/content/selectors';
 import { formatDate } from '@/lib/format';
+
+// Three photos from From Code to Cloud that the hero and the event page cover do not already use.
+const BUILD_DAY: EventPhotoId[] = ['fcc-opening-slide', 'fcc-over-the-shoulder', 'fcc-three-at-screen'];
 
 export default async function HomePage() {
   const [s, events, partners, team, projects, posts] = await Promise.all([getSiteSettings(), getEvents(), getPartners(), getTeam(), getProjects(), getPosts()]);
@@ -28,6 +32,11 @@ export default async function HomePage() {
   const weekThree = sitePosts.find((p) => p.slug === 'first-website-on-amazon-s3');
   const first = [...events].sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime())[0];
   const campus = partners.filter((p) => p.type === 'CAMPUS');
+  const buildDay = past.find((e) => e.slug === 'from-code-to-cloud');
+  const buildDayPhotos = BUILD_DAY.map((id) => {
+    const image = eventPhoto(id);
+    return { src: image.src, alt: image.alt, wide: image.width >= image.height };
+  });
   const reel = allPhotos().map((id) => {
     const image = photo(id);
     const date = photoDate(id);
@@ -49,10 +58,24 @@ export default async function HomePage() {
       {events.length > 0 && (
         <section className="band band-grid" aria-labelledby="story-title">
           <Container>
-            <SectionHead label={first ? `Since ${formatDate(first.startsAt)}` : 'Our sessions'} title={<>Every session,<br />a step up.</>} id="story-title" action={<Cta href="/events" variant="arrow">The full archive</Cta>}>
-              The record so far, from our Meetup listings and the group&apos;s own recaps.
-            </SectionHead>
+            <SectionHead label={first ? `Since ${formatDate(first.startsAt)}` : 'Our sessions'} title={<>What we&apos;ve<br />run so far.</>} id="story-title" action={<Cta href="/events" variant="arrow">All events</Cta>} />
             <Staircase events={events} now={now} recaps={recaps} />
+          </Container>
+        </section>
+      )}
+
+      {buildDay && (
+        <section className="band band-alt" aria-labelledby="build-day-title">
+          <Container>
+            <SectionHead
+              label={formatDate(buildDay.startsAt)}
+              title={buildDay.title.split(':')[0]}
+              id="build-day-title"
+              action={<Cta href={`/events/${buildDay.slug}`} variant="arrow">See the event</Cta>}
+            >
+              {buildDay.summary}
+            </SectionHead>
+            <Gallery photos={buildDayPhotos} title={buildDay.title} />
           </Container>
         </section>
       )}
@@ -60,7 +83,7 @@ export default async function HomePage() {
       <section className="band" aria-label="Inside the bootcamp">
         <Container>
           <BootcampStory recapSlug={weekThree?.slug} />
-          <p className="type-label reel-label">Weeks 2 and 3, every approved photo in the order it was taken</p>
+          <p className="type-label reel-label">Bootcamp weeks 2 and 3, Sat 24 and Sat 31 Oct 2026</p>
         </Container>
         <PhotoReel photos={reel} />
       </section>
@@ -68,7 +91,8 @@ export default async function HomePage() {
       <section className="band band-alt" aria-labelledby="explore-title">
         <Container>
           <SectionHead label="More than certifications" title={<>What you can<br />build here.</>} id="explore-title">
-            AWS connects all of them. Each area shows whether we have covered it in a session yet, or whether it is still open for members to take on.
+            Most of our sessions so far have been about cloud foundations and getting websites online. The other areas are open to any member who
+            wants to take them further. Pick one to see the sessions that covered it.
           </SectionHead>
           <DisciplineExplorer disciplines={DISCIPLINES} records={records} />
         </Container>
@@ -78,7 +102,7 @@ export default async function HomePage() {
         <Container>
           {projects.length > 0 ? (
             <>
-              <SectionHead label="Built by members" title="Made here. Out in the world." id="projects-title" action={<Cta href="/projects" variant="arrow">All projects</Cta>} />
+              <SectionHead label="Built by members" title="Member projects" id="projects-title" action={<Cta href="/projects" variant="arrow">All projects</Cta>} />
               <div className="home-projects">
                 {projects.slice(0, 3).map((project, index) => (
                   <ProjectCard key={project.id} project={project} credit={projectCredit(project)?.name} size={index === 0 ? 'large' : 'normal'} />
@@ -88,7 +112,7 @@ export default async function HomePage() {
           ) : (
             <div className="projects-invite">
               <SectionHead label="Built by members" title="Your project belongs here." id="projects-title">
-                Member projects appear after the technical team has reviewed them and the builders have agreed to be named.
+                If you have built something on AWS, at one of our sessions or on your own, share it through the Builder Portal and it can go up here.
               </SectionHead>
               <ProjectSlots />
               <Cta href="/builder/projects/new" variant="line">Share a project</Cta>
@@ -104,7 +128,7 @@ export default async function HomePage() {
             {team.length > 0 && <div className="team-grid">{team.slice(0, 4).map((person) => <TeamCard key={person.id} person={person} />)}</div>}
             {campus.length > 0 && (
               <div className="collaborators">
-                <p className="type-label text-text-muted">On campus, with</p>
+                <p className="type-label text-text-muted">Campus partners</p>
                 <div className="partner-row">{campus.map((partner) => <PartnerTile key={partner.id} partner={partner} />)}</div>
               </div>
             )}

@@ -17,6 +17,27 @@ export function photo(id: PhotoId): Photo {
     : { src: `/media/community/${id}.webp`, alt: entry.alt, width: 1200, height: 1600 };
 }
 
+export type EventPhotoId = (typeof manifest.eventPhotos)[number]['id'];
+export type EventPhoto = Photo & { id: EventPhotoId };
+
+const eventPhotoUrl = (entry: (typeof manifest.eventPhotos)[number]) => `/media/events/${entry.event}/${entry.id}.webp`;
+
+/** One approved event photograph, written by scripts/prepare-media.py to public/media/events/<event>/. */
+export function eventPhoto(id: EventPhotoId): EventPhoto {
+  const entry = manifest.eventPhotos.find((p) => p.id === id);
+  if (!entry || entry.consent !== 'approved') throw new Error(`Photo ${id} is not approved for publication.`);
+  return { id, src: eventPhotoUrl(entry), alt: entry.alt, width: entry.width, height: entry.height };
+}
+
+/**
+ * The manifest entry behind an event photo URL stored on an event, for its alt text and shape. Photos uploaded in
+ * the admin have no entry and return null.
+ */
+export function eventPhotoBySrc(src: string): EventPhoto | null {
+  const entry = manifest.eventPhotos.find((p) => eventPhotoUrl(p) === src);
+  return entry && entry.consent === 'approved' ? eventPhoto(entry.id) : null;
+}
+
 /**
  * Where to crop an image when it cannot show whole, for example a flyer as a list thumbnail.
  * Uploaded images have no entry and crop from the centre.
@@ -29,6 +50,7 @@ const FOCUS: Record<string, string> = {
   '/media/events/zero-to-cloud.webp': '50% 45%',
   '/media/community/website-on-screen.webp': '62% 55%',
   '/media/community/classroom.webp': '55% 40%',
+  '/media/events/from-code-to-cloud/fcc-everyone.webp': '50% 64%',
 };
 
 export function focusFor(src: string | null | undefined) {

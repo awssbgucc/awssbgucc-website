@@ -6,7 +6,7 @@ import { TeamCard } from '@/components/site/TeamCard';
 import { getSiteSettings, getTeam } from '@/lib/content/queries';
 import type { TeamMember } from '@/lib/content/types';
 
-export const metadata: Metadata = { title: 'The team' };
+export const metadata: Metadata = { title: 'The team', description: 'The students who run the AWS Student Builder Group at University of Cape Coast.' };
 
 function Group({ title, people }: { title: string; people: TeamMember[] }) {
   if (people.length === 0) return null;
@@ -28,10 +28,9 @@ export default async function TeamPage() {
         <PageIntro label="Student-led" title="The team" intro="The students who plan the sessions, book the rooms, run the labs and keep the group going." />
         {team.length === 0 ? (
           <div className="quiet-empty" data-reveal="rise">
-            <p className="type-label text-text-muted">Profiles in preparation</p>
             <h2 className="section-title">You will meet the team at the next session.</h2>
-            <p>Team profiles are added here once each person has approved their details and photo.</p>
-            <Cta href={meetupUrl} variant="line">See upcoming sessions on Meetup</Cta>
+            <p>Every event is listed on Meetup, and you can also reach us through the contact page.</p>
+            <Cta href={meetupUrl} variant="line">See our events on Meetup</Cta>
           </div>
         ) : (
           <>

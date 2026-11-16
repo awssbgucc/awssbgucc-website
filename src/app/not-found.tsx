@@ -13,7 +13,7 @@ export default function NotFound() {
             <Image src="/brand/sbg-chip-purple.svg" alt="" width={72} height={72} unoptimized />
             <p className="type-label text-text-muted">404</p>
             <h1 className="page-title">Page not found</h1>
-            <p className="page-lead">This page does not exist, or it moved. The sessions and projects are still where they were.</p>
+            <p className="page-lead">This page does not exist, or it moved.</p>
             <div className="flex flex-wrap gap-4">
               <Cta href="/">Back to the home page</Cta>
               <Cta href="/events" variant="line">Browse events</Cta>

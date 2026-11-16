@@ -1,10 +1,11 @@
 import Image from 'next/image';
 import { Link } from '@/components/site/motion/TransitionLink';
+import { eventPhotoBySrc, focusFor } from '@/lib/content/media';
 import type { Event } from '@/lib/content/types';
 import { countdown, dateParts, formatDate, formatTimeRange } from '@/lib/format';
 import { AWS_EVENT_TERMS_URL } from '@/lib/site';
 import { Cta } from './Cta';
-import { Gallery } from './Gallery';
+import { Gallery, type GalleryPhoto } from './Gallery';
 import { Markdown } from './Markdown';
 import { TAG_LABEL, TAG_TONE } from './tone';
 
@@ -26,6 +27,25 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
   const when = dateParts(event.startsAt);
   const tone = TAG_TONE[event.tag];
   const soon = past ? null : countdown(event.startsAt, now);
+  // After the event, the first gallery photo leads the page and the flyer moves to the side column.
+  const photos: GalleryPhoto[] = event.photos.map((src, index) => {
+    const known = eventPhotoBySrc(src);
+    return known
+      ? { src, alt: known.alt, wide: known.width >= known.height }
+      : { src, alt: `${event.title}, photo ${index + 1} of ${event.photos.length}`, wide: false };
+  });
+  const [cover, ...rest] = past ? photos : [];
+  const gallery = cover ? rest : photos;
+  const flyer = event.coverImage && (
+    <figure className={cover ? 'aside-flyer' : 'event-flyer'}>
+      <div className="flyer-frame" data-reveal={cover ? undefined : 'mask'} data-vt-dest={cover ? undefined : 'art'}>
+        <Image src={event.coverImage} alt={`Flyer for ${event.title}`} fill priority={!cover} sizes={cover ? '340px' : '(min-width: 1280px) 1100px, 100vw'} />
+      </div>
+      <figcaption>
+        <span className="type-label">Event flyer</span>
+      </figcaption>
+    </figure>
+  );
 
   return (
     <article className="event-page">
@@ -63,16 +83,11 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
         </div>
       </div>
 
-      {event.coverImage && (
-        <figure className="event-flyer">
-          <div className="flyer-frame" data-reveal="mask" data-vt-dest="art">
-            <Image src={event.coverImage} alt={`Flyer for ${event.title}`} fill priority sizes="(min-width: 1280px) 1100px, 100vw" />
-          </div>
-          <figcaption>
-            <span className="type-label">Original flyer</span>
-          </figcaption>
+      {cover ? (
+        <figure className="event-cover" data-reveal="mask">
+          <Image src={cover.src} alt={cover.alt} fill priority sizes="(min-width: 1280px) 1216px, 100vw" style={{ objectPosition: focusFor(cover.src) }} />
         </figure>
-      )}
+      ) : flyer}
 
       <div className="event-columns">
         <div className="min-w-0">
@@ -81,14 +96,13 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
         <aside className="event-aside">
           <section className="aside-next">
             <h2 className="type-label text-sbg-mint">{past ? 'Missed this one' : 'Going?'}</h2>
-            <p>{past ? 'New sessions go up on Meetup first, and the archive here keeps the record.' : 'Registration happens on Meetup, where you will also get any changes to the time or room.'}</p>
-            {past ? <Cta href="/events" variant="arrow">See upcoming sessions</Cta> : event.meetupUrl && <Cta href={event.meetupUrl} variant="arrow">Open the Meetup listing</Cta>}
+            <p>{past ? 'New events go up on Meetup first.' : 'Register on Meetup. Any change to the time or room is posted there too.'}</p>
+            {past ? <Cta href="/events" variant="arrow">See all events</Cta> : event.meetupUrl && <Cta href={event.meetupUrl} variant="arrow">Open the Meetup listing</Cta>}
           </section>
           {past && attendance !== null && (
             <section>
               <h2 className="type-label text-text-muted">Attendance</h2>
               <p className="aside-figure">{attendance}</p>
-              <p className="text-sm text-text-muted">From the attendance taken on the day.</p>
             </section>
           )}
           {resources.length > 0 && (
@@ -103,7 +117,7 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
           )}
           {recap && (
             <section>
-              <h2 className="type-label text-text-muted">Session story</h2>
+              <h2 className="type-label text-text-muted">Recap</h2>
               <ul className="aside-links"><li><Link href={`/blog/${recap.slug}`}><span>{recap.title}</span><span className="type-label">recap</span></Link></li></ul>
             </section>
           )}
@@ -116,6 +130,7 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
               <p className="mt-2 text-xs text-text-muted">Sign in to the Builder Portal to take part.</p>
             </section>
           )}
+          {cover && flyer}
           <section className="aside-terms">
             <p>
               {past ? 'Event registration is subject to the ' : 'By registering, you agree to the '}
@@ -125,10 +140,10 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
         </aside>
       </div>
 
-      {event.photos.length > 0 && (
+      {gallery.length > 0 && (
         <section className="event-photos" aria-labelledby="photos">
-          <h2 id="photos" className="section-title">The session in pictures</h2>
-          <Gallery photos={event.photos} title={event.title} />
+          <h2 id="photos" className="section-title">Photos from the day</h2>
+          <Gallery photos={gallery} title={event.title} />
         </section>
       )}
 

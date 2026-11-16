@@ -37,11 +37,18 @@ pnpm exec tsx scripts/import-community-history.ts --apply            # creates d
 pnpm exec tsx scripts/import-community-history.ts --apply --preview  # local only: publishes verified and needs-confirmation records
 ```
 
-The script only creates. A record matching an existing one by slug, Meetup event ID, title, or date and type is left untouched, so admin edits always win. Run it twice and nothing changes.
+By default the script only creates. A record matching an existing one by slug, Meetup event ID, title, or date and type is left untouched, so admin edits always win. Run it twice and nothing changes.
+
+`--refresh` (15 Nov 2026) also updates the text of matching records that the import still owns, meaning `updatedBy` is still `content import`, so nobody has saved them in the admin, publishing included. It changes only title, summary or excerpt, body, venue, cover image, event photos, times and attendance (times and attendance from 16 Nov 2026), never status or links, and prints each field it changes. Records saved in the admin are reported and left alone.
+
+```powershell
+pnpm exec tsx scripts/import-community-history.ts --refresh                       # dry run: lists what would change
+pnpm exec tsx scripts/import-community-history.ts --apply --refresh               # local
+```
 
 ## Getting the content live (Joel)
 
-1. All records in `content/community-history.json` were approved on 11 Nov 2026. Also correct the From Code to Cloud Meetup listing to 1:00 PM and the Computer Lab, New Science Annex.
+1. All records in `content/community-history.json` were approved on 11 Nov 2026. The From Code to Cloud Meetup listing keeps its old room and time, as the event is over; the site holds the Computer Lab and the actual times, 10:00 AM to 2:00 PM.
 2. Make sure the flyers and photos are deployed: they ship in `public/media/`, so a normal deploy is enough.
 3. Back up Neon (a branch), then run the drafts-only import yourself:
    ```powershell
@@ -52,5 +59,12 @@ The script only creates. A record matching an existing one by slug, Meetup event
    It refuses a remote database without both the flag and the matching host. It never publishes on a remote database.
 4. In the admin, open each new draft, check it against its source, and publish. Publishing stays a human step.
 5. If you would rather not run a script against Neon, create the same records through the admin form, copying each field from the JSON. The cover image field takes the `/media/events/...` path as it is.
+6. After a copy change to the JSON (the 15 Nov editorial pass rewrote every event and post body), drafts already on Neon can take the new text with the same guard:
+   ```powershell
+   pnpm exec tsx scripts/import-community-history.ts --refresh --remote-drafts                # dry run first
+   pnpm exec tsx scripts/import-community-history.ts --apply --refresh --remote-drafts
+   ```
+   Records already saved or published in the admin keep their text; paste the new text in through the admin.
+7. Event photos (16 Nov 2026). Approved photos are listed under `eventPhotos` in `content/media-manifest.json` and written by `python scripts/prepare-media.py event-photos` to `public/media/events/<event>/`, so they deploy with the site. The event's `photos` in `content/community-history.json` lists their URLs, cover first. If From Code to Cloud is already on Neon and nobody has saved it in the admin, `--refresh --remote-drafts` adds the photos. If it was saved in the admin, the refresh leaves it alone, and the gallery field only takes uploads, so upload the 21 files from `public/media/events/from-code-to-cloud/` there, `fcc-everyone.webp` first (the first photo becomes the cover).
 
-I did not run step 3. Nothing was written to Neon.
+16 Nov 2026, on Joel's instruction: Neon branch `backup-before-content-import-2026-11-16` made from main, then `--apply --refresh --remote-drafts` created the 4 events and 3 posts (Neon had none), and the 7 were published by status only.

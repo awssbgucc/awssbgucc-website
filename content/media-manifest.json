@@ -1,6 +1,6 @@
 {
-  "reviewedAsOf": "2026-11-11",
-  "notes": "Source files stay untouched in IMG/ and Event-banners/. scripts/prepare-media.py writes the web copies listed here, without metadata. consent: approved means Joel confirmed publication in chat (photos 10 Nov 2026, flyers and brand kit 11 Nov 2026, every flyer published 11 Nov 2026). Anything withheld has its reason.",
+  "reviewedAsOf": "2026-11-16",
+  "notes": "Source files stay untouched in IMG/ and Event-banners/. scripts/prepare-media.py writes the web copies listed here, without metadata. consent: approved means Joel confirmed publication in chat (photos 10 Nov 2026, flyers and brand kit 11 Nov 2026, every flyer published 11 Nov 2026). Anything withheld has its reason. From Code to Cloud photographs: Joel approved every photo in IMG/aws_FCC-5.zip for publication on 16 Nov 2026; 21 of the 75 unique photos are published, chosen for sharpness and variety. They are written to public/media/events/<event>/ and listed on the event in content/community-history.json.",
   "photos": [
     {
       "id": "classroom",
@@ -151,6 +151,218 @@
       "status": "published",
       "note": "Prints A 12-WEEK BOOTCAMP. Published on Joel's approval, 11 Nov 2026 (COMPLIANCE rule 21 note). Used for the bootcamp programme, which has no event record.",
       "width": 1600
+    }
+  ],
+  "eventPhotos": [
+    {
+      "id": "fcc-everyone",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-368.jpg",
+      "width": 2400,
+      "height": 1406,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "Participants and facilitators gathered at the front of the Computer Lab behind the Student Builder Group banner"
+    },
+    {
+      "id": "fcc-pair-at-laptop",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-49.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "Two students sharing a laptop at a bench in the Computer Lab"
+    },
+    {
+      "id": "fcc-help-at-keyboard",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-67.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A facilitator leaning over to type on a student's keyboard"
+    },
+    {
+      "id": "fcc-opening-slide",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-93.jpg",
+      "width": 2400,
+      "height": 1859,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A facilitator with a microphone beside the projected title slide, From Code to Cloud, Saturday 14 November 2026"
+    },
+    {
+      "id": "fcc-builder-center-talk",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-108.jpg",
+      "width": 1440,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A facilitator presenting a slide titled What is AWS Builder Center?"
+    },
+    {
+      "id": "fcc-from-the-floor",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-118.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A student speaking into a microphone from their seat"
+    },
+    {
+      "id": "fcc-smile",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-136.jpg",
+      "width": 1440,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A student with long braids smiling at the camera in the Computer Lab"
+    },
+    {
+      "id": "fcc-console-on-screen",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-155.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A facilitator beside the AWS Management Console on the projector"
+    },
+    {
+      "id": "fcc-experience-section",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-188.jpg",
+      "width": 1440,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A laptop showing the Experience section of a portfolio page"
+    },
+    {
+      "id": "fcc-starter-portfolio",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-193.jpg",
+      "width": 2400,
+      "height": 1714,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A starter portfolio site projected at the front of the lab, with students at their screens"
+    },
+    {
+      "id": "fcc-over-the-shoulder",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-198.jpg",
+      "width": 1440,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A facilitator looking over a student's shoulder at the screen"
+    },
+    {
+      "id": "fcc-portfolio-on-laptop",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-202.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A portfolio page open on a laptop, a hand on the trackpad"
+    },
+    {
+      "id": "fcc-code-editor",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-210.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "Code open in an editor on a laptop"
+    },
+    {
+      "id": "fcc-working-together",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-219.jpg",
+      "width": 1440,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "Two students working together at a laptop"
+    },
+    {
+      "id": "fcc-pointing-it-out",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-222.jpg",
+      "width": 1440,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A facilitator reaching across to point at a student's screen"
+    },
+    {
+      "id": "fcc-desk-help",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-230.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A facilitator in a group T-shirt checking a student's laptop"
+    },
+    {
+      "id": "fcc-project-list",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-233.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A laptop showing a portfolio's project list, with a hall booking system and a campus lost and found"
+    },
+    {
+      "id": "fcc-quiz-prizes",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-278.jpg",
+      "width": 2400,
+      "height": 2400,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A projected slide listing quiz prizes for the top three players on the leaderboard"
+    },
+    {
+      "id": "fcc-lab-bench",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-282.jpg",
+      "width": 2400,
+      "height": 1556,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "Students working along a bench of computers in the Computer Lab"
+    },
+    {
+      "id": "fcc-three-at-screen",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-290.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A facilitator pointing at a screen while two students look on"
+    },
+    {
+      "id": "fcc-over-a-phone",
+      "event": "from-code-to-cloud",
+      "source": "IMG/fcc-originals/aws_FCC-321.jpg",
+      "width": 1286,
+      "height": 1800,
+      "consent": "approved",
+      "provenance": "From Code to Cloud photo ZIP (aws_FCC-5.zip), Canon EOS 6D, all dated 14 Nov 2026. The camera clock was not on GMT, so times are not used",
+      "alt": "A facilitator and a student laughing over a phone"
     }
   ]
 }

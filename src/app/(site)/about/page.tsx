@@ -19,19 +19,19 @@ export const metadata: Metadata = {
 };
 
 const STEPS = [
-  { title: 'Join on Meetup', text: 'Membership runs through Meetup. Every session is listed there first, with its RSVP.' },
-  { title: 'Come to a session', text: 'Talks run online. The bootcamp and build sessions happen on campus, with laptops open.' },
-  { title: 'Keep a record', text: 'Members sign in to the Builder Portal with Google to check in, pick up materials and submit projects.' },
-  { title: 'Build in the open', text: 'Approved projects appear on this site, and builders are named only if they agree.' },
+  { title: 'Join on Meetup', text: 'Membership is free, and every event is posted on Meetup first.' },
+  { title: 'Come to a session', text: 'Talks are online in the evening. The bootcamp and build sessions are on campus, so bring a laptop.' },
+  { title: 'Use the Builder Portal', text: 'Sign in with Google to check in at sessions, pick up materials and keep track of what you have done.' },
+  { title: 'Share what you build', text: 'Projects you build at our sessions or on your own can go up on this site.' },
 ];
 
 // Bootcamp photographs not used on the home page. Dates come from the photo filenames.
 const GALLERY: { id: PhotoId; caption: string; shape: string }[] = [
-  { id: 'helping', caption: 'Working through a lab together. Sat 24 Oct 2026', shape: 'tall' },
-  { id: 'room-working', caption: 'Rows of students, laptops open. Sat 31 Oct 2026', shape: 'wide' },
+  { id: 'helping', caption: 'Helping a classmate along the bench. Sat 24 Oct 2026', shape: 'tall' },
+  { id: 'room-working', caption: 'Week 3 at LT5. Sat 31 Oct 2026', shape: 'wide' },
   { id: 'smile-portrait', caption: 'Week 2 of the bootcamp. Sat 24 Oct 2026', shape: 'square' },
-  { id: 'prize', caption: 'Swag for the quiz podium. Sat 31 Oct 2026', shape: 'square' },
-  { id: 'concentrating', caption: 'Heads down in the lab. Sat 31 Oct 2026', shape: 'wide' },
+  { id: 'prize', caption: 'AWS swag for the quiz podium. Sat 31 Oct 2026', shape: 'square' },
+  { id: 'concentrating', caption: 'Heads down in week 3. Sat 31 Oct 2026', shape: 'wide' },
   { id: 'front-of-room', caption: 'Following along from the front bench. Sat 24 Oct 2026', shape: 'square' },
 ];
 
@@ -57,9 +57,10 @@ export default async function AboutPage() {
               </p>
               {first && (
                 <p>
-                  Since our launch on {formatDate(first.startsAt)}, we have run {past.length} {past.length === 1 ? 'session' : 'sessions'} and started
-                  the 12-week Zero to Cloud Practitioner bootcamp with CITSA. AWS ties the work together, but the point is building: software, websites, cloud
-                  infrastructure and whatever members want to take on next.
+                  Since our launch on {formatDate(first.startsAt)}, we have run {past.length} {past.length === 1 ? 'event' : 'events'} and started the
+                  12-week Zero to Cloud Practitioner bootcamp with CITSA. Most of that work has been in cloud foundations, careers and getting
+                  websites online. The group is for anyone who wants to build software, so backends, data, security and AI are open to members
+                  who want to take them on.
                 </p>
               )}
               <blockquote className="about-quote">
@@ -78,7 +79,7 @@ export default async function AboutPage() {
       {events.length > 0 && (
         <section className="band band-grid" aria-labelledby="story-title">
           <Container>
-            <SectionHead label="The record" title="Every session, a step up." id="story-title" action={<Cta href="/events" variant="arrow">The full archive</Cta>} />
+            <SectionHead label="Our events" title="What we've run so far." id="story-title" action={<Cta href="/events" variant="arrow">All events</Cta>} />
             <Staircase events={events} now={now} recaps={recaps} />
           </Container>
         </section>
@@ -101,9 +102,7 @@ export default async function AboutPage() {
 
       <section className="band band-alt" aria-labelledby="gallery-title">
         <Container>
-          <SectionHead label="Zero to Cloud Practitioner" title="Saturdays, in pictures." id="gallery-title">
-            Photographs from the bootcamp, shared with the permission of the group.
-          </SectionHead>
+          <SectionHead label="Zero to Cloud Practitioner" title="Weeks 2 and 3 of the bootcamp." id="gallery-title" />
           <PhotoWall
             label="Bootcamp photographs"
             photos={GALLERY.map((item) => ({ ...photo(item.id), caption: item.caption, shape: item.shape }))}

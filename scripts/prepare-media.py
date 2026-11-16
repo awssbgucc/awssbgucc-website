@@ -1,13 +1,16 @@
 """Writes web copies of the approved photos, flyers and brand files listed in content/media-manifest.json.
 
 Dev tool, needs Pillow. Run from the repo root: python scripts/prepare-media.py
+Event photos only: python scripts/prepare-media.py event-photos
 Originals are only read. Copies are re-encoded from pixels, so no EXIF, GPS or other metadata survives.
 """
+import io
 import json
 import re
+import sys
 from pathlib import Path
 
-from PIL import Image, ImageOps
+from PIL import Image, ImageCms, ImageOps
 
 ROOT = Path(__file__).resolve().parent.parent
 KIT = ROOT / 'review/redesign/brand-kit/01- Creative Assets _ Fonts, Icons, Etc'
@@ -22,6 +25,27 @@ def webp(source: Path, target: Path, width: int, quality: int = 74):
     return image.size
 
 
+def srgb(image: Image.Image):
+    """Converts a photo with an embedded colour profile (some cameras export Adobe RGB) to sRGB, which browsers assume."""
+    profile = image.info.get('icc_profile')
+    if not profile:
+        return image.convert('RGB')
+    source = ImageCms.ImageCmsProfile(io.BytesIO(profile))
+    if 'sRGB' in ImageCms.getProfileDescription(source):
+        return image.convert('RGB')
+    return ImageCms.profileToProfile(image.convert('RGB'), source, ImageCms.createProfile('sRGB'), outputMode='RGB')
+
+
+def event_photo(source: Path, target: Path, width: int, height: int):
+    """One event photo at the size listed in the manifest. JPEG decoding at reduced scale keeps memory low."""
+    image = Image.open(source)
+    image.draft('RGB', (width, height))
+    image = srgb(ImageOps.exif_transpose(image)).resize((width, height), Image.LANCZOS)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    image.save(target, 'WEBP', quality=76, method=6)
+    image.close()
+
+
 def trace_icon(source: Path, cell: int = 430):
     """Reads one official pixel icon PNG as rows of '#' and '.', sampling the centre of each 430 px cell."""
     image = Image.open(source).convert('RGBA')
@@ -33,6 +57,11 @@ def trace_icon(source: Path, cell: int = 430):
 
 def main():
     manifest = json.loads((ROOT / 'content/media-manifest.json').read_text())
+    for photo in manifest['eventPhotos']:
+        if photo['consent'] != 'approved': continue
+        event_photo(ROOT / photo['source'], ROOT / f"public/media/events/{photo['event']}/{photo['id']}.webp", photo['width'], photo['height'])
+        print('event photo', photo['id'], photo['width'], photo['height'])
+    if sys.argv[1:] == ['event-photos']: return
     for photo in manifest['photos']:
         if photo['consent'] != 'approved': continue
         size = webp(ROOT / photo['source'], ROOT / f"public/media/community/{photo['id']}.webp", photo['width'])

@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import { Container } from '@/components/ui/Container';
 import { DISCIPLINES } from '@/lib/content/disciplines';
-import { photo } from '@/lib/content/media';
+import { eventPhoto, photo } from '@/lib/content/media';
 import type { Event } from '@/lib/content/types';
 import { countdown, dateParts } from '@/lib/format';
 import { Cta } from '../Cta';
@@ -21,8 +21,8 @@ const at = (index: number) => 260 + index * 85;
  * across the site. See docs/MOTION_SYSTEM.md.
  */
 export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string; next?: Event; latest?: Event; now: Date }) {
-  const main = photo('classroom');
-  const portrait = photo('student-smiling');
+  const main = eventPhoto('fcc-lab-bench');
+  const portrait = eventPhoto('fcc-over-a-phone');
   const detail = photo('code-on-screen');
   const featured = next ?? latest;
   const when = featured ? dateParts(featured.startsAt) : null;
@@ -44,27 +44,28 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
               <span className="hero-line"><span style={i(1)}>of builders.<span className="hero-cursor" aria-hidden="true" /></span></span>
             </h1>
             <p className="hero-lead">
-              We are the AWS Student Builder Group at University of Cape Coast: a student-led community, open to every department, where we learn
-              software, cloud and AI by building real projects together on AWS. You do not need any experience to start.
+              We&apos;re the AWS Student Builder Group at University of Cape Coast, a student-led group open to every department. We run online
+              talks, a Saturday cloud bootcamp and hands-on build sessions for students who want to build software, from websites to cloud
+              infrastructure and AI. You can start with no experience.
             </p>
             <div className="hero-actions">
               <Cta href={meetupUrl}>Join on Meetup</Cta>
-              <Cta href="/events" variant="arrow">See what we have run</Cta>
+              <Cta href="/events" variant="arrow">See our events</Cta>
             </div>
           </div>
 
           <div className="hero-mosaic">
             <figure className="cell cell-photo m-main" style={i(0)}>
-              <Image src={main.src} alt={main.alt} fill priority sizes="(min-width: 1024px) 34vw, 100vw" style={{ objectPosition: '55% 40%' }} />
-              <PixelReveal id="classroom" position="55% 40%" delay={at(0)} />
-              <figcaption>Zero to Cloud Practitioner, Sat 31 Oct 2026</figcaption>
+              <Image src={main.src} alt={main.alt} fill priority sizes="(min-width: 1024px) 34vw, 100vw" style={{ objectPosition: '50% 50%' }} />
+              <PixelReveal id={main.id} position="50% 50%" delay={at(0)} />
+              <figcaption>Computer Lab, New Science Annex</figcaption>
             </figure>
             <div className="cell cell-chip m-chip" style={i(1)}>
               <Image src="/brand/sbg-chip-purple.svg" alt="" width={44} height={44} unoptimized />
             </div>
             <figure className="cell cell-photo m-portrait" style={i(2)}>
               <Image src={portrait.src} alt={portrait.alt} fill sizes="(min-width: 1024px) 17vw, 1px" />
-              <PixelReveal id="student-smiling" delay={at(2)} />
+              <PixelReveal id={portrait.id} delay={at(2)} />
             </figure>
             {featured && when ? (
               <Link href={`/events/${featured.slug}`} className={`cell m-next ${next ? 'block-mint' : 'block-blue'}`} style={i(3)}>
@@ -92,7 +93,7 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
         </div>
 
         <div className="hero-fields">
-          <span className="type-label">Members explore</span>
+          <span className="type-label">Areas to explore</span>
           <ul>
             {DISCIPLINES.map((d) => (
               <li key={d.id}>

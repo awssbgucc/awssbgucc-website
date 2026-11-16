@@ -75,12 +75,29 @@ The supplied pasted text is the primary evidence for the LinkedIn recaps. Direct
 | Zero to Cloud Practitioner kickoff | 17 Oct 2026, 4:30 to 6 PM, LT5; with CITSA; cloud fundamentals and Cloud Practitioner exam preparation | Source: supplied launch-of-bootcamp post, Z2C flyer and existing CONTENT.md. Imported DRAFT: individual Meetup URL absent. No week count, planned breaks or voucher promise in public copy. |
 | Bootcamp first website deployment recap | Compute and storage followed by Hostel Finder website deployment on Amazon S3; bucket-policy troubleshooting, collaboration and Kahoot | Source: supplied post headed Week 3. The relative timestamp does not prove an exact event date. Imported as a recap post with no invented publication date. Reported completion is attributed to the recap, not independently verified. No project entry, repo or member attribution invented. |
 | Announced Amazon EC2 and AWS Lambda follow-up | Mentioned as next topics in the S3 recap | No exact session date, listing or completion evidence. Not entered as a completed event. |
-| From Code to Cloud: Build and Deploy Your First Project on AWS | 14 Nov 2026, 9:30 AM to noon GMT; New Science Annex lecture theatre; planned portfolio on Amazon S3, permission troubleshooting and AI coding tool demonstration | Source: indexed Meetup events/317174221 retrieved 10 Nov. Prominent local next-session record. Old flyer and CONTENT.md show 1 PM/Computer Lab; discrepancies retained. No speaker, attendance or completed outcome asserted. |
+| From Code to Cloud: Build and Deploy Your First Project on AWS | Took place Sat 14 Nov 2026 in the Computer Lab, New Science Annex. Advertised 9:30 AM to 1:00 PM; the group got into the lab at 10:00 AM and closed at 2:00 PM. 76 check-ins. Every part of the run sheet (S18) happened except the Patron's welcome: Joel on the group, Builder Center sign-up and cloud basics; Kelvin's Lab 1 (portfolio on Amazon S3), the Access Denied exercise and Lab 2 (Amazon EC2 behind the site); Wayground quiz; group photo | **Venue discrepancy:** the Meetup listing (events/317174221) says New Science Annex lecture theatre and noon; Joel and the flyer say Computer Lab. The site uses the Computer Lab with no lab number. **Time:** the record holds the actual 10:00 AM to 2:00 PM. The listing's AI coding tools demonstration was not on the run sheet and is not claimed. Lab lead: Kelvin Opoku Boateng. The Meetup listing will not be corrected, as the event is over (Joel, 16 Nov 2026). 21 photos published (below). |
 
 Meetup roots for event IDs above: https://www.meetup.com/aws-sbg-at-university-of-cape-coast/events/ . Community recap collection: https://www.linkedin.com/company/aws-ucc/posts/ . Original source text remains in the user's attachment, not in the public bundle.
 
 The supplied career RSVP labels vary between 61 and 63; freshers between 0 and 51; member counts also vary across snapshots. None is used as attendance or a homepage statistic.
 
+## From Code to Cloud photographs, 16 Nov 2026
+
+`IMG/aws_FCC-5.zip`: 77 JPEGs, 75 unique (`aws_FCC-388 (1).jpg` and `aws_FCC-389 (1).jpg` are byte-identical copies). Canon EOS 6D, 2215 to 5472 px on the long edge, mostly upright. Every file carries the event's own watermark. No GPS data; EXIF dates say 14 Nov 2026, but the camera clock was not on GMT (19:28 to 23:42), so only the order is used. Some files are Adobe RGB and are converted to sRGB. Joel approved every photo in the ZIP for publication.
+
+Extracted, without touching the ZIP, to `IMG/fcc-originals/` (ignored by Git). All 75 were reviewed on four contact sheets built from reduced JPEG decodes.
+
+Selected: 21, written by `python scripts/prepare-media.py event-photos` to `public/media/events/from-code-to-cloud/` as WebP (2400 px long edge for wide shots and the cover, 1800 px for upright ones), re-encoded from pixels with no EXIF, XMP, GPS or colour profile. next/image makes the responsive sizes. Total 2.4 MB.
+
+| Use | Photos |
+|---|---|
+| Event page cover | 368, the group photo with the Student Builder Group banner |
+| Event gallery, in the order taken | 49, 67, 93, 108, 118, 136, 155, 188, 193, 198, 202, 210, 219, 222, 230, 233, 278, 282, 290, 321 |
+| Home hero | 282 (main cell), 321 (upright cell) |
+| Home build day section | 93, 198, 290 |
+
+Left out: near-duplicates (369 of 368; 105 of 108; 145 and 147; 220 and 221 of 219 and 222; 75 and 76; 81, 87, 94 of 93; 389 to 394 of 377 and 379), plain portraits with nothing happening (5, 10, 21, 23, 26, 41, 73, 270, 363), weaker frames of the same moment (35, 43, 56, 79, 121, 58, 61, 64, 98, 115, 150, 179, 180, 181, 190, 191, 200, 205, 206, 208, 216, 227, 232, 261, 343), and the team photos (377 to 394), which add little beside the group photo. The talk on cloud computing (125) was dropped from the gallery to avoid three shots of one speaker in a row; its slide is still recorded as source S17.
+
 ## Remaining content gaps
 
-Exact launch end time; bootcamp Meetup URL; individual LinkedIn permalinks and publication dates; photo-to-event mapping; approved team portraits and active profile records; approved collaborator logos; actual member project screenshots, links and consenting credits; slides/lab/repository/recording URLs; Community Day programme. These are left absent or draft. The project model has no cancellation state: unpublish cancelled events in the existing CMS until an explicit cancellation workflow is approved.
+Exact launch end time; bootcamp Meetup URL; From Code to Cloud check-in count and organisers' recap; individual LinkedIn permalinks and publication dates; photo-to-event mapping; approved team portraits and active profile records; approved collaborator logos; actual member project screenshots, links and consenting credits; slides/lab/repository/recording URLs; Community Day programme. These are left absent or draft. The project model has no cancellation state: unpublish cancelled events in the existing CMS until an explicit cancellation workflow is approved.

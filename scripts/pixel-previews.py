@@ -1,7 +1,7 @@
 """Writes content/pixel-previews.json: three tiny pixel versions of each approved photo, for the hero's pixel to picture reveal.
 
 Dev tool, needs Pillow. Run from the repo root after prepare-media.py: python scripts/pixel-previews.py
-Reads only the published derivatives in public/media/community, so nothing from the originals can leak.
+Reads only the published derivatives in public/media, so nothing from the originals can leak.
 
 Level 0 maps each cell to the nearest official SBG colour (Grey 850, Purple, Blue, Magenta, Mint, White), so the first frame
 looks like the brand panels. Levels 1 and 2 keep the photo's own colours at a coarse and a finer grid.
@@ -52,6 +52,11 @@ def main():
             continue
         source = ROOT / f"public/media/community/{photo['id']}.webp"
         previews[photo['id']] = levels(source)
+        print(photo['id'], sum(len(u) for u in previews[photo['id']]), 'bytes')
+    for photo in manifest['eventPhotos']:
+        if photo['consent'] != 'approved':
+            continue
+        previews[photo['id']] = levels(ROOT / f"public/media/events/{photo['event']}/{photo['id']}.webp")
         print(photo['id'], sum(len(u) for u in previews[photo['id']]), 'bytes')
     (ROOT / 'content/pixel-previews.json').write_text(json.dumps(previews, indent=1) + '\n')
 

@@ -61,7 +61,7 @@ export default async function BuilderProfilePage({ params }: Props) {
         <div className="flex flex-col gap-10 lg:col-span-7">
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             <Stat value={record.counts.sessions} label="Sessions" />
-            <Stat value={record.counts.approvedSubmissions} label="Approved builds" />
+            <Stat value={record.counts.approvedSubmissions} label="Challenges completed" />
             <Stat value={record.counts.approvedProjects} label="Projects" />
             <Stat value={record.xp} label="XP" />
           </div>

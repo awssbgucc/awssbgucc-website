@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { getSiteSettings } from '@/lib/content/queries';
 
-export const metadata: Metadata = { title: 'Contact' };
+export const metadata: Metadata = { title: 'Contact', description: 'Email the core team of the AWS Student Builder Group at University of Cape Coast, or find our events on Meetup.' };
 
 export default async function ContactPage() {
   const s = await getSiteSettings();

@@ -203,8 +203,10 @@
 /* Scroll reveals, driven by RevealObserver. Nothing hides unless motion-ready is set. */
 [data-reveal='rise'] { transition: opacity 700ms ease, transform 900ms var(--ease-brand); }
 .motion-ready [data-reveal='rise']:not([data-inview]) { opacity: 0; transform: translateY(28px); }
-[data-reveal='mask'] { transition: clip-path 900ms steps(8, end); clip-path: inset(0); }
-.motion-ready [data-reveal='mask']:not([data-inview]) { clip-path: inset(0 0 100% 0); }
+/* The mask clips the children, not the element: Chrome counts an element's own clip-path, so a fully clipped element
+   below the fold never registers as on screen and would stay hidden. */
+[data-reveal='mask'] > * { transition: clip-path 900ms steps(8, end); clip-path: inset(0); }
+.motion-ready [data-reveal='mask']:not([data-inview]) > * { clip-path: inset(0 0 100% 0); }
 [data-reveal='steps'] > * { transition: opacity 600ms ease, transform 800ms var(--ease-brand); transition-delay: calc(var(--i, 0) * 90ms); }
 .motion-ready [data-reveal='steps']:not([data-inview]) > * { opacity: 0; transform: translateY(32px); }
 .list-swap { animation: rise-in 360ms var(--ease-brand) both; }
@@ -640,3 +642,19 @@
   .footer-brand { grid-column: auto; }
 }
 @media (max-width: 399px) { .sbg-lockup-large .sbg-lockup-text img { width: 220px; } }
+
+/* Event cover photo and gallery (16 Nov 2026). After an event, its first photo leads the page and the flyer sits in the side column. */
+.event-cover { position: relative; margin: 40px 0 0; aspect-ratio: 3 / 2; overflow: hidden; background: var(--color-card); border: 1px solid var(--color-border-strong); }
+.event-cover img { object-fit: cover; }
+@media (min-width: 768px) { .event-cover { aspect-ratio: 2 / 1; } }
+.aside-flyer { margin: 0; }
+.aside-flyer figcaption { margin-top: 10px; font-size: 13px; color: var(--color-text-muted); }
+/* Rows are one and a half columns tall, so an upright photo fills one cell and a wide one spans two without losing heads. */
+.gallery { container-type: inline-size; }
+.gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: calc((100cqi - 8px) / 2 * 1.5); grid-auto-flow: dense; gap: 8px; }
+.gallery-wide { grid-column: span 2; }
+.gallery-thumb { position: relative; display: block; height: 100%; overflow: hidden; background: var(--color-card-raised); }
+.gallery-thumb img { object-fit: cover; }
+@media (min-width: 1024px) {
+  .gallery-grid { grid-template-columns: repeat(4, 1fr); grid-auto-rows: calc((100cqi - 36px) / 4 * 1.5); gap: 12px; }
+}
