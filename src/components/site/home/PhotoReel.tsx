@@ -7,15 +7,16 @@ import { PhotoViewer, usePhotoViewer, type ViewerPhoto } from '../PhotoViewer';
 type ReelPhoto = ViewerPhoto & { wide: boolean; date: string | null };
 
 /**
- * Every approved bootcamp photograph as one strip, oldest first. On wide screens the strip drifts sideways as the
- * page scrolls past, like film through a gate. It is still a normal horizontal scroller: focusing a photo stops the
- * drift so the browser can bring it into view, and under reduced motion or without scroll-driven animation it just
- * scrolls. Each photo opens full screen with its date.
+ * Photographs as one strip, oldest first. On wide screens the strip drifts sideways as the page scrolls past, like
+ * film through a gate. It is still a normal horizontal scroller: focusing a photo stops the drift so the browser can
+ * bring it into view, and under reduced motion or without scroll-driven animation it just scrolls. Each photo opens
+ * full screen with its date. The drift covers the whole strip in one pass, so a strip much longer than about a dozen
+ * photos moves too fast to follow.
  */
-export function PhotoReel({ photos }: { photos: ReelPhoto[] }) {
+export function PhotoReel({ photos, label }: { photos: ReelPhoto[]; label: string }) {
   const viewer = usePhotoViewer(photos.length);
   return (
-    <div className="photo-reel" role="region" aria-label="Bootcamp photographs, oldest first" tabIndex={0}>
+    <div className="photo-reel" role="region" aria-label={`${label}, oldest first`} tabIndex={0}>
       <ol className="reel-track">
         {photos.map((item, index) => (
           <li key={item.src} className={item.wide ? 'reel-wide' : undefined} style={{ '--i': index } as CSSProperties}>
@@ -26,7 +27,7 @@ export function PhotoReel({ photos }: { photos: ReelPhoto[] }) {
           </li>
         ))}
       </ol>
-      <PhotoViewer photos={photos} index={viewer.index} label="Bootcamp photographs" onClose={viewer.close} onStep={viewer.step} />
+      <PhotoViewer photos={photos} index={viewer.index} label={label} onClose={viewer.close} onStep={viewer.step} />
     </div>
   );
 }

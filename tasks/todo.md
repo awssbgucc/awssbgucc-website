@@ -704,3 +704,14 @@ Joel saw no From Code to Cloud page and no build day photos on :3000. Cause: :30
 - [x] Published the 4 events and 3 posts by status only (updatedBy stays "content import", so `--refresh` can still update their text). Post dates stay empty, as in the JSON
 - [x] Checked against Neon at 1280 in Chrome: event page (cover, What we did, flyer, gallery), home (most recent session card, build day photos), /events lists all 4
 - [ ] 375 against Neon: not done; the Chrome extension disconnected and Joel's :3000 dev server stopped responding (about 1 GB, no reply in 100 s). Same code was checked at 375 on a local database on 16 Nov
+
+## Every From Code to Cloud photo, 17 Nov 2026
+
+Joel: every photo in the ZIP goes in the event gallery, and From Code to Cloud gets the same scroll-driven strip as the bootcamp photos on the home page.
+
+- [x] 54 more web copies (75 unique, 7.7 MB), alt text written from contact sheets; manifest and event list in camera order, group photo first
+- [x] `MAX_EVENT_PHOTOS` 24 to 80
+- [x] `PhotoReel` takes a label; home build day section uses it with 12 photos in the order of the day
+- [x] Neon: `--refresh` updated the event's photo list only (dry run, apply, rerun clean)
+- [x] typecheck, lint, check:copy, 217 unit tests; motion e2e now checks both strips (not run)
+- [x] Checked against Neon on a local server at 1280 and 375: event gallery 74 plus cover, no horizontal scroll; home strip drifts at 1280 and scrolls by swipe at 375

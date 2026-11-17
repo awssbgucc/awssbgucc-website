@@ -66,13 +66,17 @@ test('the photo viewer opens, steps by keyboard and returns focus', async ({ pag
   await expect(first).toBeFocused();
 });
 
-test('the photo strip keeps every photo reachable by keyboard', async ({ page }) => {
+test('the photo strips keep every photo reachable by keyboard', async ({ page }) => {
   await page.goto('/');
-  const photos = page.locator('.photo-reel .reel-photo');
-  const count = await photos.count();
-  expect(count).toBeGreaterThan(8);
-  await photos.last().focus();
-  await expect(photos.last()).toBeInViewport();
+  const reels = page.locator('.photo-reel');
+  // From Code to Cloud, then the bootcamp.
+  await expect(reels).toHaveCount(2);
+  for (const reel of await reels.all()) {
+    const photos = reel.locator('.reel-photo');
+    expect(await photos.count()).toBeGreaterThan(8);
+    await photos.last().focus();
+    await expect(photos.last()).toBeInViewport();
+  }
 });
 
 test('the nav marker rests on the current page', async ({ page }, info) => {

@@ -6,7 +6,7 @@ export type UploadFolder = (typeof UPLOAD_FOLDERS)[number];
 
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
-export const MAX_EVENT_PHOTOS = 24;
+export const MAX_EVENT_PHOTOS = 80;
 
 const EXTENSIONS = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' } as const;
 type ImageType = keyof typeof EXTENSIONS;

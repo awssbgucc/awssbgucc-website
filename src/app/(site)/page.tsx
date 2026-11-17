@@ -1,7 +1,6 @@
 import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
 import { FeatureEvent } from '@/components/site/FeatureEvent';
-import { Gallery } from '@/components/site/Gallery';
 import { BootcampStory } from '@/components/site/home/BootcampStory';
 import { Closing } from '@/components/site/home/Closing';
 import { DisciplineExplorer } from '@/components/site/home/DisciplineExplorer';
@@ -18,8 +17,22 @@ import { getEvents, getPartners, getPosts, getProjects, getSiteSettings, getTeam
 import { pastEvents, projectCredit, upcomingEvents } from '@/lib/content/selectors';
 import { formatDate } from '@/lib/format';
 
-// Three photos from From Code to Cloud that the hero and the event page cover do not already use.
-const BUILD_DAY: EventPhotoId[] = ['fcc-opening-slide', 'fcc-over-the-shoulder', 'fcc-three-at-screen'];
+// From Code to Cloud in the order it happened, without the two hero photos. About as long as the bootcamp strip, so
+// both drift at the same pace; every photo from the day is on the event page.
+const BUILD_DAY: EventPhotoId[] = [
+  'fcc-opening-slide',
+  'fcc-builder-center-talk',
+  'fcc-builder-center-on-phone',
+  'fcc-console-on-screen',
+  'fcc-starter-portfolio',
+  'fcc-over-the-shoulder',
+  'fcc-code-editor',
+  'fcc-working-together',
+  'fcc-pointing-it-out',
+  'fcc-project-list',
+  'fcc-three-at-screen',
+  'fcc-everyone',
+];
 
 export default async function HomePage() {
   const [s, events, partners, team, projects, posts] = await Promise.all([getSiteSettings(), getEvents(), getPartners(), getTeam(), getProjects(), getPosts()]);
@@ -35,7 +48,7 @@ export default async function HomePage() {
   const buildDay = past.find((e) => e.slug === 'from-code-to-cloud');
   const buildDayPhotos = BUILD_DAY.map((id) => {
     const image = eventPhoto(id);
-    return { src: image.src, alt: image.alt, wide: image.width >= image.height };
+    return { src: image.src, alt: image.alt, wide: image.width > image.height, date: null };
   });
   const reel = allPhotos().map((id) => {
     const image = photo(id);
@@ -75,8 +88,8 @@ export default async function HomePage() {
             >
               {buildDay.summary}
             </SectionHead>
-            <Gallery photos={buildDayPhotos} title={buildDay.title} />
           </Container>
+          <PhotoReel photos={buildDayPhotos} label={`${buildDay.title.split(':')[0]} photographs`} />
         </section>
       )}
 
@@ -85,7 +98,7 @@ export default async function HomePage() {
           <BootcampStory recapSlug={weekThree?.slug} />
           <p className="type-label reel-label">Bootcamp weeks 2 and 3, Sat 24 and Sat 31 Oct 2026</p>
         </Container>
-        <PhotoReel photos={reel} />
+        <PhotoReel photos={reel} label="Bootcamp photographs" />
       </section>
 
       <section className="band band-alt" aria-labelledby="explore-title">

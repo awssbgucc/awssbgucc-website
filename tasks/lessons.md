@@ -45,6 +45,7 @@ Rule: read the server logs before changing a test; run one Next server at a time
 
 What happened: the 10 Nov redesign kept the official SBG kit, three of five flyers and most photos off the site on cautious readings, so Joel had to ask a second time for a redesign that used them.
 Rule: use every supplied asset the rules allow; for each one held back, name the exact rule it conflicts with. A doubt about one file never removes the whole set.
+Repeated 17 Nov 2026: Joel approved every From Code to Cloud photo, but 21 of 75 went up after an editor's cut. Approval of a set means publish the set; curate only the order, and offer a shorter selection where space demands it (a home strip), never in place of the full set.
 
 ## Content prepared but never loaded
 
