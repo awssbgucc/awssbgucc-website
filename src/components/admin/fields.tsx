@@ -105,7 +105,7 @@ export function MarkdownField(props: FieldProps & { rows?: number }) {
           aria-describedby={describedBy}
           className={`${INPUT} font-display text-sm`}
         />
-        <div aria-label="Preview" className="min-h-24 overflow-auto rounded-sm border border-border p-3">
+        <div role="region" aria-label="Preview" className="min-h-24 overflow-auto rounded-sm border border-border p-3">
           <Markdown>{value}</Markdown>
         </div>
       </div>

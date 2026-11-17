@@ -29,7 +29,8 @@ export function ActivityCalendar({ days, now = new Date() }: { days: Date[]; now
   const height = 7 * (CELL + GAP) - GAP;
 
   return (
-    <figure className="max-w-full overflow-x-auto">
+    // Focusable because it scrolls sideways on narrow screens; the figcaption gives it a name.
+    <figure tabIndex={0} className="max-w-full overflow-x-auto">
       <svg role="img" aria-label={`Verified activity on ${activeDays} days in the last ${WEEKS} weeks`} viewBox={`0 0 ${width} ${height}`} style={{ width: `${width}px` }} className="block h-auto">
         {cells.map(({ week, day, date, count }) => (
           <rect

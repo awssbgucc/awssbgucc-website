@@ -5,6 +5,7 @@ import { MobileNav, SidebarNav } from '@/components/builder/ShellNav';
 import { Avatar } from '@/components/ui/Avatar';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { AppearanceRow, ThemeSelector } from '@/components/ui/ThemeSelector';
+import { initials } from '@/lib/content/selectors';
 import { db } from '@/lib/db';
 import { isAdminEmail, requireMember } from '@/lib/member';
 
@@ -51,7 +52,7 @@ export default async function BuilderLayout({ children }: { children: ReactNode 
 
       <header className="sticky top-0 z-30 flex min-h-14 items-center justify-between border-b border-border bg-bg/95 px-4 lg:hidden">
         <BrandMark href="/builder" label="Builder Portal" compact />
-        <Link href="/builder/profile" aria-label="Your profile" className="flex size-11 items-center justify-center">
+        <Link href="/builder/profile" aria-label={`Your profile, ${initials(profile.displayName)}`} className="flex size-11 items-center justify-center">
           <Avatar name={profile.displayName} accent={profile.accentKey} frame={profile.frameKey} size="sm" />
         </Link>
       </header>

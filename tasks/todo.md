@@ -832,11 +832,13 @@ Progress, 17 Nov 2026
 Review, 17 Nov 2026
 
 - Light: 210 full-page captures at 375, 768, 1280 and 1440 with no console or hydration errors. The QR code and projector views were also captured in both themes, using a local fixture session with check-in open. Side by side with dark in `review/theme/review.html` (local, not committed).
-- Accessibility: axe found no contrast, focus or name problems from the themes; the results are identical in dark and light. Four findings predate this work and are untouched:
-  - the project page's facts list holds a link directly;
-  - the portal phone header's avatar link is named "Your profile" but shows initials;
-  - the progress calendar scrolls without being focusable;
-  - an `aria-label` sits on a plain `div` in the project and event forms.
+- Accessibility: axe found no contrast, focus or name problems from the themes; the results are identical in dark and light. Four findings predated this work. Joel asked for them to be fixed (17 Nov 2026):
+  - the project links now follow the facts list instead of sitting inside it;
+  - the portal phone header's avatar link is named "Your profile" plus the initials it shows;
+  - the progress calendar takes keyboard focus, named by its caption;
+  - the Markdown preview in the forms is a named region.
+
+  After the fixes, axe reports 0 violations on all 70 checks per theme. The affected pages are pixel-identical in dark at 375, 768, 1280 and 1440. Unit tests (253) and the site, theme and journeys specs (64) pass.
 - End to end, production build, one worker. Every spec passed, with skips by design:
 
   | Spec | Passed |

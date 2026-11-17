@@ -38,18 +38,22 @@ export default async function ProjectPage({ params }: Props) {
             <h1 className="event-title" data-vt-dest="title">{project.title}</h1>
             <p className="event-summary">{project.summary}</p>
           </div>
-          <dl className="project-facts">
-            {credit && (
-              <div>
-                <dt>Built by</dt>
-                <dd>{credit.handle ? <Link href={`/builders/${credit.handle}`} className="underline underline-offset-4">{credit.name}</Link> : credit.name}</dd>
-              </div>
-            )}
-            {project.stack.length > 0 && (
-              <div>
-                <dt>Built with</dt>
-                <dd><ul className="chip-row">{project.stack.map((s) => <li key={s}>{s}</li>)}</ul></dd>
-              </div>
+          <div className="project-facts">
+            {(credit || project.stack.length > 0) && (
+              <dl className="project-facts-list">
+                {credit && (
+                  <div>
+                    <dt>Built by</dt>
+                    <dd>{credit.handle ? <Link href={`/builders/${credit.handle}`} className="underline underline-offset-4">{credit.name}</Link> : credit.name}</dd>
+                  </div>
+                )}
+                {project.stack.length > 0 && (
+                  <div>
+                    <dt>Built with</dt>
+                    <dd><ul className="chip-row">{project.stack.map((s) => <li key={s}>{s}</li>)}</ul></dd>
+                  </div>
+                )}
+              </dl>
             )}
             {(project.demoUrl || project.repoUrl) && (
               <div className="project-links">
@@ -57,7 +61,7 @@ export default async function ProjectPage({ params }: Props) {
                 {project.repoUrl && <Cta href={project.repoUrl} variant="line">Source code</Cta>}
               </div>
             )}
-          </dl>
+          </div>
         </header>
         {project.imageUrl && (
           <div className="project-hero-shot" data-reveal="mask" data-vt-dest="art">

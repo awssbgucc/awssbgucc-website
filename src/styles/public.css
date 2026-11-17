@@ -379,7 +379,7 @@
 .story-caption > span:last-child { font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
 @media (min-width: 1024px) { .projects-empty { grid-template-columns: 1.3fr 1fr; gap: 56px; align-items: stretch; } }
 .project-hero { display: grid; gap: 28px; margin-top: 24px; }
-.project-facts { display: grid; gap: 18px; align-content: start; }
+.project-facts, .project-facts-list { display: grid; gap: 18px; align-content: start; }
 .project-facts dt { font-family: var(--font-display); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
 .project-facts dd { margin-top: 6px; color: var(--color-text-strong); }
 .project-links { display: flex; flex-wrap: wrap; gap: 12px; }
