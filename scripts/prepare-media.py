@@ -87,6 +87,11 @@ def main():
     brand.mkdir(parents=True, exist_ok=True)
     (brand / 'sbg-wordmark-white.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{view}" fill="none">{"".join(paths)}</svg>\n')
     print('wordmark viewBox', view)
+    # The light theme's wordmark: the kit's Grey 850 lettering (the file named Magenta, on a white panel). Same
+    # outlines byte for byte, same trim and view box; only the panel is dropped (Joel, 17 Nov 2026).
+    svg = (KIT / 'Brandmarks/Primary/SVG/AWS Student Builder Group_RGB_Brandmark_Magenta.svg').read_text()
+    paths = re.findall(r'<path [^>]*/>', svg)
+    (brand / 'sbg-wordmark-grey850.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{view}" fill="none">{"".join(paths)}</svg>\n')
     for name, colour in [('White', 'purple'), ('Purple', 'mint'), ('Grey 850', 'blue'), ('Mint', 'magenta')]:
         source = (KIT / f'Program Icon/SVG/AWS Student Builder Group_RGB_Program Icon_{name}.svg').read_text()
         (brand / f'sbg-chip-{colour}.svg').write_text(source)

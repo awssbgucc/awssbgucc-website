@@ -4,6 +4,8 @@ import { PixelGrid } from '@/components/ui/PixelGrid';
 import { CELL, GAP, gridSize, haloCells, isTextureCell, mapRowFill, PITCH, type StyleFor } from '@/lib/pixel/grid';
 
 const LIME = 'var(--color-lime)';
+// The lit cell is official Mint in both themes; on light it also gets a Grey 850 outline (globals.css).
+const MINT = 'var(--color-sbg-mint)';
 const { row: markerRow, col: markerCol } = ghana.capeCoast;
 const halo = new Set(haloCells(ghana.grid, markerRow, markerCol).map((cell) => `${cell.row},${cell.col}`));
 
@@ -37,7 +39,7 @@ export function PixelMap() {
       <div className="relative">
         <div className="relative overflow-hidden md:overflow-visible" style={{ aspectRatio: `${ghana.cols} / ${CROP_ROWS}` }} data-crop>
         <PixelGrid data={ghana} label="Map of Ghana with Cape Coast highlighted" styleFor={styleFor} fade className="absolute inset-x-0 bottom-0 md:static">
-          <rect className="pixel-marker" x={markerX} y={markerY} width={CELL} height={CELL} fill={LIME} />
+          <rect className="pixel-marker" x={markerX} y={markerY} width={CELL} height={CELL} fill={MINT} />
           <rect
             className="pixel-ring-static pixel-ring"
             style={ringStyle}

@@ -29,7 +29,7 @@ export default async function SessionPage({ params }: Props) {
 
   return (
     <>
-      <Link href="/builder/sessions" className="type-label inline-flex min-h-11 items-center text-text-muted hover:text-white">
+      <Link href="/builder/sessions" className="type-label inline-flex min-h-11 items-center text-text-muted hover:text-text-strong">
         All sessions
       </Link>
       <div className="mt-2 flex flex-wrap items-center gap-2">

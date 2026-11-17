@@ -30,7 +30,7 @@ export default async function EditProjectPage({ params }: Props) {
 
   return (
     <>
-      <Link href="/builder/projects" className="type-label inline-flex min-h-11 items-center text-text-muted hover:text-white">
+      <Link href="/builder/projects" className="type-label inline-flex min-h-11 items-center text-text-muted hover:text-text-strong">
         Your projects
       </Link>
       <div className="mt-2 mb-8 flex flex-wrap items-center gap-3">
@@ -43,14 +43,14 @@ export default async function EditProjectPage({ params }: Props) {
           <Panel title="Status">
             <p className="text-sm text-text-muted">{STATUS_HELP[project.status]}</p>
             {project.reviewNote && (
-              <p className="mt-3 rounded-sm border border-border-strong p-3 text-sm text-white">
+              <p className="mt-3 rounded-sm border border-border-strong p-3 text-sm text-text-strong">
                 <span className="type-label block text-text-muted">Reviewer note</span>
                 {project.reviewNote}
               </p>
             )}
             {canSubmit && (
               <form action={submitProjectForReview.bind(null, project.id)} className="mt-4">
-                <button type="submit" disabled={!project.imageUrl} className="inline-flex min-h-11 items-center rounded-sm bg-white px-5 text-sm font-medium text-bg hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50">
+                <button type="submit" disabled={!project.imageUrl} className="inline-flex min-h-11 items-center rounded-sm bg-primary px-5 text-sm font-medium text-on-primary hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50">
                   Submit for review
                 </button>
                 {!project.imageUrl && <p className="mt-2 text-xs text-text-muted">Add an image first.</p>}

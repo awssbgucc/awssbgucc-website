@@ -7,8 +7,8 @@ type Variant = 'primary' | 'secondary' | 'text';
 const BASE = 'inline-flex min-h-11 items-center gap-2 text-sm font-medium transition-colors duration-150 ease-brand';
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'rounded-sm bg-white px-5 text-bg hover:bg-white/90',
-  secondary: 'rounded-sm border border-border-strong px-5 text-white hover:border-text-muted',
+  primary: 'rounded-sm bg-primary px-5 text-on-primary hover:bg-primary/90',
+  secondary: 'rounded-sm border border-border-strong px-5 text-text-strong hover:border-text-muted',
   text: 'text-text-muted underline-offset-4 hover:underline',
 };
 

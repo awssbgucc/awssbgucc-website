@@ -25,7 +25,7 @@ export default async function AdminProjectsPage({ searchParams }: Props) {
       <PageHeader title="Projects" action={{ href: '/admin/projects/new', label: 'Add a curated project' }} />
       <nav aria-label="Filter by status" className="mb-6 flex flex-wrap gap-2">
         {STATUSES.map((s) => (
-          <Link key={s} href={`/admin/projects?status=${s}`} aria-current={s === status ? 'page' : undefined} className={`min-h-10 rounded-full border px-3.5 py-2 text-sm font-medium ${s === status ? 'border-white' : 'border-border-strong'}`}>
+          <Link key={s} href={`/admin/projects?status=${s}`} aria-current={s === status ? 'page' : undefined} className={`min-h-10 rounded-full border px-3.5 py-2 text-sm font-medium ${s === status ? 'border-text-strong' : 'border-border-strong'}`}>
             <StatusBadge status={s} />
           </Link>
         ))}

@@ -61,7 +61,7 @@ export default async function ReviewPage({ params }: Props) {
             {submission.notes && (
               <div>
                 <dt className="text-text-muted">Notes from the member</dt>
-                <dd className="whitespace-pre-line text-white">{submission.notes}</dd>
+                <dd className="whitespace-pre-line text-text-strong">{submission.notes}</dd>
               </div>
             )}
           </dl>

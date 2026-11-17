@@ -76,7 +76,7 @@ export default async function ProfilePage() {
                     <div className="mt-2 flex flex-wrap gap-2">
                       {kind === 'TITLE' && (
                         <form action={applyCustomisation.bind(null, kind, '')}>
-                          <button type="submit" aria-pressed={profile.titleKey === null} className={`min-h-10 rounded-full border px-3.5 text-sm font-medium ${profile.titleKey === null ? 'border-lime text-lime' : 'border-border-strong text-text-muted hover:text-white'}`}>
+                          <button type="submit" aria-pressed={profile.titleKey === null} className={`min-h-10 rounded-full border px-3.5 text-sm font-medium ${profile.titleKey === null ? 'border-lime text-lime' : 'border-border-strong text-text-muted hover:text-text-strong'}`}>
                             None
                           </button>
                         </form>
@@ -85,7 +85,7 @@ export default async function ProfilePage() {
                         const on = profile[field] === option.key;
                         return (
                           <form key={option.key} action={applyCustomisation.bind(null, kind, option.key)}>
-                            <button type="submit" aria-pressed={on} className={`min-h-10 rounded-full border px-3.5 text-sm font-medium ${on ? 'border-lime text-lime' : 'border-border-strong text-text-muted hover:text-white'}`}>
+                            <button type="submit" aria-pressed={on} className={`min-h-10 rounded-full border px-3.5 text-sm font-medium ${on ? 'border-lime text-lime' : 'border-border-strong text-text-muted hover:text-text-strong'}`}>
                               {option.label}
                             </button>
                           </form>

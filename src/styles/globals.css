@@ -35,6 +35,26 @@
   --color-logo-purple: #ad5cff;
   --color-danger: #f87171;
 
+  /* Appearance roles (17 Nov 2026). Each dark value equals the colour the role used before it had a name, so
+     the dark theme is unchanged. Light values are in the light block below. See docs/DESIGN.md, Appearance. */
+  --color-text-strong: #ffffff; /* headings and the strongest text; was --color-white */
+  --color-primary: #ffffff; /* primary button fill */
+  --color-on-primary: #161d26; /* text on the primary fill */
+  --color-grey-850: #161d26; /* official Grey 850: text on brand blocks and dark scrims, in both themes */
+  --color-blue: #42b4ff; /* SBG Blue as text and lines; the fill stays --color-sbg-blue */
+  --color-magenta: #ff57e9; /* SBG Magenta as text and lines; the fill stays --color-sbg-magenta */
+  --color-success: #00e582;
+  --color-warning: #8ab8f8; /* sky, as "Changes requested"; no orange (COMPLIANCE rule 10) */
+  --color-focus: #38d9f5;
+  --color-input: #161d26;
+  --color-input-border: rgb(255 255 255 / 0.14);
+  --color-nav: rgb(22 29 38 / 0.94);
+  --color-grid-line: rgb(255 255 255 / 0.05);
+  --color-hover-tint: rgb(255 255 255 / 0.025);
+  --color-press-tint: rgb(255 255 255 / 0.08);
+  --color-pending-tint: rgb(255 255 255 / 0.16);
+  --color-overlay: rgb(0 0 0 / 0.6);
+
   /* Type */
   --font-display: var(--font-mono-face), ui-monospace, monospace;
   --font-sans: var(--font-sans-face), system-ui, sans-serif;
@@ -53,6 +73,209 @@
 
 :root {
   color-scheme: dark;
+  /* Which logo file shows: the white wordmark on dark, the Grey 850 one on light. */
+  --show-on-dark: block;
+  --show-on-light: none;
+}
+
+/*
+ * Appearance. Dark is the approved baseline and lives in @theme above; nothing here changes it.
+ * <html data-theme> is set before first paint by the script in src/lib/theme.ts. The light values are written
+ * twice: once for that attribute, once for a visitor without JavaScript whose device asks for light.
+ * theme.test.ts keeps the two lists identical, and the dark scope equal to @theme.
+ */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --show-on-dark: none;
+  --show-on-light: block;
+  --marker-outline: #161d26;
+  --projector-bg: #1a222d;
+  --color-bg: #f4f2ed;
+  --color-bg-alt: #ebe8e1;
+  --color-card: #fbfaf7;
+  --color-card-raised: #ffffff;
+  --color-border: rgb(22 29 38 / 0.11);
+  --color-border-strong: rgb(22 29 38 / 0.22);
+  --color-text: #1f2731;
+  --color-text-strong: #161d26;
+  --color-text-muted: #525c69;
+  --color-text-faint: #7d8591;
+  --color-purple: #7b33d1;
+  --color-lavender: #5f45b8;
+  --color-sky: #2b5fae;
+  --color-cyan: #00657a;
+  --color-lime: #00683f;
+  --color-blue: #085f97;
+  --color-magenta: #a81690;
+  --color-danger: #b42318;
+  --color-success: #00683f;
+  --color-warning: #2b5fae;
+  --color-primary: #161d26;
+  --color-on-primary: #ffffff;
+  --color-focus: #00657a;
+  --color-input: #ffffff;
+  --color-input-border: #7d8591;
+  --color-nav: rgb(244 242 237 / 0.94);
+  --color-grid-line: rgb(22 29 38 / 0.06);
+  --color-hover-tint: rgb(22 29 38 / 0.035);
+  --color-press-tint: rgb(22 29 38 / 0.06);
+  --color-pending-tint: rgb(22 29 38 / 0.12);
+  --color-overlay: rgb(22 29 38 / 0.4);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --show-on-dark: none;
+    --show-on-light: block;
+    --marker-outline: #161d26;
+    --projector-bg: #1a222d;
+    --color-bg: #f4f2ed;
+    --color-bg-alt: #ebe8e1;
+    --color-card: #fbfaf7;
+    --color-card-raised: #ffffff;
+    --color-border: rgb(22 29 38 / 0.11);
+    --color-border-strong: rgb(22 29 38 / 0.22);
+    --color-text: #1f2731;
+    --color-text-strong: #161d26;
+    --color-text-muted: #525c69;
+    --color-text-faint: #7d8591;
+    --color-purple: #7b33d1;
+    --color-lavender: #5f45b8;
+    --color-sky: #2b5fae;
+    --color-cyan: #00657a;
+    --color-lime: #00683f;
+    --color-blue: #085f97;
+    --color-magenta: #a81690;
+    --color-danger: #b42318;
+    --color-success: #00683f;
+    --color-warning: #2b5fae;
+    --color-primary: #161d26;
+    --color-on-primary: #ffffff;
+    --color-focus: #00657a;
+    --color-input: #ffffff;
+    --color-input-border: #7d8591;
+    --color-nav: rgb(244 242 237 / 0.94);
+    --color-grid-line: rgb(22 29 38 / 0.06);
+    --color-hover-tint: rgb(22 29 38 / 0.035);
+    --color-press-tint: rgb(22 29 38 / 0.06);
+    --color-pending-tint: rgb(22 29 38 / 0.12);
+    --color-overlay: rgb(22 29 38 / 0.4);
+  }
+}
+
+/* Surfaces that stay dark in both themes: the photo viewer, text set on photographs, and the projector check-in
+   view. In the dark theme these declarations repeat the values already in force, so nothing changes there. */
+[data-theme='dark'],
+.photo-viewer,
+.cell-photo figcaption,
+.about-photo figcaption,
+.story-caption {
+  color-scheme: dark;
+  color: var(--color-text);
+  --show-on-dark: block;
+  --show-on-light: none;
+  --marker-outline: none;
+  --color-bg: #161d26;
+  --color-bg-alt: #1a222d;
+  --color-card: #1d2630;
+  --color-card-raised: #232e3c;
+  --color-border: rgb(255 255 255 / 0.07);
+  --color-border-strong: rgb(255 255 255 / 0.14);
+  --color-text: #e8ecf2;
+  --color-text-strong: #ffffff;
+  --color-text-muted: #9aa5b4;
+  --color-text-faint: #6b7685;
+  --color-purple: #ad5cff;
+  --color-lavender: #c4b5fd;
+  --color-sky: #8ab8f8;
+  --color-cyan: #38d9f5;
+  --color-lime: #00e582;
+  --color-blue: #42b4ff;
+  --color-magenta: #ff57e9;
+  --color-danger: #f87171;
+  --color-success: #00e582;
+  --color-warning: #8ab8f8;
+  --color-primary: #ffffff;
+  --color-on-primary: #161d26;
+  --color-focus: #38d9f5;
+  --color-input: #161d26;
+  --color-input-border: rgb(255 255 255 / 0.14);
+  --color-nav: rgb(22 29 38 / 0.94);
+  --color-grid-line: rgb(255 255 255 / 0.05);
+  --color-hover-tint: rgb(255 255 255 / 0.025);
+  --color-press-tint: rgb(255 255 255 / 0.08);
+  --color-pending-tint: rgb(255 255 255 / 0.16);
+  --color-overlay: rgb(0 0 0 / 0.6);
+}
+
+.only-dark {
+  display: var(--show-on-dark);
+}
+
+.only-light {
+  display: var(--show-on-light);
+}
+
+/* Appearance selector. The chosen option is a solid block, so the state reads by shape as well as colour. It is
+   drawn from <html data-theme-pref>, which the head script sets before paint, so it is right before hydration.
+   Without JavaScript the control could do nothing, so it is not shown. */
+.theme-selector {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+}
+:root:not([data-theme-pref]) .theme-selector,
+:root:not([data-theme-pref]) .theme-row {
+  display: none;
+}
+.theme-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 2px;
+  color: var(--color-text-muted);
+  transition: color 150ms, background-color 150ms;
+}
+.theme-option:hover {
+  color: var(--color-text-strong);
+  background: var(--color-press-tint);
+}
+:root[data-theme-pref='system'] .theme-option[data-value='system'],
+:root[data-theme-pref='light'] .theme-option[data-value='light'],
+:root[data-theme-pref='dark'] .theme-option[data-value='dark'] {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.theme-selector-labelled {
+  display: flex;
+  width: 100%;
+}
+.theme-selector-labelled .theme-option {
+  flex: 1;
+  width: auto;
+  height: 44px;
+  padding-inline: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Switching appearance: colours ease for 150ms, only while theme.ts holds data-theme-switching on <html>,
+   never under reduced motion, and only the colour properties. */
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-theme-switching] *,
+  :root[data-theme-switching] *::before,
+  :root[data-theme-switching] *::after {
+    transition-property: color, background-color, border-color, fill, stroke !important;
+    transition-duration: 150ms !important;
+    transition-timing-function: linear !important;
+    transition-delay: 0ms !important;
+  }
 }
 
 body {
@@ -71,7 +294,7 @@ body {
 
 /* Not on elements focused only by script (tabindex -1), such as the onboarding step heading. */
 :focus-visible:not([tabindex='-1']) {
-  outline: 2px solid var(--color-cyan);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -217,7 +440,7 @@ body {
 .prose-site h2,
 .prose-site h3 {
   margin-top: 1.75em;
-  color: var(--color-white);
+  color: var(--color-text-strong);
   font-weight: 600;
 }
 
@@ -259,6 +482,13 @@ body {
 /* Pixel grids. Everything is fully visible unless a motion rule below applies. */
 .pixel-ring-static {
   opacity: 0.7;
+}
+
+/* Official Mint is 1.5:1 on paper, so on light the lit cell gets a Grey 850 outline. Unset on dark. */
+.pixel-marker {
+  stroke: var(--marker-outline);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -347,4 +577,10 @@ body {
   inset: 0 0 auto;
   height: 4px;
   background: linear-gradient(90deg, var(--color-sbg-purple) 0 25%, var(--color-sbg-blue) 25% 50%, var(--color-sbg-magenta) 50% 75%, var(--color-sbg-mint) 75%);
+}
+
+/* The projector check-in view stays dark on a light admin page; on the dark theme it has no background of its own.
+   Its text colour comes from the dark scope above (data-theme="dark" on the element). */
+.projector-view {
+  background: var(--projector-bg, transparent);
 }

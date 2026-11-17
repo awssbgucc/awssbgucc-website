@@ -34,16 +34,16 @@ export default async function MembersPage({ searchParams }: Props) {
         <label htmlFor="q" className="sr-only">
           Search members
         </label>
-        <input id="q" name="q" defaultValue={query} placeholder="Name, handle or email" className="min-h-11 flex-1 rounded-sm border border-border-strong bg-bg px-3" />
+        <input id="q" name="q" defaultValue={query} placeholder="Name, handle or email" className="min-h-11 flex-1 rounded-sm border border-input-border bg-input px-3" />
         <label htmlFor="status" className="sr-only">
           Status
         </label>
-        <select id="status" name="status" defaultValue={status} className="min-h-11 rounded-sm border border-border-strong bg-bg px-3">
+        <select id="status" name="status" defaultValue={status} className="min-h-11 rounded-sm border border-input-border bg-input px-3">
           <option value="">Any status</option>
           <option value="ACTIVE">Active</option>
           <option value="SUSPENDED">Suspended</option>
         </select>
-        <button type="submit" className="min-h-11 rounded-sm bg-white px-5 text-sm font-medium text-bg">
+        <button type="submit" className="min-h-11 rounded-sm bg-primary px-5 text-sm font-medium text-on-primary">
           Search
         </button>
       </form>

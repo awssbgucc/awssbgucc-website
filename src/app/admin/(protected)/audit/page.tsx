@@ -21,8 +21,8 @@ export default async function AuditPage({ searchParams }: Props) {
         <label htmlFor="action" className="sr-only">
           Filter by action
         </label>
-        <input id="action" name="action" defaultValue={filter} placeholder="For example member. or checkin." className="min-h-11 flex-1 rounded-sm border border-border-strong bg-bg px-3" />
-        <button type="submit" className="min-h-11 rounded-sm bg-white px-5 text-sm font-medium text-bg">
+        <input id="action" name="action" defaultValue={filter} placeholder="For example member. or checkin." className="min-h-11 flex-1 rounded-sm border border-input-border bg-input px-3" />
+        <button type="submit" className="min-h-11 rounded-sm bg-primary px-5 text-sm font-medium text-on-primary">
           Filter
         </button>
       </form>

@@ -35,7 +35,7 @@ export default async function AdminEventsPage({ searchParams }: Props) {
       <PageHeader title="Events" action={{ href: '/admin/events/new', label: 'New event' }} />
       <nav aria-label="Filter" className="mb-6 flex flex-wrap gap-4">
         {FILTERS.map(({ label, query }) => (
-          <Link key={label} href={{ pathname: '/admin/events', query }} className="flex min-h-11 items-center text-sm font-medium text-text-muted underline underline-offset-4 hover:text-white">
+          <Link key={label} href={{ pathname: '/admin/events', query }} className="flex min-h-11 items-center text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text-strong">
             {label}
           </Link>
         ))}

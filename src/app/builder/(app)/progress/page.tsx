@@ -48,7 +48,7 @@ export default async function ProgressPage() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="type-label text-text-muted">Level</p>
-              <p className="font-display text-5xl font-medium text-white">{level.level}</p>
+              <p className="font-display text-5xl font-medium text-text-strong">{level.level}</p>
             </div>
             <p className="font-display text-sm text-text-muted">{level.next === null ? `${level.xp} XP, the top level` : `${level.xp} of ${level.next} XP`}</p>
           </div>
@@ -83,7 +83,7 @@ export default async function ProgressPage() {
               return (
                 <li key={a.id} className={`rounded-md border p-4 ${at ? 'achievement-earned border-lime/40' : 'border-border'}`}>
                   <div className="flex items-start justify-between gap-2">
-                    <p className={`font-semibold ${at ? 'text-white' : 'text-text-muted'}`}>{a.title}</p>
+                    <p className={`font-semibold ${at ? 'text-text-strong' : 'text-text-muted'}`}>{a.title}</p>
                     {at ? <Badge tone="lime">Earned</Badge> : <span className="font-display text-xs text-text-muted">{current}/{a.threshold}</span>}
                   </div>
                   <p className="mt-1 text-sm text-text-muted">{a.description}</p>
@@ -119,7 +119,7 @@ export default async function ProgressPage() {
                     <tr key={entry.id}>
                       <td className="border-b border-border py-2.5 pr-4 font-display text-xs text-text-muted">{formatDate(entry.createdAt)}</td>
                       <td className="border-b border-border py-2.5 pr-4">
-                        <span className="block text-white">{entry.note ?? REASONS[entry.reason]}</span>
+                        <span className="block text-text-strong">{entry.note ?? REASONS[entry.reason]}</span>
                         <span className="text-xs text-text-muted">{REASONS[entry.reason]}</span>
                       </td>
                       <td className="border-b border-border py-2.5 pr-4 text-right font-display">{entry.xp || ''}</td>
@@ -136,7 +136,7 @@ export default async function ProgressPage() {
             <ul className="flex flex-col gap-3 text-sm">
               {rules.map((rule) => (
                 <li key={rule.reason} className="border-b border-border pb-3">
-                  <p className="text-white">{rule.description}</p>
+                  <p className="text-text-strong">{rule.description}</p>
                   <p className="type-label mt-1 text-lime">
                     +{rule.xp} XP, +{rule.credits} credits
                   </p>

@@ -95,7 +95,7 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
         </div>
         <aside className="event-aside">
           <section className="aside-next">
-            <h2 className="type-label text-sbg-mint">{past ? 'Missed this one' : 'Going?'}</h2>
+            <h2 className="type-label text-lime">{past ? 'Missed this one' : 'Going?'}</h2>
             <p>{past ? 'New events go up on Meetup first.' : 'Register on Meetup. Any change to the time or room is posted there too.'}</p>
             {past ? <Cta href="/events" variant="arrow">See all events</Cta> : event.meetupUrl && <Cta href={event.meetupUrl} variant="arrow">Open the Meetup listing</Cta>}
           </section>

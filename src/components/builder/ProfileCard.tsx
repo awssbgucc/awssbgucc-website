@@ -12,7 +12,7 @@ export function ProfileCard({ profile, level, nameIsHeading = false }: { profile
       <div className={`banner-${profile.bannerKey} h-24 border-b border-border sm:h-32`} aria-hidden />
       <div className="-mt-10 px-5 pb-5 sm:px-6">
         <Avatar name={profile.displayName} accent={profile.accentKey} frame={profile.frameKey} size="lg" />
-        <Name className="mt-3 text-xl font-semibold text-white">{profile.displayName}</Name>
+        <Name className="mt-3 text-xl font-semibold text-text-strong">{profile.displayName}</Name>
         <p className="font-display text-sm text-text-muted">
           @{profile.handle}
           {level !== undefined && <span className={accent.text}> · Level {level}</span>}

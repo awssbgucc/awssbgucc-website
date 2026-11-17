@@ -19,7 +19,7 @@ export function Panel({ title, action, children, className = '' }: { title?: str
     <section className={`min-w-0 rounded-md border border-border bg-card p-5 sm:p-6 ${className}`}>
       {(title || action) && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          {title && <h2 className="text-base font-semibold text-white">{title}</h2>}
+          {title && <h2 className="text-base font-semibold text-text-strong">{title}</h2>}
           {action}
         </div>
       )}
@@ -30,7 +30,7 @@ export function Panel({ title, action, children, className = '' }: { title?: str
 
 export function TextLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="inline-flex min-h-11 items-center text-sm font-medium text-text-muted underline-offset-4 hover:text-white hover:underline">
+    <Link href={href} className="inline-flex min-h-11 items-center text-sm font-medium text-text-muted underline-offset-4 hover:text-text-strong hover:underline">
       {children}
     </Link>
   );

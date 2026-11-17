@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 export function Stat({ value, label, hint }: { value: ReactNode; label: string; hint?: ReactNode }) {
   return (
     <div className="min-w-0">
-      <p className="font-display text-3xl font-medium text-white lg:text-4xl">{value}</p>
+      <p className="font-display text-3xl font-medium text-text-strong lg:text-4xl">{value}</p>
       <p className="mt-1 text-sm font-medium text-text-muted">{label}</p>
       {hint && <p className="mt-1 text-xs text-text-muted">{hint}</p>}
     </div>

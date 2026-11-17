@@ -52,19 +52,19 @@ export default async function BuilderHome() {
         </div>
         <div className="rounded-md border border-border bg-card p-4">
           <div className="flex items-baseline justify-between gap-3">
-            <p className="font-display text-sm font-medium text-white">Level {record.level.level}</p>
+            <p className="font-display text-sm font-medium text-text-strong">Level {record.level.level}</p>
             <p className="type-label text-text-muted">{record.level.next === null ? 'Top level' : `${record.level.toNext} XP to level ${record.level.level + 1}`}</p>
           </div>
           <Progress value={record.level.progress} label={`Progress to level ${record.level.level + 1}`} className="mt-3" />
           <div className="mt-3 flex gap-6 font-display text-sm">
             <span>
-              <span className="text-white">{record.xp}</span> <span className="text-text-muted">XP</span>
+              <span className="text-text-strong">{record.xp}</span> <span className="text-text-muted">XP</span>
             </span>
             <span>
-              <span className="text-white">{record.credits}</span> <span className="text-text-muted">credits</span>
+              <span className="text-text-strong">{record.credits}</span> <span className="text-text-muted">credits</span>
             </span>
             <span>
-              <span className="text-white">{record.streak.current}</span> <span className="text-text-muted">in a row</span>
+              <span className="text-text-strong">{record.streak.current}</span> <span className="text-text-muted">in a row</span>
             </span>
           </div>
         </div>
@@ -77,11 +77,11 @@ export default async function BuilderHome() {
               <div className="grid gap-5 sm:grid-cols-[112px_1fr]">
                 <div className="rounded-sm border border-border-strong p-3 text-center">
                   <p className="type-label text-lime">{formatDate(next.startsAt).split(' ')[0]}</p>
-                  <p className="font-display text-3xl font-medium text-white">{formatDate(next.startsAt).split(' ')[1]}</p>
+                  <p className="font-display text-3xl font-medium text-text-strong">{formatDate(next.startsAt).split(' ')[1]}</p>
                   <p className="type-label text-text-muted">{formatDate(next.startsAt).split(' ')[2]}</p>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-lg font-semibold text-text-strong">
                     <Link href={`/builder/sessions/${next.slug}`} className="underline-offset-4 hover:underline">
                       {next.title}
                     </Link>
@@ -115,7 +115,7 @@ export default async function BuilderHome() {
                   return (
                     <li key={challenge.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
                       <div className="min-w-0">
-                        <Link href={`/builder/challenges/${challenge.slug}`} className="font-semibold text-white underline-offset-4 hover:underline">
+                        <Link href={`/builder/challenges/${challenge.slug}`} className="font-semibold text-text-strong underline-offset-4 hover:underline">
                           {challenge.title}
                         </Link>
                         <p className="type-label mt-1 text-text-muted">Closes {formatDate(challenge.endsAt)}</p>
@@ -131,7 +131,7 @@ export default async function BuilderHome() {
           <Panel title="From your last session">
             {lastCheckIn ? (
               <>
-                <p className="font-semibold text-white">{lastCheckIn.event.title}</p>
+                <p className="font-semibold text-text-strong">{lastCheckIn.event.title}</p>
                 <p className="type-label mt-1 text-text-muted">{formatDate(lastCheckIn.event.startsAt)}</p>
                 {lastCheckIn.event.resources.length > 0 ? (
                   <ul className="mt-4 flex flex-col gap-2">
@@ -179,7 +179,7 @@ export default async function BuilderHome() {
                 {announcements.map((a) => (
                   <li key={a.id}>
                     {a.publishedAt && <p className="type-label text-text-muted">{formatDate(a.publishedAt)}</p>}
-                    <p className="mt-1 font-semibold text-white">{a.title}</p>
+                    <p className="mt-1 font-semibold text-text-strong">{a.title}</p>
                     <p className="mt-1 text-sm text-text-muted">{a.body}</p>
                     {a.href && (
                       <a href={a.href} className="mt-1 inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4">
@@ -200,7 +200,7 @@ export default async function BuilderHome() {
                 {recent.map((entry) => (
                   <li key={entry.id} className="flex items-start justify-between gap-3 py-2.5">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-white">{entry.note ?? REASON_LABELS[entry.reason]}</p>
+                      <p className="truncate text-sm font-medium text-text-strong">{entry.note ?? REASON_LABELS[entry.reason]}</p>
                       <p className="type-label text-text-muted">
                         {REASON_LABELS[entry.reason]}, {formatDate(entry.createdAt)}
                       </p>
@@ -218,7 +218,7 @@ export default async function BuilderHome() {
           <Panel title="Invite a classmate">
             <p className="text-sm text-text-muted">Share your code. You are credited when they attend their first session, not when they sign up.</p>
             <div className="mt-4 flex items-center justify-between gap-3 rounded-sm border border-border-strong px-4 py-2">
-              <span className="font-display text-lg tracking-wider text-white">{profile.referralCode}</span>
+              <span className="font-display text-lg tracking-wider text-text-strong">{profile.referralCode}</span>
               <CopyButton value={profile.referralCode} label="Copy code" />
             </div>
           </Panel>
@@ -232,7 +232,7 @@ export default async function BuilderHome() {
                 ['/builder/profile', 'Edit profile'],
               ].map(([href, label]) => (
                 <li key={href}>
-                  <Link href={href} className="flex min-h-11 items-center rounded-sm border border-border px-3 font-medium text-text-muted transition-colors duration-150 ease-brand hover:border-border-strong hover:text-white">
+                  <Link href={href} className="flex min-h-11 items-center rounded-sm border border-border px-3 font-medium text-text-muted transition-colors duration-150 ease-brand hover:border-border-strong hover:text-text-strong">
                     {label}
                   </Link>
                 </li>

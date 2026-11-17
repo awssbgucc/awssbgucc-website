@@ -23,14 +23,14 @@ export default async function ContactPage() {
       <div className="grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-5">
           <p className="type-label text-text-muted">Email</p>
-          <a href={`mailto:${s.email}`} className="mt-2 inline-flex min-h-11 items-center font-display text-xl break-all text-white underline underline-offset-4">
+          <a href={`mailto:${s.email}`} className="mt-2 inline-flex min-h-11 items-center font-display text-xl break-all text-text-strong underline underline-offset-4">
             {s.email}
           </a>
           <ul className="mt-10 border-t border-border">
             {channels.map((c) => (
               <li key={c.label} className="border-b border-border">
                 <a href={c.href} className="flex min-h-14 items-center justify-between gap-4 py-3 underline-offset-4 hover:underline">
-                  <span className="font-medium text-white">{c.label}</span>
+                  <span className="font-medium text-text-strong">{c.label}</span>
                   {c.note && <span className="text-right text-sm text-text-muted">{c.note}</span>}
                 </a>
               </li>

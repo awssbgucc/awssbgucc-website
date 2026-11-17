@@ -98,7 +98,7 @@ These are hard rules. `pnpm check:copy` enforces most of them and must pass befo
 
 ## Design rules (summary, full detail in docs/DESIGN.md)
 
-- Dark first. Background `--bg`, cards `--card`, hairline borders. No light theme in v1.
+- Dark is the approved baseline; light is its designed counterpart, chosen by System, Light or Dark (docs/DESIGN.md, Appearance). Use role tokens (`text-text-strong`, `bg-primary`), never `white`, so every new component works in both.
 - Two type families only: a monospace display face for headings, a sans for body.
 - Accent colors carry meaning (role labels, tags, the Cape Coast pixel). Never decorate with them.
 - Pixel art is the signature. Each grid has one named place: the Ghana map with Cape Coast lit in the hero, the UCC crest in About (once approved), the SBG chip on the 404 and admin sign-in pages, and the participation grid (one cell per session, lit where the member checked in) in the portal and on public member profiles.

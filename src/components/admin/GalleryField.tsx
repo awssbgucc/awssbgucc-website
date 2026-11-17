@@ -53,14 +53,14 @@ export function GalleryField({ eventId, initial, max }: { eventId: string; initi
           {photos.map((url, index) => (
             <li key={url} className="relative aspect-[3/2] overflow-hidden rounded-sm border border-border">
               <Image src={url} alt={`Photo ${index + 1}`} fill unoptimized sizes="160px" className="object-cover" />
-              <button type="button" onClick={() => setPhotos(photos.filter((p) => p !== url))} className="absolute top-1 right-1 rounded-sm bg-bg/90 px-2 py-1 text-xs font-medium text-white">
+              <button type="button" onClick={() => setPhotos(photos.filter((p) => p !== url))} className="absolute top-1 right-1 rounded-sm bg-bg/90 px-2 py-1 text-xs font-medium text-text-strong">
                 Remove
               </button>
             </li>
           ))}
         </ul>
       )}
-      <label className={`inline-flex min-h-11 cursor-pointer items-center rounded-sm border border-border-strong px-5 text-sm font-medium text-white focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-cyan hover:border-text-muted ${busy ? 'pointer-events-none opacity-60' : ''}`}>
+      <label className={`inline-flex min-h-11 cursor-pointer items-center rounded-sm border border-border-strong px-5 text-sm font-medium text-text-strong focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:border-text-muted ${busy ? 'pointer-events-none opacity-60' : ''}`}>
         Add photos
         <input
           type="file"

@@ -17,7 +17,7 @@ export function Closing({ meetupUrl }: { meetupUrl: string }) {
       <Container>
         <div className="closing-layout">
           <div className="closing-copy" data-reveal="rise">
-            <p className="type-label text-sbg-mint">Cape Coast, Ghana</p>
+            <p className="type-label text-lime">Cape Coast, Ghana</p>
             <h2 id="closing-title" className="closing-title">Come build<br />with us.</h2>
             <p className="closing-lead">
               Membership is free on Meetup, and every event is posted there first. Members can also sign in to the Builder Portal to check in

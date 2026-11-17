@@ -8,7 +8,7 @@ export function SignOutButton({ to = '/admin/sign-in', className = '' }: { to?: 
     window.location.href = to;
   }
   return (
-    <button type="button" onClick={signOut} className={`min-h-11 text-sm font-medium text-text-muted underline underline-offset-4 hover:text-white ${className}`}>
+    <button type="button" onClick={signOut} className={`min-h-11 text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text-strong ${className}`}>
       Sign out
     </button>
   );

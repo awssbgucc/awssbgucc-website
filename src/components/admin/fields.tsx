@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { ACCEPTED_TYPES, uploadError, type UploadFolder } from '@/lib/uploads/rules';
 import { useFormState } from './AdminForm';
 
-const INPUT = 'w-full rounded-sm border border-border-strong bg-bg px-3 py-2 text-base text-text';
+const INPUT = 'w-full rounded-sm border border-input-border bg-input px-3 py-2 text-base text-text';
 
 type FieldProps = { name: string; label: string; help?: string; defaultValue?: string | number | null };
 
@@ -80,7 +80,7 @@ export function CheckboxField({ name, label, help, defaultChecked = false }: { n
   return (
     <div>
       <label className="flex min-h-11 items-center gap-3 text-sm font-medium">
-        <input key={String(checked)} type="checkbox" name={name} defaultChecked={checked} className="size-5 accent-white" />
+        <input key={String(checked)} type="checkbox" name={name} defaultChecked={checked} className="size-5 accent-text-strong" />
         {label}
       </label>
       {help && <p className="text-sm text-text-muted">{help}</p>}
@@ -171,7 +171,7 @@ export function ImageField({ folder, recordId, ...props }: ImageFieldProps) {
         </div>
       )}
       <div className="flex flex-wrap items-center gap-4">
-        <label className={`inline-flex min-h-11 cursor-pointer items-center rounded-sm border border-border-strong px-5 text-sm font-medium text-white focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-white hover:border-text-muted ${busy ? 'pointer-events-none opacity-60' : ''}`}>
+        <label className={`inline-flex min-h-11 cursor-pointer items-center rounded-sm border border-border-strong px-5 text-sm font-medium text-text-strong focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-white hover:border-text-muted ${busy ? 'pointer-events-none opacity-60' : ''}`}>
           {url ? 'Replace image' : 'Choose image'}
           <input
             id={props.name}

@@ -206,6 +206,15 @@ Calmer than the public site. Every effect follows a state the server has already
 
 **No dependencies were added.**
 
+## Appearance switching (17 Nov 2026)
+
+- **Purpose:** choosing Light or Dark should feel like the page changing ink, not flashing.
+- **Trigger:** a choice in the appearance selector, or the device switching while System is chosen.
+- **Timing:** colour, background colour, border colour, fill and stroke ease linearly over 150ms. They ease only while `data-theme-switching` sits on `<html>` (200ms). Transforms, opacity and every existing animation are untouched. The first paint never animates, because the head script sets the theme before it.
+- **Reduced motion:** the switch is instant.
+- **Cost:** one attribute and a CSS rule; no JavaScript animation.
+- **In both themes:** every effect above runs unchanged. On light, small mint marks (the nav marker, live dots, the board's traces and outlines) use deep mint, so they stay visible on paper. The blocks keep official Mint. See `docs/DESIGN.md`, Appearance.
+
 ## Rules for new motion
 
 1. Content is in the server HTML and readable with no CSS animation and no JavaScript.

@@ -35,7 +35,7 @@ export function Empty({ children }: { children: ReactNode }) {
 type MoveButtonsProps = { name: string; onUp: () => Promise<void>; onDown: () => Promise<void> };
 
 export function MoveButtons({ name, onUp, onDown }: MoveButtonsProps) {
-  const classes = 'flex size-11 items-center justify-center text-text-muted hover:text-white';
+  const classes = 'flex size-11 items-center justify-center text-text-muted hover:text-text-strong';
   return (
     <div className="flex">
       <form action={onUp}>
@@ -55,7 +55,7 @@ export function MoveButtons({ name, onUp, onDown }: MoveButtonsProps) {
 export function ToggleButton({ action, label }: { action: () => Promise<void>; label: string }) {
   return (
     <form action={action}>
-      <button type="submit" className="min-h-11 text-sm font-medium text-text-muted underline underline-offset-4 hover:text-white">
+      <button type="submit" className="min-h-11 text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text-strong">
         {label}
       </button>
     </form>

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Role } from '@/lib/auth-rules';
+import { AppearanceRow } from '@/components/ui/ThemeSelector';
 import { SidebarNav } from './SidebarNav';
 import { SignOutButton } from './SignOutButton';
 
@@ -50,11 +51,12 @@ export function Sidebar({ role, email }: { role: Role; email: string }) {
         groups={groups}
         footer={
           <div className="mt-4 border-t border-border pt-4 lg:mt-8">
-            <Link href="/builder" className="flex min-h-10 items-center text-sm font-medium text-text-muted hover:text-white">
+            <Link href="/builder" className="flex min-h-10 items-center text-sm font-medium text-text-muted hover:text-text-strong">
               Builder portal
             </Link>
             <p className="truncate text-sm text-text-muted">{email}</p>
             <SignOutButton />
+            <AppearanceRow className="mt-4" />
           </div>
         }
       />

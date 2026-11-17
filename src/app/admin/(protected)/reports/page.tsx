@@ -13,7 +13,7 @@ function Figure({ label, value, hint }: { label: string; value: number; hint?: s
   return (
     <div className="rounded-md border border-border bg-card p-4">
       <p className="text-sm text-text-muted">{label}</p>
-      <p className="font-display text-3xl text-white">{value}</p>
+      <p className="font-display text-3xl text-text-strong">{value}</p>
       {hint && <p className="mt-1 text-xs text-text-muted">{hint}</p>}
     </div>
   );

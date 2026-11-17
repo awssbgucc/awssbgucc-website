@@ -35,7 +35,7 @@ export default async function ChallengesPage() {
                 </p>
                 {status.has(c.id) ? <StatusBadge status={status.get(c.id)!} /> : c.startsAt <= now && c.endsAt >= now ? <Badge tone="cyan">Open</Badge> : null}
               </div>
-              <p className="mt-3 text-lg font-semibold text-white">{c.title}</p>
+              <p className="mt-3 text-lg font-semibold text-text-strong">{c.title}</p>
               <p className="mt-2 line-clamp-2 text-sm text-text-muted">{c.summary}</p>
               <p className="type-label mt-4 text-text-muted">{c._count.submissions} approved</p>
             </Link>

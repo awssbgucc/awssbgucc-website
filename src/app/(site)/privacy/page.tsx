@@ -60,7 +60,7 @@ export default async function PrivacyPage() {
         <p className="mt-4 text-text-muted">For the public site and the builder portal. Questions go to {email}.</p>
         {SECTIONS.map((section) => (
           <section key={section.title} className="mt-10">
-            <h2 className="text-lg font-semibold text-white">{section.title}</h2>
+            <h2 className="text-lg font-semibold text-text-strong">{section.title}</h2>
             {section.body.map((paragraph) => (
               <p key={paragraph} className="mt-3 text-text-muted">
                 {paragraph}

@@ -31,7 +31,7 @@ export default async function SubmissionsPage({ searchParams }: Props) {
             key={s}
             href={`/admin/submissions?status=${s}${params.challenge ? `&challenge=${params.challenge}` : ''}`}
             aria-current={s === status ? 'page' : undefined}
-            className={`min-h-10 rounded-full border px-3.5 py-2 text-sm font-medium ${s === status ? 'border-white text-white' : 'border-border-strong text-text-muted hover:text-white'}`}
+            className={`min-h-10 rounded-full border px-3.5 py-2 text-sm font-medium ${s === status ? 'border-text-strong text-text-strong' : 'border-border-strong text-text-muted hover:text-text-strong'}`}
           >
             <StatusBadge status={s} />
           </Link>

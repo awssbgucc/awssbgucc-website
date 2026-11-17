@@ -34,7 +34,7 @@ export default async function ProjectsPage() {
         ) : (
           <div className="projects-empty">
             <div className="projects-empty-copy" data-reveal="rise">
-              <p className="type-label text-sbg-magenta">Share your work</p>
+              <p className="type-label text-magenta">Share your work</p>
               <h2 className="section-title">The first project here could be yours.</h2>
               <p>
                 If you have built something at one of our sessions or on your own, share it through the Builder Portal with a screenshot, the AWS

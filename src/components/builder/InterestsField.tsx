@@ -16,7 +16,7 @@ export function InterestsField({ selected }: { selected: string[] }) {
         {INTERESTS.map((interest) => (
           <label key={interest} className="cursor-pointer">
             <input type="checkbox" name="interests" value={interest} defaultChecked={picked.includes(interest)} className="peer sr-only" />
-            <span className="inline-flex min-h-10 items-center rounded-full border border-border-strong px-3.5 text-sm font-medium text-text-muted transition-colors duration-150 ease-brand peer-checked:border-lime peer-checked:bg-lime/8 peer-checked:text-lime peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-cyan hover:text-white">
+            <span className="inline-flex min-h-10 items-center rounded-full border border-border-strong px-3.5 text-sm font-medium text-text-muted transition-colors duration-150 ease-brand peer-checked:border-lime peer-checked:bg-lime/8 peer-checked:text-lime peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus hover:text-text-strong">
               {interest}
             </span>
           </label>

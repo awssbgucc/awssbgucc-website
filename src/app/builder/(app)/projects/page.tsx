@@ -31,7 +31,7 @@ export default async function MyProjectsPage() {
             <li key={project.id}>
               <Link href={`/builder/projects/${project.id}`} className="flex flex-wrap items-center justify-between gap-3 py-4 transition-colors duration-150 ease-brand hover:bg-card/60">
                 <span className="min-w-0">
-                  <span className="block font-semibold text-white">{project.title}</span>
+                  <span className="block font-semibold text-text-strong">{project.title}</span>
                   <span className="type-label block text-text-muted">Updated {formatDate(project.updatedAt)}</span>
                 </span>
                 <StatusBadge status={project.status} />

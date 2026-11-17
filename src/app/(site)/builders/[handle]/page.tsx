@@ -76,7 +76,7 @@ export default async function BuilderProfilePage({ params }: Props) {
               <ul className="mt-3 grid gap-3 sm:grid-cols-2">
                 {achievements.map(({ achievement, awardedAt }) => (
                   <li key={achievement.id} className="rounded-md border border-lime/40 p-4">
-                    <p className="font-semibold text-white">{achievement.title}</p>
+                    <p className="font-semibold text-text-strong">{achievement.title}</p>
                     <p className="mt-1 text-sm text-text-muted">{achievement.description}</p>
                     <p className="type-label mt-2 text-text-muted">{formatDate(awardedAt)}</p>
                   </li>

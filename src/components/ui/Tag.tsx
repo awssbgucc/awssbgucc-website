@@ -5,8 +5,8 @@ export type EventTag = 'BOOTCAMP' | 'BUILD' | 'TALK' | 'NETWORKING' | 'COMMUNITY
 
 const TAGS: Record<EventTag, { label: string; classes: string }> = {
   BOOTCAMP: { label: 'Bootcamp', classes: 'border-purple/50 bg-purple/10 text-lavender' },
-  BUILD: { label: 'Build session', classes: 'border-sbg-magenta/40 bg-sbg-magenta/8 text-sbg-magenta' },
-  TALK: { label: 'Talk', classes: 'border-sbg-blue/40 bg-sbg-blue/8 text-sbg-blue' },
+  BUILD: { label: 'Build session', classes: 'border-magenta/40 bg-magenta/8 text-magenta' },
+  TALK: { label: 'Talk', classes: 'border-blue/40 bg-blue/8 text-blue' },
   NETWORKING: { label: 'Networking', classes: 'border-lime/40 bg-lime/8 text-lime' },
   COMMUNITY_DAY: { label: 'Community Day', classes: 'border-sky/40 bg-sky/8 text-sky' },
 };

@@ -40,7 +40,7 @@ export default async function ChallengePage({ params }: Props) {
 
   return (
     <>
-      <Link href="/builder/challenges" className="type-label inline-flex min-h-11 items-center text-text-muted hover:text-white">
+      <Link href="/builder/challenges" className="type-label inline-flex min-h-11 items-center text-text-muted hover:text-text-strong">
         All challenges
       </Link>
       <h1 className="type-section mt-2 max-w-[24ch]">{challenge.title}</h1>
@@ -83,7 +83,7 @@ export default async function ChallengePage({ params }: Props) {
             {submission?.feedback && (
               <div className="mb-5 rounded-sm border border-border-strong p-4">
                 <p className="type-label text-text-muted">Reviewer feedback</p>
-                <p className="mt-2 text-sm whitespace-pre-line text-white">{submission.feedback}</p>
+                <p className="mt-2 text-sm whitespace-pre-line text-text-strong">{submission.feedback}</p>
                 {submission.score !== null && (
                   <p className="mt-2 font-display text-sm text-lime">
                     Score {submission.score} of {challenge.maxScore}

@@ -32,12 +32,12 @@ export default async function AttendancePage({ params, searchParams }: Props) {
   const link = event.checkInCode ? `${SITE_URL}/builder/check-in?event=${event.slug}&code=${event.checkInCode}` : null;
   const qr = link ? await QRCode.toDataURL(link, { margin: 1, width: 640, color: { dark: '#161d26', light: '#ffffff' } }) : null;
 
-  // The projector view: the code and the QR code, large, and nothing else.
+  // The projector view: the code and the QR code, large, and nothing else. Dark in both themes, for a projector.
   if (display && event.checkInCode && qr) {
     return (
-      <div className="flex min-h-[80dvh] flex-col items-center justify-center gap-10 text-center">
+      <div data-theme="dark" className="projector-view flex min-h-[80dvh] flex-col items-center justify-center gap-10 rounded-md text-center">
         <p className="type-label text-lime">Check in: {event.title}</p>
-        <p className="font-display text-7xl font-medium tracking-[0.25em] text-white sm:text-9xl">{event.checkInCode}</p>
+        <p className="font-display text-7xl font-medium tracking-[0.25em] text-text-strong sm:text-9xl">{event.checkInCode}</p>
         {/* eslint-disable-next-line @next/next/no-img-element -- a generated data URL, not a remote image */}
         <img src={qr} alt="QR code for check-in" className="w-64 rounded-md bg-white p-3 sm:w-80" />
         <p className="max-w-[40ch] text-lg text-text-muted">Sign in at the builder portal, open Check in, and enter the code. Or scan the QR code.</p>
@@ -74,7 +74,7 @@ export default async function AttendancePage({ params, searchParams }: Props) {
                 <div className="mt-6 flex flex-wrap items-center gap-8">
                   <div>
                     <p className="type-label text-text-muted">Code</p>
-                    <p className="font-display text-5xl font-medium tracking-[0.2em] text-white">{event.checkInCode}</p>
+                    <p className="font-display text-5xl font-medium tracking-[0.2em] text-text-strong">{event.checkInCode}</p>
                     {event.checkInOpensAt && event.checkInClosesAt && (
                       <p className="mt-2 font-display text-xs text-text-muted">
                         {formatDate(event.checkInOpensAt)} {formatTime(event.checkInOpensAt)} to {formatDate(event.checkInClosesAt)} {formatTime(event.checkInClosesAt)}

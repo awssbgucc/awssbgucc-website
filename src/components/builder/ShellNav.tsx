@@ -24,7 +24,7 @@ const ALL = NAV_GROUPS.flatMap((group) => group.items);
 function Count({ value }: { value: number }) {
   if (value === 0) return null;
   return (
-    <span className="ml-auto rounded-full bg-lime px-1.5 font-display text-[11px] leading-5 font-medium text-bg">
+    <span className="ml-auto rounded-full bg-sbg-mint px-1.5 font-display text-[11px] leading-5 font-medium text-grey-850">
       <span className="sr-only">, </span>
       {value > 99 ? '99+' : value}
       <span className="sr-only"> unread</span>
@@ -48,7 +48,7 @@ export function SidebarNav({ unread }: { unread: number }) {
                   <Link
                     href={href}
                     aria-current={active ? 'page' : undefined}
-                    className={`flex min-h-10 items-center gap-3 rounded-sm px-3 text-sm font-medium transition-colors duration-150 ease-brand ${active ? 'bg-card-raised text-white' : 'text-text-muted hover:bg-card hover:text-white'}`}
+                    className={`flex min-h-10 items-center gap-3 rounded-sm px-3 text-sm font-medium transition-colors duration-150 ease-brand ${active ? 'bg-card-raised text-text-strong' : 'text-text-muted hover:bg-card hover:text-text-strong'}`}
                   >
                     <Icon aria-hidden size={16} className={active ? 'text-lime' : ''} />
                     {label}
@@ -93,7 +93,7 @@ export function MobileNav({ unread, footer }: { unread: number; footer: ReactNod
             const active = isActive(pathname, href);
             return (
               <li key={href}>
-                <Link href={href} aria-current={active ? 'page' : undefined} className={`flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium ${active ? 'text-white' : 'text-text-muted'}`}>
+                <Link href={href} aria-current={active ? 'page' : undefined} className={`flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium ${active ? 'text-text-strong' : 'text-text-muted'}`}>
                   <Icon aria-hidden size={18} className={active ? 'text-lime' : ''} />
                   {label}
                 </Link>
@@ -106,7 +106,7 @@ export function MobileNav({ unread, footer }: { unread: number; footer: ReactNod
               aria-expanded={open}
               aria-controls="builder-more"
               onClick={() => setOpen(!open)}
-              className={`relative flex min-h-14 w-full flex-col items-center justify-center gap-1 text-[11px] font-medium ${moreActive || open ? 'text-white' : 'text-text-muted'}`}
+              className={`relative flex min-h-14 w-full flex-col items-center justify-center gap-1 text-[11px] font-medium ${moreActive || open ? 'text-text-strong' : 'text-text-muted'}`}
             >
               {open ? <X aria-hidden size={18} /> : <MoreHorizontal aria-hidden size={18} className={moreActive ? 'text-lime' : ''} />}
               More

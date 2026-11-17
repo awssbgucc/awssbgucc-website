@@ -23,7 +23,7 @@ export default async function NotificationsPage() {
         action={
           unread > 0 ? (
             <form action={markAllRead}>
-              <button type="submit" className="min-h-11 rounded-sm border border-border-strong px-4 text-sm font-medium text-white hover:border-text-muted">
+              <button type="submit" className="min-h-11 rounded-sm border border-border-strong px-4 text-sm font-medium text-text-strong hover:border-text-muted">
                 Mark all as read
               </button>
             </form>
@@ -39,7 +39,7 @@ export default async function NotificationsPage() {
               <div className="flex gap-4 py-4">
                 <span aria-hidden className={`mt-2 size-2 shrink-0 rounded-full ${n.readAt ? 'bg-transparent' : 'bg-lime'}`} />
                 <div className="min-w-0">
-                  <p className={`font-medium ${n.readAt ? 'text-text-muted' : 'text-white'}`}>
+                  <p className={`font-medium ${n.readAt ? 'text-text-muted' : 'text-text-strong'}`}>
                     {!n.readAt && <span className="sr-only">Unread: </span>}
                     {n.title}
                   </p>

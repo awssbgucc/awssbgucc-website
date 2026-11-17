@@ -34,7 +34,7 @@ export default async function RewardsPage() {
         action={
           <div className="rounded-md border border-border bg-card px-5 py-3 text-right">
             <p className="type-label text-text-muted">Balance</p>
-            <p className="font-display text-3xl font-medium text-white">{credits}</p>
+            <p className="font-display text-3xl font-medium text-text-strong">{credits}</p>
           </div>
         }
       />
@@ -57,7 +57,7 @@ export default async function RewardsPage() {
                       {reward.kind === 'BANNER' && reward.value && <div className={`banner-${reward.value} h-20 rounded-t-md border-b border-border`} aria-hidden />}
                       <div className="flex flex-1 flex-col p-5">
                         <div className="flex items-start justify-between gap-3">
-                          <p className="font-semibold text-white">{reward.name}</p>
+                          <p className="font-semibold text-text-strong">{reward.name}</p>
                           <span className="shrink-0 font-display text-sm text-lime">{reward.cost} cr</span>
                         </div>
                         <p className="mt-2 flex-1 text-sm text-text-muted">{reward.description}</p>
@@ -83,7 +83,7 @@ export default async function RewardsPage() {
             {redemptions.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
                 <div className="min-w-0">
-                  <p className="font-medium text-white">{r.reward.name}</p>
+                  <p className="font-medium text-text-strong">{r.reward.name}</p>
                   <p className="type-label text-text-muted">
                     {formatDate(r.createdAt)}, {r.cost} credits{r.status === 'CANCELLED' ? ', refunded' : ''}
                   </p>

@@ -26,7 +26,7 @@ export function SidebarNav({ groups, footer }: { groups: NavGroup[]; footer: Rea
           aria-expanded={open}
           aria-controls="admin-menu"
           onClick={() => setOpen(!open)}
-          className="min-h-11 rounded-sm border border-border-strong px-4 text-sm font-medium text-white lg:hidden"
+          className="min-h-11 rounded-sm border border-border-strong px-4 text-sm font-medium text-text-strong lg:hidden"
         >
           {open ? 'Close' : 'Menu'}
         </button>
@@ -44,7 +44,7 @@ export function SidebarNav({ groups, footer }: { groups: NavGroup[]; footer: Rea
                       <Link
                         href={href}
                         aria-current={active ? 'page' : undefined}
-                        className={`flex min-h-10 items-center text-sm font-medium hover:text-white ${active ? 'text-white underline decoration-lime underline-offset-4' : 'text-text-muted'}`}
+                        className={`flex min-h-10 items-center text-sm font-medium hover:text-text-strong ${active ? 'text-text-strong underline decoration-lime underline-offset-4' : 'text-text-muted'}`}
                       >
                         {label}
                       </Link>

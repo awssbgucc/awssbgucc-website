@@ -46,17 +46,17 @@ export default async function CommunityPage({ searchParams }: Props) {
         <label htmlFor="q" className="sr-only">
           Search members and projects
         </label>
-        <input id="q" name="q" defaultValue={query} placeholder="Search by name, handle or technology" className="min-h-11 flex-1 rounded-sm border border-border-strong bg-bg px-3 text-base" />
+        <input id="q" name="q" defaultValue={query} placeholder="Search by name, handle or technology" className="min-h-11 flex-1 rounded-sm border border-input-border bg-input px-3 text-base" />
         <label htmlFor="interest" className="sr-only">
           Interest
         </label>
-        <select id="interest" name="interest" defaultValue={chosen} className="min-h-11 rounded-sm border border-border-strong bg-bg px-3 text-base">
+        <select id="interest" name="interest" defaultValue={chosen} className="min-h-11 rounded-sm border border-input-border bg-input px-3 text-base">
           <option value="">Any interest</option>
           {INTERESTS.map((i) => (
             <option key={i}>{i}</option>
           ))}
         </select>
-        <button type="submit" className="min-h-11 rounded-sm bg-white px-5 text-sm font-medium text-bg hover:bg-white/90">
+        <button type="submit" className="min-h-11 rounded-sm bg-primary px-5 text-sm font-medium text-on-primary hover:bg-primary/90">
           Search
         </button>
       </form>
@@ -74,11 +74,11 @@ export default async function CommunityPage({ searchParams }: Props) {
                 <Avatar name={m.displayName} accent={m.accentKey} frame={m.frameKey} />
                 <div className="min-w-0">
                   {m.visibility === 'PUBLIC' ? (
-                    <Link href={`/builders/${m.handle}`} className="font-semibold text-white underline-offset-4 hover:underline">
+                    <Link href={`/builders/${m.handle}`} className="font-semibold text-text-strong underline-offset-4 hover:underline">
                       {m.displayName}
                     </Link>
                   ) : (
-                    <p className="font-semibold text-white">{m.displayName}</p>
+                    <p className="font-semibold text-text-strong">{m.displayName}</p>
                   )}
                   <p className="font-display text-xs text-text-muted">@{m.handle}</p>
                   {m.programme && <p className="mt-1 text-sm text-text-muted">{m.programme}</p>}
@@ -107,7 +107,7 @@ export default async function CommunityPage({ searchParams }: Props) {
             {projects.map((p) => (
               <li key={p.id}>
                 <Link href={`/projects/${p.slug}`} className="block h-full rounded-md border border-border bg-card p-4 transition-colors duration-150 ease-brand hover:border-border-strong">
-                  <p className="font-semibold text-white">{p.title}</p>
+                  <p className="font-semibold text-text-strong">{p.title}</p>
                   <p className="mt-1 line-clamp-2 text-sm text-text-muted">{p.summary}</p>
                   <p className="type-label mt-3 text-text-muted">{p.stack.slice(0, 3).join(' · ')}</p>
                 </Link>

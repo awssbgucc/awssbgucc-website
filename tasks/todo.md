@@ -715,3 +715,141 @@ Joel: every photo in the ZIP goes in the event gallery, and From Code to Cloud g
 - [x] Neon: `--refresh` updated the event's photo list only (dry run, apply, rerun clean)
 - [x] typecheck, lint, check:copy, 217 unit tests; motion e2e now checks both strips (not run)
 - [x] Checked against Neon on a local server at 1280 and 375: event gallery 74 plus cover, no horizontal scroll; home strip drifts at 1280 and scrolls by swipe at 375
+
+## Light and dark appearance, 17 Nov 2026
+
+Joel's brief: add a designed light theme, keep the approved dark theme exactly as it is, and let visitors choose System, Light or Dark. No commit, push, deploy, schema, auth, copy or Neon change. Waiting for Joel's approval before any code.
+
+### What the audit found
+
+- Tokens live in `@theme` in `globals.css` (dark values). Utilities read them through `var()`, so one `[data-theme='light']` block can redefine them without touching components.
+- `--color-white` does two jobs: literal white, and "strongest text" (`text-white` 65 times in TSX, `var(--color-white)` 63 times in CSS), plus the primary button fill (`bg-white`, 11 times). In light mode those need dark ink, so they need their own semantic tokens.
+- Official fills and accent text share tokens. `--color-sbg-mint` is used as text 6 times in CSS and `text-sbg-*` 6 times in TSX; `--color-lime` is used as a fill (`bg-lime`, the check-in cell, the live dot). On a light surface the official fills fail even 3:1 (mint 1.5, blue 2.0, magenta 2.4, purple 3.3), so text and fills must split.
+- 20 raw `rgb()` literals in public.css and motion.css: Grey 850 at 85 to 97% (nav, captions, photo viewer), white at 2.5 to 16% (hovers, grid lines), black backdrops. `--ink: var(--color-bg)` is the text on brand blocks, which must stay Grey 850 in both themes.
+- Logo: the only wordmark on the site is white. The brand kit ships the same wordmark with Grey 850 lettering (the Brandmark Blue, Purple and Grey 850 SVGs, fill #161D26). The chip is purple and works on both.
+- Hardcoded elsewhere: `themeColor` in the root layout, the QR code colours (must stay dark on white for scanning), the OG image (stays dark).
+- No CSP, so an inline script in `<head>` can set the theme before first paint.
+
+### Approach
+
+- **Dark stays as it is.** Every dark token keeps its value. Every change to a component swaps one token for another with the same dark value (for example `text-white` to `text-strong`, both #ffffff in dark), so dark output cannot move. A computed-style and pixel diff against the baseline proves it.
+- **Two tiers of colour.**
+  - Brand fills (`--color-sbg-*`): identical in both themes. Blocks, cells, swatches, pixel icons, the map, the stripe, the Cape Coast marker.
+  - Accent text and lines (`--color-lime`, `purple`, `lavender`, `sky`, `cyan`, plus new `blue` and `magenta`): today's values in dark; deeper AA values in light. Text and 1px lines use these, fills use the first tier.
+- **New semantic tokens** (dark value in brackets, so dark is unchanged): `text-strong` (#ffffff), `primary` and `on-primary` (#ffffff, #161d26), `grey-850` fixed (#161d26, block text and photo scrims), `blue` (#42b4ff), `magenta` (#ff57e9), `focus` (cyan), `nav-bg`, `overlay`, `scrim`, `hover-tint`, `grid-line`, `input-bg`, `input-border`, `shadow`, `success`, `warning`, `danger`.
+- **Mechanism.** `<html data-theme="dark|light" data-theme-pref="system|light|dark">`. A small inline script in `<head>` reads `localStorage['sbg-theme']` and `prefers-color-scheme`, then sets both attributes and `color-scheme` before paint. `suppressHydrationWarning` on `<html>` only. A `matchMedia` listener follows OS changes while System is chosen. No cookie, no database, no dependency. Without JavaScript the site shows dark, today's approved look.
+- **Selector.** One `ThemeSelector` client component: three icon buttons (Monitor, Sun, Moon) in a radiogroup, arrow keys move, 44px targets, a label per option, the active option shown by fill and `aria-checked`, not colour alone. Placed in the public header (desktop), the mobile sheet, the portal rail and phone top bar, the admin sidebar, and the sign-in pages.
+- **Switching.** A 150ms colour transition on `body`, the header and cards, only while switching (a class held for one frame), off under reduced motion. No `transition: all`.
+
+### Light palette (proposal, contrast measured)
+
+Warm paper with Grey 850 ink, the inverse of the official kit's two panel colours. Hairlines in Grey 850 alpha, not grey hex, so they sit in the paper. Shadows only on overlays (menu sheet, dialogs, dropdowns), never on cards, as in dark.
+
+| Token | Light | Note |
+|---|---|---|
+| bg | #f4f2ed | Paper |
+| bg-alt | #ebe8e1 | Alternating bands |
+| card | #fbfaf7 | |
+| card-raised | #ffffff | The only pure white surface |
+| border / border-strong | Grey 850 at 10% / 20% | |
+| text / text-strong | #1f2731 / #161d26 | 13.5:1 and 15.2:1 on bg |
+| text-muted | #525c69 | 5.6:1 on bg-alt, the worst case |
+| text-faint | #7d8591 | Non-text only, as in dark |
+| primary / on-primary | #161d26 / #ffffff | Grey 850 button, the inverse of the dark theme's white button |
+| lime (mint text) | #00774a | 4.6 to 5.6:1 |
+| purple / lavender / sky | #7b33d1 / #5f45b8 / #2b5fae | 5.1:1 or better |
+| blue / cyan / magenta | #0a6aa8 / #00728a / #a81690 | 4.55:1 or better |
+| danger | #b42318 | 5.4:1 or better |
+| focus | #00728a | 2px ring, about 5:1 against paper |
+
+### Decisions for Joel
+
+1. **Dark wordmark.** Make `public/brand/sbg-wordmark-grey850.svg` from the kit's Grey 850 lettering, trimmed exactly like the approved white one (panel dropped, outlines copied byte for byte), shown only in light mode. COMPLIANCE rule 1 forbids recolouring; this is the kit's own variant, not a recolour. I recommend yes.
+2. **New tokens and the palette above.** CLAUDE.md asks before changing brand tokens. Dark values do not change; the brand fills do not change in either theme.
+3. **Surfaces that stay dark in both themes:** the photo viewer, text scrims on photographs, the QR code panel (white behind dark modules), the projector check-in view, and the OG image. Reason: photographs and scanning, not style. I recommend yes.
+4. **Cape Coast marker in light.** Official mint on paper is 1.5:1. Keep the mint cell and add a 1px Grey 850 outline around the lit cell and its pulse ring in light mode only, so it reads at 3:1 or better. The "CAPE COAST" label already carries the meaning in text.
+5. **DESIGN.md** says "No light theme in v1" and "Dark first". This work replaces those lines with the appearance rules.
+
+### Plan (after approval)
+
+Baseline
+
+- [x] Start a local PGlite database and `next start` on its own port from HEAD 610bf67 (working tree clean); never Neon
+- [x] Dark baseline: full-page screenshots at 375, 768, 1280 and 1440 of home, events, an event page, projects, a project, team, partners, blog, a post, the 404, sign-in, the portal (dashboard, sessions, check-in, challenges, rewards, profile, settings) and admin (dashboard, events, event editor, attendance, members, audit, settings); plus computed colours of about 40 key elements. Saved under `review/theme/baseline/`, not committed
+
+Tokens and mechanism
+
+- [x] Add the new semantic tokens to `@theme` with today's dark values; add the `[data-theme='light']` block
+- [x] Theme script in the root layout `<head>`, `suppressHydrationWarning`, `themeColor` per scheme
+- [x] `src/lib/theme.ts` (storage key, resolve, apply) with Vitest tests
+- [x] `ThemeSelector` component
+
+Semantic swaps (no change in dark, file by file)
+
+- [x] `text-white` and `var(--color-white)` used as strongest text to `text-strong`; literal white on photos and QR stays white
+- [x] `bg-white text-bg` buttons to `bg-primary text-on-primary` (Button, portal, admin)
+- [x] Fills from `lime` to `sbg-mint`; text from `sbg-*` to the accent text tokens
+- [x] The 20 raw `rgb()` literals to tokens (`nav-bg`, `scrim`, `overlay`, `hover-tint`, `grid-line`); `--ink` to `grey-850`
+- [x] Wordmark: both files in the markup, one hidden per theme by CSS, so there is no flash and no client logic (if decision 1 is approved)
+- [x] Banners, the hero grid, the board, the staircase, the reel, the gallery, editions and the portal feedback cells checked for alpha-white lines
+
+Light design pass
+
+- [x] Public: header and mobile sheet, hero (photo mosaic, build field colours, cursor), staircase, board, map section, events, flyers, galleries, projects, team, partners, blog, footer, empty and error states, 404
+- [x] Portal: shell, onboarding, dashboard, sessions, check-in and QR, materials, challenges, submissions, leaderboard, projects, progress, participation grid, calendar, achievements, rewards, profile banners, directory, notifications, settings, export and deletion
+- [x] Admin: sidebar, tables, forms, status pills, confirm steps, toasts, dropdowns, attendance, reports, audit, settings
+- [x] Map marker outline in light (decision 4)
+
+Verify (one process at a time, one Playwright worker)
+
+- [x] Dark: pixel diff against the baseline at all four widths; fix any change before going on
+- [x] Contrast enforced in theme.test.ts; axe (WCAG 2.2 AA) on 33 routes in both themes at 375 and 1280, plus menu, selector hover and focus, and the open viewer
+- [x] New e2e spec `theme.spec.ts`: system dark, system light, manual light and dark, back to System, OS change while System, survives refresh and navigation, public to portal, public to admin, no hydration warning, first-paint background matches the theme, mobile menu, photo viewer, reduced motion
+- [x] typecheck, lint, check:copy, unit tests (253), production build
+- [x] Screenshots of both themes at 375, 768, 1280 and 1440; a side-by-side review page for Joel
+- [x] DESIGN.md appearance section; MOTION_SYSTEM.md note on theme switching
+
+Risks to the dark theme
+
+- A swap where the old and new dark values differ. Guard: every new token's dark value is the old one, and the pixel diff catches the rest.
+- Tailwind opacity modifiers (`bg-lime/8`) on a changed token change hue in light only; dark is unaffected.
+- `suppressHydrationWarning` hides only attribute warnings on `<html>`; the e2e test checks the console for any others.
+- Memory: baseline and after captures run against one `next start` at a time.
+
+Progress, 17 Nov 2026
+
+- Dark verified against the baseline (HEAD 610bf67, 209 full-page captures at 375, 768, 1280 and 1440, local database):
+  - 132 captures pixel-identical. The other 77 differ only where the selector was added: the header from 1280px, the portal rail, the sign-in corners, onboarding, the mobile menu and the More sheet.
+  - The photo viewer, which the first baseline never opened, is pixel-identical to a build of the untouched commit.
+  - Computed colour, border, type, spacing, opacity and shadow are identical on all 204 pages; the animation lists are identical on all 204.
+  - Box differences are the selector rows, or the scroll-linked header and footer strip, which also varied between two baseline runs.
+- Fixed on the way, after the first comparison:
+  - The header selector had pushed the nav links 45px left; it is now positioned outside the flex layout.
+  - The member sign-in selector had wrapped the campus name at 375; it now sits in the corner of the sign-in column.
+  - The onboarding and dashboard sign-in selectors had moved centred content; now positioned.
+- Note: when the system stops a background `next start` on low memory, the Node server can keep running. Check port 3211 before rebuilding, or it serves a replaced build and caches stale pages.
+
+Review, 17 Nov 2026
+
+- Light: 210 full-page captures at 375, 768, 1280 and 1440 with no console or hydration errors. The QR code and projector views were also captured in both themes, using a local fixture session with check-in open. Side by side with dark in `review/theme/review.html` (local, not committed).
+- Accessibility: axe found no contrast, focus or name problems from the themes; the results are identical in dark and light. Four findings predate this work and are untouched:
+  - the project page's facts list holds a link directly;
+  - the portal phone header's avatar link is named "Your profile" but shows initials;
+  - the progress calendar scrolls without being focusable;
+  - an `aria-label` sits on a plain `div` in the project and event forms.
+- End to end, production build, one worker. Every spec passed, with skips by design:
+
+  | Spec | Passed |
+  |---|---|
+  | theme | 18 |
+  | site, redesign and theme together | 58 |
+  | motion | 22 |
+  | admin and boundaries | 22 |
+  | journeys | 16 |
+  | production-only | 10 |
+
+- Fixed after the e2e run: the phone menu's focus trap counted the unchosen appearance radios (tabindex -1) as its last stop, so Tab could leave the sheet. They are now skipped.
+- The boundaries spec first failed on a damaged local database file, after the system stopped the database mid-write. It passed on a fresh local database.
+- Pre-existing, not changed: the projector view's code is wider than a 375px screen. It overflows in dark too, so the fix belongs to its own task.
+- No dependencies added. Shared first-load JS is unchanged at 102 kB; CSS grew by about 6 KB.
+- Nothing committed, pushed or deployed. Nothing written to Neon or AWS. The temporary worktree of the untouched commit has been removed.

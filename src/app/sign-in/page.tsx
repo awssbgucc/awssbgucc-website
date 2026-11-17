@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { GoogleSignIn } from '@/components/admin/GoogleSignIn';
 import { BrandMark } from '@/components/ui/BrandMark';
+import { ThemeSelector } from '@/components/ui/ThemeSelector';
 import { SIGN_IN_ERRORS, type SignInError } from '@/lib/auth-rules';
 import { sessionUser } from '@/lib/member';
 
@@ -34,7 +35,7 @@ export default async function MemberSignInPage({ searchParams }: Props) {
             <ul className="mt-10 hidden gap-6 sm:grid sm:grid-cols-2">
               {WHAT_YOU_DO.map(([title, copy]) => (
                 <li key={title} className="border-t border-border pt-4">
-                  <p className="font-semibold text-white">{title}</p>
+                  <p className="font-semibold text-text-strong">{title}</p>
                   <p className="mt-1 text-sm text-text-muted">{copy}</p>
                 </li>
               ))}
@@ -42,7 +43,9 @@ export default async function MemberSignInPage({ searchParams }: Props) {
           </div>
           <p className="text-sm text-text-muted">You still RSVP for events on Meetup. The portal keeps a record of what you do at and after each session.</p>
         </section>
-        <section className="flex items-center px-6 py-12 lg:px-12">
+        <section className="relative flex items-center px-6 py-12 lg:px-12">
+          {/* In the corner of the sign-in column, so nothing that was already on the page moves. */}
+          <ThemeSelector className="absolute top-3 right-6 lg:right-12" />
           <div className="w-full max-w-sm">
             <h2 className="type-section">Sign in</h2>
             <p className="mt-3 text-text-muted">Use your Google account. New here? Signing in creates your member account, and the next screen sets up your profile.</p>

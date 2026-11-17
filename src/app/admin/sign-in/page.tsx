@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { GoogleSignIn } from '@/components/admin/GoogleSignIn';
+import { ThemeSelector } from '@/components/ui/ThemeSelector';
 import { NO_ACCESS_MESSAGE } from '@/lib/auth-rules';
 
 export const metadata: Metadata = { title: 'Sign in' };
@@ -12,13 +13,14 @@ type Props = { searchParams: Promise<{ error?: string }> };
 export default async function SignInPage({ searchParams }: Props) {
   const { error } = await searchParams;
   return (
-    <main className="flex min-h-dvh items-center justify-center p-6">
+    <main className="relative flex min-h-dvh items-center justify-center p-6">
+      <ThemeSelector className="absolute top-4 right-4" />
       {error ? (
         <div className="flex flex-col items-center gap-4 text-center">
           <p role="alert" className="font-medium">
             {NO_ACCESS_MESSAGE}
           </p>
-          <Link href="/builder" className="inline-flex min-h-11 items-center text-sm font-medium text-text-muted underline underline-offset-4 hover:text-white">
+          <Link href="/builder" className="inline-flex min-h-11 items-center text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text-strong">
             Go to the builder portal
           </Link>
         </div>

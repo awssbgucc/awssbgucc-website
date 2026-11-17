@@ -249,7 +249,7 @@ Joel asked for the design to go further when the builder portal was added. These
 
 ### The portal
 
-- Same tokens and type as the public site. No light theme.
+- Same tokens and type as the public site, in both appearances (see Appearance, 17 Nov 2026).
 - Desktop: a 256px left sidebar grouped Build, Record, Community, with the member's initials and handle at the bottom. Phones: a top bar and a five-item bottom bar (Home, Sessions, Check in, Challenges, More), with More opening a full sheet.
 - Profile customisation is built from tokens only: banners (`.banner-*` in globals.css), accent colours, frames and titles. No photos of members.
 - Motion: a 250ms fade-up on each portal view, a single lime flash on a successful check-in, nothing under reduced motion.
@@ -287,3 +287,108 @@ Supersedes the 10 Nov editorial revision for the public site. Reasons and the tw
   - Everything is CSS plus `RevealObserver`, one IntersectionObserver; no animation library. Under reduced motion nothing is hidden or moving.
   - Superseded on 13 Nov 2026 by `docs/MOTION_SYSTEM.md`: still no animation library, now with view transitions, scroll-driven CSS and one canvas. Read that file before adding motion.
 - **Rules kept.** No glow, gradients on text, floating blobs or lift-on-hover. Cards respond with a border change, an image scale or a growing corner block, never a shadow.
+
+## Appearance, 17 Nov 2026
+
+Supersedes "Dark first" and "No light theme" above. The site has two appearances: **dark**, the approved baseline, and **light**, designed to sit beside it as the same identity on paper. Joel approved the plan, the palette, the Grey 850 wordmark and the surfaces that stay dark (`tasks/todo.md`, Light and dark appearance).
+
+### How a visitor chooses
+
+- Three options: **System** (the default on a first visit), **Light** and **Dark**.
+- System follows the device's `prefers-color-scheme` and updates live when the device switches.
+- Light and Dark are kept in `localStorage['sbg-theme']` in that browser only; choosing System removes the key. Never stored in the database.
+- The choice holds across the public site, the Builder Portal and the dashboard, across refreshes and later visits, and across tabs.
+- Without JavaScript the light values still apply through a `prefers-color-scheme: light` media rule; with no device preference the site is dark.
+
+### How it works
+
+- `src/lib/theme.ts` holds a small script that the root layout inlines in `<head>`. Before the first paint it sets `<html data-theme="dark|light">` (what shows) and `data-theme-pref="system|light|dark"` (what was chosen). Only `<html>` carries `suppressHydrationWarning`.
+- The CSS reads only those attributes. No component checks the theme.
+- `src/styles/globals.css` keeps the dark values in `@theme`, exactly as before. One block, `:root[data-theme='light']`, redefines the tokens for light; a copy of it sits in the no-JavaScript media rule. `src/lib/theme.test.ts` fails if the two copies differ, if a light token has no dark value, or if a light value drops below the contrast targets.
+- Switching eases colour, background, border, fill and stroke for 150ms, only while `data-theme-switching` is on `<html>` (200ms), and not at all under reduced motion. Nothing else animates.
+- Browser chrome: one `theme-color` per `prefers-color-scheme`.
+
+### Token roles
+
+Every role below has the old dark value in dark, so the dark theme renders as before.
+
+| Role | Token | Dark | Light |
+|---|---|---|---|
+| Page | `--color-bg` | #161d26 | #f4f2ed paper |
+| Alternate band, admin and portal content | `--color-bg-alt` | #1a222d | #ebe8e1 |
+| Card | `--color-card` | #1d2630 | #fbfaf7 |
+| Raised surface | `--color-card-raised` | #232e3c | #ffffff, the only pure white surface |
+| Hairline / strong border | `--color-border` / `--color-border-strong` | white at 7% / 14% | Grey 850 at 11% / 22% |
+| Body text | `--color-text` | #e8ecf2 | #1f2731 |
+| Headings and strongest text | `--color-text-strong` | #ffffff | #161d26 |
+| Secondary text | `--color-text-muted` | #9aa5b4 | #525c69 |
+| Non-text only | `--color-text-faint` | #6b7685 | #7d8591 |
+| Primary button and its text | `--color-primary` / `--color-on-primary` | white / Grey 850 | Grey 850 / white |
+| Focus ring | `--color-focus` | #38d9f5 | #00657a |
+| Inputs | `--color-input` / `--color-input-border` | #161d26 / white at 14% | #ffffff / #7d8591 |
+| Header | `--color-nav` | Grey 850 at 94% | paper at 94% |
+| Hairline grid, hover, press, pending tints | `--color-grid-line`, `--color-hover-tint`, `--color-press-tint`, `--color-pending-tint` | white at 5%, 2.5%, 8%, 16% | Grey 850 at 6%, 3.5%, 6%, 12% |
+| Overlay | `--color-overlay` | black at 60% | Grey 850 at 40% |
+| Success / warning / error | `--color-success` / `--color-warning` / `--color-danger` | mint / sky / #f87171 | #00683f / #2b5fae / #b42318 |
+| Grey 850, both themes | `--color-grey-850` | #161d26 | #161d26 |
+
+Warning uses the sky tone of "Changes requested". There is no orange (COMPLIANCE rule 10).
+
+### Colour in two tiers
+
+1. **Brand fills** (`--color-sbg-purple`, `-mint`, `-blue`, `-magenta`) never change. Blocks, the staircase, the next-session block, swatches, pixel icons, corner blocks, the portal stripe and the footer steps look the same in both themes. Text on them is always `--color-grey-850`.
+2. **Role colours** (`--color-lime`, `-purple`, `-lavender`, `-sky`, `-cyan`, `-blue`, `-magenta`) are for text, lines up to 2px and small marks up to 12px: tags, badges, labels, the nav marker, live dots, bullets, board traces and outlines, participation cells. They equal the brand colour in dark and deepen in light, where the official colours fall to 1.5 to 3.3:1 on paper.
+
+So mint still means "here and now" in both themes: official Mint on the blocks, deep mint (#00683f) where it is text or a small mark. The board's `--tone` fills blocks and `--tone-line` draws traces and outlines.
+
+### Light palette and contrast
+
+Warm paper and Grey 850 ink: the two panel colours of the official kit. Hairlines are Grey 850 at low opacity, so they sit in the paper. Cards differ from the page by surface, not by shadow; there are no card shadows in either theme.
+
+Measured (and enforced by `theme.test.ts`):
+
+- **Body and strong text:** 12.3:1 or better.
+- **Muted text:** 5.5:1 on the darkest surface.
+- **Role colours:** 4.5:1 on every surface and on their own 8% tint.
+- **Interface edges:** the primary fill, input borders and focus ring are 3:1 or better on every surface.
+- **Brand blocks:** Grey 850 on any brand fill is at least 4.65:1.
+
+### Logo
+
+The white wordmark shows on dark and the kit's Grey 850 wordmark (`public/brand/sbg-wordmark-grey850.svg`, from the brandmark file named Magenta) on light. The outlines are identical byte for byte. The trim and view box are those of the approved white file. Both are in the markup; `.only-dark` and `.only-light` show one. The purple chip works on both. Never recolour either file.
+
+### Surfaces that stay dark
+
+The photo viewer, text set on photographs (hero captions, the About photo caption, project story captions) and the projector check-in view keep the dark tokens on a light page:
+
+- In CSS they are listed in the dark scope rule in `globals.css`.
+- In markup, `data-theme="dark"` on an element does the same.
+
+The check-in QR code keeps a white background with its quiet zone in both themes.
+
+### Pixel art in light
+
+- **Map:** the row colours come from the role tokens, so the map is purple to blue on paper.
+- **Cape Coast cell:** official Mint with a 1px Grey 850 outline in light only (`--marker-outline`). The halo, ring and label use deep mint.
+- **Crest and chip:** their own colours, unchanged.
+
+### The selector
+
+- **Component:** `ThemeSelector` in `src/components/ui/`, with three options (Monitor, Sun and Moon icons).
+- **Semantics and keyboard:** a radio group with `aria-label="Appearance"`. Arrow keys, Home and End move and choose, and only the chosen option is in the tab order.
+- **Chosen state:** a solid block, so it reads by shape as well as colour. CSS draws it from `data-theme-pref`, so it is right before hydration.
+- **Compact form:** 36px icon buttons.
+  - In the public header from 1280px it is positioned just left of the actions, outside the flex layout, so the links keep the place they had before.
+  - Member sign-in: the top-right corner of the sign-in column. Dashboard sign-in: the top-right corner of the page. Onboarding on phones: beside the step count.
+  - `AppearanceRow` adds the "Appearance" label in the portal rail, the dashboard sidebar and the onboarding side column.
+  - Every placement was chosen so nothing that existed before moves in the dark theme.
+- **Labelled form:** 44px with words, in the public phone menu and the portal's More sheet.
+- **Without JavaScript:** hidden.
+
+### Rules for new components
+
+- Use role tokens. Never `text-white`, `bg-white` or a raw `rgb()` for something that should follow the theme; literal white is for the QR code only.
+- Text and thin lines take role colours; large fills take brand colours with Grey 850 text.
+- A new tint or translucent surface needs a token with a dark value equal to what dark uses today, and a light value in the light block (both copies).
+- Content over a photograph goes in the dark scope.
+- Check every new screen in both themes at 375 and 1280 before calling it done.

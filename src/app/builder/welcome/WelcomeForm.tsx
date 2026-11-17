@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Button } from '@/components/ui/Button';
+import { AppearanceRow, ThemeSelector } from '@/components/ui/ThemeSelector';
 import type { FormState } from '@/lib/admin/forms';
 import { INTERESTS, LEVELS_OF_STUDY } from '@/lib/platform/customise';
 import { completeOnboarding } from '../actions/profile';
@@ -17,7 +18,7 @@ const STEPS = [
 // The step each field lives on, so a server error opens the right step.
 const FIELD_STEP: Record<string, number> = { displayName: 0, handle: 0, programme: 0, level: 0, department: 0, bio: 1, githubUrl: 1, linkedinUrl: 1, visibility: 2, referralCode: 2, acceptPrivacy: 2 };
 
-const INPUT = 'w-full min-h-11 rounded-sm border border-border-strong bg-bg px-3 py-2 text-base text-text aria-[invalid=true]:border-danger';
+const INPUT = 'w-full min-h-11 rounded-sm border border-input-border bg-input px-3 py-2 text-base text-text aria-[invalid=true]:border-danger';
 
 function Field({ id, label, help, error, children }: { id: string; label: string; help?: string; error?: string; children: React.ReactNode }) {
   return (
@@ -74,14 +75,14 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
 
   return (
     <div className="mx-auto grid min-h-dvh max-w-[1100px] lg:grid-cols-[320px_1fr]">
-      <aside className="border-b border-border px-6 py-8 lg:border-r lg:border-b-0 lg:py-16">
+      <aside className="relative border-b border-border px-6 py-8 lg:border-r lg:border-b-0 lg:py-16">
         <p className="type-label text-lime">Builder portal</p>
         <p className="mt-3 text-sm text-text-muted">Signed in as {email}</p>
         <ol className="mt-8 hidden flex-col gap-6 lg:flex">
           {STEPS.map((s, index) => (
             <li key={s.title} aria-current={index === step ? 'step' : undefined} className={`border-l-2 pl-4 ${index === step ? 'border-lime' : index < step ? 'border-border-strong' : 'border-border'}`}>
               <p className={`type-label ${index === step ? 'text-lime' : 'text-text-muted'}`}>Step {index + 1}</p>
-              <p className={`mt-1 font-semibold ${index === step ? 'text-white' : 'text-text-muted'}`}>{s.title}</p>
+              <p className={`mt-1 font-semibold ${index === step ? 'text-text-strong' : 'text-text-muted'}`}>{s.title}</p>
               {index === step && <p className="mt-2 text-sm text-text-muted">{s.why}</p>}
             </li>
           ))}
@@ -89,6 +90,11 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
         <p className="type-label mt-6 text-text-muted lg:hidden">
           Step {step + 1} of {STEPS.length}
         </p>
+        {/* Beside the step count on phones, positioned so the column keeps its height. */}
+        <ThemeSelector className="absolute right-6 bottom-[19px] lg:hidden" />
+        <div className="mt-12 hidden lg:block">
+          <AppearanceRow />
+        </div>
       </aside>
 
       {/* The key remounts the fields with what was typed after a failed save. */}
@@ -134,7 +140,7 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
               {INTERESTS.map((interest) => (
                 <label key={interest} className="cursor-pointer">
                   <input type="checkbox" name="interests" value={interest} defaultChecked={picked.includes(interest)} className="peer sr-only" />
-                  <span className="inline-flex min-h-10 items-center rounded-full border border-border-strong px-3.5 text-sm font-medium text-text-muted transition-colors duration-150 ease-brand peer-checked:border-lime peer-checked:bg-lime/8 peer-checked:text-lime peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-cyan hover:text-white">
+                  <span className="inline-flex min-h-10 items-center rounded-full border border-border-strong px-3.5 text-sm font-medium text-text-muted transition-colors duration-150 ease-brand peer-checked:border-lime peer-checked:bg-lime/8 peer-checked:text-lime peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus hover:text-text-strong">
                     {interest}
                   </span>
                 </label>
@@ -166,16 +172,16 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
               ['PUBLIC', 'Anyone', 'A public profile page with your approved projects and achievements.'],
             ].map(([value, label, help]) => (
               <label key={value} className="flex cursor-pointer gap-3 border-b border-border py-3">
-                <input type="radio" name="visibility" value={value} defaultChecked={v('visibility', 'PRIVATE') === value} className="mt-1 size-4 accent-white" />
+                <input type="radio" name="visibility" value={value} defaultChecked={v('visibility', 'PRIVATE') === value} className="mt-1 size-4 accent-text-strong" />
                 <span>
-                  <span className="block font-medium text-white">{label}</span>
+                  <span className="block font-medium text-text-strong">{label}</span>
                   <span className="block text-sm text-text-muted">{help}</span>
                 </span>
               </label>
             ))}
           </div>
           <label className="flex min-h-11 items-center gap-3 text-sm font-medium">
-            <input type="checkbox" name="showOnLeaderboards" defaultChecked={v('showOnLeaderboards') === 'on'} className="size-5 accent-white" />
+            <input type="checkbox" name="showOnLeaderboards" defaultChecked={v('showOnLeaderboards') === 'on'} className="size-5 accent-text-strong" />
             Show my name on challenge leaderboards
           </label>
           <Field id="referralCode" label="Referral code" help="Optional. If a member invited you, enter their code. They are credited when you attend your first session." error={err('referralCode')}>
@@ -183,7 +189,7 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
           </Field>
           <div>
             <label className="flex items-start gap-3 text-sm font-medium">
-              <input type="checkbox" name="acceptPrivacy" required className="mt-0.5 size-5 shrink-0 accent-white" aria-invalid={!!err('acceptPrivacy')} aria-describedby={err('acceptPrivacy') ? 'acceptPrivacy-error' : undefined} />
+              <input type="checkbox" name="acceptPrivacy" required className="mt-0.5 size-5 shrink-0 accent-text-strong" aria-invalid={!!err('acceptPrivacy')} aria-describedby={err('acceptPrivacy') ? 'acceptPrivacy-error' : undefined} />
               <span>
                 I have read the{' '}
                 <Link href="/privacy" target="_blank" className="underline underline-offset-4">

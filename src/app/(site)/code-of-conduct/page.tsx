@@ -25,7 +25,7 @@ export default async function CodeOfConductPage() {
         <dl className="mt-10 border-t border-border">
           {RULES.map(([title, body]) => (
             <div key={title} className="grid gap-2 border-b border-border py-5 sm:grid-cols-[200px_1fr] sm:gap-8">
-              <dt className="font-semibold text-white">{title}</dt>
+              <dt className="font-semibold text-text-strong">{title}</dt>
               <dd className="text-text-muted">
                 {body}
                 {title === 'Follow the event terms' && (
@@ -41,7 +41,7 @@ export default async function CodeOfConductPage() {
             </div>
           ))}
         </dl>
-        <h2 className="mt-10 text-lg font-semibold text-white">If something goes wrong</h2>
+        <h2 className="mt-10 text-lg font-semibold text-text-strong">If something goes wrong</h2>
         <p className="mt-3 text-text-muted">
           Tell any member of the core team, or email {email}. The team can remove submissions, check-ins and rewards, and suspend accounts. Every such action is recorded.
         </p>

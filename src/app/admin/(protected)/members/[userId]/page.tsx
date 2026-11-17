@@ -71,7 +71,7 @@ export default async function MemberPage({ params, searchParams }: Props) {
         ].map(([label, value]) => (
           <div key={label} className="rounded-md border border-border bg-card p-4">
             <p className="text-sm text-text-muted">{label}</p>
-            <p className="font-display text-2xl text-white">{value}</p>
+            <p className="font-display text-2xl text-text-strong">{value}</p>
           </div>
         ))}
       </div>
@@ -87,7 +87,7 @@ export default async function MemberPage({ params, searchParams }: Props) {
         ].map(([label, value]) => (
           <div key={label}>
             <dt className="text-text-muted">{label}</dt>
-            <dd className="text-white">{value}</dd>
+            <dd className="text-text-strong">{value}</dd>
           </div>
         ))}
       </dl>

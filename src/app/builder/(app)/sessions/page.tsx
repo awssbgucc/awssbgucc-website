@@ -31,7 +31,7 @@ export default async function SessionsPage() {
           {state === 'open' && !attended.has(event.id) && <Badge tone="cyan">Check-in open</Badge>}
           {event._count.resources > 0 && <Badge>{event._count.resources} materials</Badge>}
         </div>
-        <p className="mt-2 font-semibold text-white">{event.title}</p>
+        <p className="mt-2 font-semibold text-text-strong">{event.title}</p>
         <p className="mt-1 font-display text-xs text-text-muted">
           {formatTime(event.startsAt)}, {event.venue ?? 'Online'}
         </p>

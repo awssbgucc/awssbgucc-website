@@ -14,7 +14,7 @@ export function CopyButton({ value, label }: { value: string; label: string }) {
     }
   }
   return (
-    <button type="button" onClick={copy} className="min-h-11 text-sm font-medium text-text-muted underline underline-offset-4 hover:text-white">
+    <button type="button" onClick={copy} className="min-h-11 text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text-strong">
       <span aria-live="polite">{copied ? 'Copied' : label}</span>
     </button>
   );

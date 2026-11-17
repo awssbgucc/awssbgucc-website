@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { Link } from '@/components/site/motion/TransitionLink';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { ThemeSelector } from '@/components/ui/ThemeSelector';
 import { Cta } from './Cta';
 
 type Props = { meetupUrl: string; whatsappUrl: string | null; links: { href: string; label: string }[] };
@@ -52,7 +53,8 @@ export function MobileMenu({ meetupUrl, whatsappUrl, links }: Props) {
         onCancel={(event) => { event.preventDefault(); close(); }}
         onKeyDown={(event) => {
           if (event.key !== 'Tab') return;
-          const focusable = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+          // The appearance radios outside the chosen one are out of the tab order, so they are not the trap's ends.
+          const focusable = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not([disabled]):not([tabindex="-1"])'));
           const first = focusable[0];
           const last = focusable[focusable.length - 1];
           if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
@@ -81,6 +83,10 @@ export function MobileMenu({ meetupUrl, whatsappUrl, links }: Props) {
           <Cta href={meetupUrl} variant="mint">Join on Meetup</Cta>
           <Cta href="/builder" variant="line">Builder Portal</Cta>
           {whatsappUrl && <Cta href={whatsappUrl} variant="arrow">WhatsApp community</Cta>}
+        </div>
+        <div className="mobile-sheet-theme">
+          <p className="type-label text-text-muted" aria-hidden>Appearance</p>
+          <ThemeSelector labelled />
         </div>
         <div className="mobile-sheet-steps" aria-hidden="true"><span /><span /><span /><span /></div>
       </dialog>
