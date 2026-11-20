@@ -855,3 +855,30 @@ Review, 17 Nov 2026
 - Pre-existing, not changed: the projector view's code is wider than a 375px screen. It overflows in dark too, so the fix belongs to its own task.
 - No dependencies added. Shared first-load JS is unchanged at 102 kB; CSS grew by about 6 KB.
 - Nothing committed, pushed or deployed. Nothing written to Neon or AWS. The temporary worktree of the untouched commit has been removed.
+
+## Full audit, 20 Nov 2026
+
+Joel asked for a full review of the site, with category A fixes made in small commits and everything else written up. Findings, evidence and status: `tasks/WEBSITE_FULL_AUDIT.md`. Local PGlite database and `next start` only; nothing written to Neon, S3 or Google; nothing pushed or deployed.
+
+Batch 1: security
+
+- [ ] S1 `next` and `eslint-config-next` to 15.5.29
+- [ ] S2 security headers, `poweredByHeader: false`
+- [ ] S3 sign-in error lookup by own key only, with tests
+- [ ] S4 upload route: 403 for a signed-in caller without permission
+- [ ] S5 check bound enum arguments in `setUserRole` and `setMemberStatus`
+
+Batch 2: data integrity
+
+- [ ] D1 removing an admin keeps their member account; audit role changes and removals
+- [ ] D2 lock the rate limit row; `records.int.test.ts`
+- [ ] D6 5,000 character limit on a member project write-up
+
+Batch 3: reliability and accessibility
+
+- [ ] F1 error pages for the public site, portal, dashboard and root
+- [ ] F2 loading states for the portal and dashboard
+- [ ] F3 pending state on confirmations and Google sign-in
+- [ ] U1 unique field IDs per form; U2 help text announced; U3 focus ring token; U4 dashboard skip link
+
+Verify each batch: typecheck, lint, unit tests, integration tests (local), production build, browser at 375 and 1280.
