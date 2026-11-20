@@ -5,6 +5,7 @@ import { isCleanCopy, hasNoDashOrEmoji } from '@/lib/copy-rules';
 import { slugify } from '@/lib/slug';
 import { eventSchema } from '@/lib/validation/event';
 import { postSchema } from '@/lib/validation/post';
+import { adminProjectSchema, MEMBER_WRITE_UP_MAX, memberProjectSchema } from '@/lib/validation/project';
 import { settingsSchema } from '@/lib/validation/settings';
 import { accraInputToDate, COPY_MESSAGE, dateToAccraInput } from '@/lib/validation/shared';
 import { teamSchema } from '@/lib/validation/team';
@@ -203,5 +204,19 @@ describe('settings', () => {
 
   it('needs text before the announcement bar goes on', () => {
     expect(parseForm(settingsSchema, form({ ...settings, announcementActive: 'on' })).ok).toBe(false);
+  });
+});
+
+describe('project write-ups', () => {
+  const project = { title: 'Hostel Finder', summary: 'A static site on Amazon S3.', repoUrl: '', demoUrl: '', stack: 'Amazon S3', imageUrl: '' };
+  const long = 'a'.repeat(MEMBER_WRITE_UP_MAX + 1);
+
+  it('limits what a member can publish', () => {
+    expect(memberProjectSchema.safeParse({ ...project, body: 'a'.repeat(MEMBER_WRITE_UP_MAX) }).success).toBe(true);
+    expect(memberProjectSchema.safeParse({ ...project, body: long }).success).toBe(false);
+  });
+
+  it('leaves editors free to write a longer curated write-up', () => {
+    expect(adminProjectSchema.safeParse({ ...project, body: long, slug: '', credits: '', status: 'DRAFT' }).success).toBe(true);
   });
 });

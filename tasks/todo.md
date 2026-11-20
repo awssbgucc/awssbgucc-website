@@ -871,9 +871,11 @@ Batch 1: security
 
 Batch 2: data integrity
 
-- [ ] D1 removing an admin keeps their member account; audit role changes and removals
-- [ ] D2 lock the rate limit row; `records.int.test.ts`
-- [ ] D6 5,000 character limit on a member project write-up
+- [x] D1 removing an admin keeps their member account; audit role changes and removals
+- [x] D2 lock the rate limit row; `records.int.test.ts`
+- [x] D6 5,000 character limit on a member project write-up
+- Checked: typecheck, lint, 259 unit tests, 11 integration tests (PGlite), production build; boundaries and admin specs on `next start` (15 passed). The new D1 spec failed on the old code (member profile deleted) and passes now. D2's race cannot be shown on PGlite (audit D3)
+- The upload boundary spec now expects 403 for a signed-in member, following S4
 
 Batch 3: reliability and accessibility
 

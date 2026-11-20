@@ -19,23 +19,15 @@ export function notify(userId: string, title: string, options: { body?: string; 
  */
 export async function withinLimit(key: string, max: number, windowMs: number) {
   const now = new Date();
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    try {
-      return await db.$transaction(async (tx) => {
-        const existing = await tx.rateLimit.findUnique({ where: { key } });
-        const next = nextWindow(existing, now, max, windowMs);
-        if (!next.allowed) return false;
-        await tx.rateLimit.upsert({
-          where: { key },
-          create: { key, count: next.count, resetAt: next.resetAt },
-          update: { count: next.count, resetAt: next.resetAt },
-        });
-        return true;
-      });
-    } catch (error) {
-      // Two first hits at once can both try to create the row. The retry reads it.
-      if (attempt === 1) throw error;
-    }
-  }
-  return false;
+  return db.$transaction(async (tx) => {
+    // Make sure the row exists, then lock it, so hits for one key run one after another.
+    // Without the lock, two requests read the same count and both write count + 1.
+    // A new row starts with an expired window, which nextWindow() treats as a fresh one.
+    await tx.$executeRaw`INSERT INTO "RateLimit" ("key", "count", "resetAt") VALUES (${key}, 0, ${now}) ON CONFLICT ("key") DO NOTHING`;
+    const [existing] = await tx.$queryRaw<{ count: number; resetAt: Date }[]>`SELECT "count", "resetAt" FROM "RateLimit" WHERE "key" = ${key} FOR UPDATE`;
+    const next = nextWindow(existing ?? null, now, max, windowMs);
+    if (!next.allowed) return false;
+    await tx.rateLimit.update({ where: { key }, data: { count: next.count, resetAt: next.resetAt } });
+    return true;
+  });
 }

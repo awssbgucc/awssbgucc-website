@@ -91,7 +91,8 @@ test('a member reaches only their own records', async ({ page, context, baseURL,
     { folder: 'team', recordId: 'seed-team-1', type: 'image/png', size: 1000 },
   ]) {
     const response = await page.request.post('/api/uploads', { data });
-    expect(response.status()).toBe(401);
+    // Signed in, so refused with 403 rather than asked to sign in again.
+    expect(response.status()).toBe(403);
     expect(await response.json()).not.toHaveProperty('uploadUrl');
   }
 });
@@ -221,4 +222,25 @@ test('a member downloads their data, then deletes their account', async ({ page,
   await page.goto('/builder');
   await expect(page).toHaveURL(/\/sign-in$/);
   await sql(`DELETE FROM "PrivacyRequest" WHERE "userId" = $1`, [userId]);
+});
+
+test('removing someone from the dashboard keeps their member record', async ({ browser, baseURL }) => {
+  const leaverId = await makeAdmin('leaver');
+  const [{ email }] = await sql<{ email: string }>('SELECT email FROM "user" WHERE id = $1', [leaverId]);
+  await sql(`INSERT INTO "LedgerEntry" (id, "userId", xp, credits, reason, "sourceId", "createdAt") VALUES ($1, $2, 50, 10, 'ADJUSTMENT', $1, now())`, [`e2e-ledger-${randomUUID().slice(0, 8)}`, leaverId]);
+
+  const admin = await browser.newContext();
+  await signIn(admin, await makeAdmin('remover'), baseURL!);
+  const page = await admin.newPage();
+  await page.goto('/admin/users');
+  const row = page.getByRole('row', { name: new RegExp(email) });
+  await row.getByRole('button', { name: 'Remove' }).click();
+  await row.getByRole('button', { name: 'Yes, remove' }).click();
+  await expect(page.getByRole('row', { name: new RegExp(email) })).toHaveCount(0);
+
+  expect(await sql('SELECT 1 FROM "AdminUser" WHERE email = $1', [email])).toHaveLength(0);
+  expect(await sql('SELECT 1 FROM "MemberProfile" WHERE "userId" = $1', [leaverId])).toHaveLength(1);
+  expect(await sql('SELECT 1 FROM "LedgerEntry" WHERE "userId" = $1', [leaverId])).toHaveLength(1);
+  expect(await sql(`SELECT 1 FROM "AuditLog" WHERE action = 'admin.remove' AND detail = $1`, [email])).toHaveLength(1);
+  await admin.close();
 });

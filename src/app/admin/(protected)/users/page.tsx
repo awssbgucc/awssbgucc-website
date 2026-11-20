@@ -48,7 +48,7 @@ export default async function UsersPage() {
                     )}
                   </td>
                   <td className={TD}>
-                    {!blocked(user, null) && <ConfirmAction action={removeUser.bind(null, user.id)} label="Remove" question={`Remove ${user.email}?`} />}
+                    {!blocked(user, null) && <ConfirmAction action={removeUser.bind(null, user.id)} label="Remove" question={`Remove dashboard access for ${user.email}? Their member account stays.`} />}
                   </td>
                 </tr>
               );
