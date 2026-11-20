@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { formValues, isUniqueError, parseForm, type FormState } from '@/lib/admin/forms';
 import { requireRole } from '@/lib/auth';
-import { adminChangeError, type Role } from '@/lib/auth-rules';
+import { adminChangeError, isRole, type Role } from '@/lib/auth-rules';
 import { db } from '@/lib/db';
 import { userSchema } from '@/lib/validation/user';
 
@@ -30,6 +30,8 @@ async function checkChange(id: string, nextRole: Role | null) {
 
 export async function setUserRole(id: string, role: Role) {
   const { error } = await checkChange(id, role);
+  // Bound arguments come back from the browser, so the role is checked here too.
+  if (!isRole(role)) throw new Error('Unknown role.');
   if (error) throw new Error(error);
   await db.adminUser.update({ where: { id }, data: { role } });
   revalidatePath('/admin/users');

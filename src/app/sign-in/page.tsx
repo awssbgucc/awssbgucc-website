@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { GoogleSignIn } from '@/components/admin/GoogleSignIn';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { ThemeSelector } from '@/components/ui/ThemeSelector';
-import { SIGN_IN_ERRORS, type SignInError } from '@/lib/auth-rules';
+import { signInMessage } from '@/lib/auth-rules';
 import { sessionUser } from '@/lib/member';
 
 export const metadata: Metadata = { title: 'Sign in to the builder portal', robots: { index: false, follow: false } };
@@ -21,7 +21,7 @@ const WHAT_YOU_DO = [
 export default async function MemberSignInPage({ searchParams }: Props) {
   const { error } = await searchParams;
   if (!error && (await sessionUser())) redirect('/builder');
-  const message = error ? (SIGN_IN_ERRORS[error as SignInError] ?? 'Sign in did not work. Try again.') : null;
+  const message = signInMessage(error);
 
   return (
     <main className="min-h-dvh bg-bg">

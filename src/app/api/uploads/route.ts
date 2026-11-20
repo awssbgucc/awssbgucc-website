@@ -30,13 +30,15 @@ function recordExists(folder: UploadFolder, id: string) {
 /**
  * Admins may upload to any record. A member may upload only a project image, only to a project they own.
  * Member projects are reviewed before anything shows publicly.
+ * 'signed-out' answers 401, so the form asks them to sign in; 'refused' answers 403.
  */
 async function mayUpload(folder: UploadFolder, recordId: string) {
-  if (await currentAdmin()) return true;
-  if (folder !== 'projects') return false;
+  if (await currentAdmin()) return 'allowed';
   const member = await currentMember();
-  if (!member) return false;
-  return !!(await db.project.findFirst({ where: { id: recordId, ownerId: member.user.id }, select: { id: true } }));
+  if (!member) return 'signed-out';
+  if (folder !== 'projects') return 'refused';
+  const owned = await db.project.findFirst({ where: { id: recordId, ownerId: member.user.id }, select: { id: true } });
+  return owned ? 'allowed' : 'refused';
 }
 
 export async function POST(request: Request) {
@@ -47,7 +49,9 @@ export async function POST(request: Request) {
     return fail(400, 'This upload request is not valid.');
   }
   const { folder, recordId, type, size } = parsed.data;
-  if (!(await mayUpload(folder, recordId))) return fail(401, 'Sign in again to upload.');
+  const access = await mayUpload(folder, recordId);
+  if (access === 'signed-out') return fail(401, 'Sign in again to upload.');
+  if (access === 'refused') return fail(403, 'You cannot add an image here.');
   const error = uploadError(folder, type, size);
   if (error) return fail(400, error);
   const base = publicBaseUrl();

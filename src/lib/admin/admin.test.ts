@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseForm } from './forms';
-import { adminChangeError, hasRole, normaliseEmail } from '@/lib/auth-rules';
+import { adminChangeError, hasRole, isRole, normaliseEmail, SIGN_IN_ERRORS, signInMessage } from '@/lib/auth-rules';
 import { isCleanCopy, hasNoDashOrEmoji } from '@/lib/copy-rules';
 import { slugify } from '@/lib/slug';
 import { eventSchema } from '@/lib/validation/event';
@@ -51,6 +51,30 @@ describe('role checks', () => {
 
   it('matches emails regardless of case', () => {
     expect(normaliseEmail(' Joel@Gmail.com ')).toBe('joel@gmail.com');
+  });
+
+  it('accepts only the two roles, whatever the browser sends', () => {
+    expect(isRole('ADMIN')).toBe(true);
+    expect(isRole('EDITOR')).toBe(true);
+    expect(isRole('OWNER')).toBe(false);
+    expect(isRole(undefined)).toBe(false);
+  });
+});
+
+describe('sign-in errors', () => {
+  it('shows the message for a known code', () => {
+    expect(signInMessage('DOMAIN')).toBe(SIGN_IN_ERRORS.DOMAIN);
+  });
+
+  it('falls back for codes it does not know, including inherited object names', () => {
+    for (const code of ['state_mismatch', 'constructor', '__proto__', 'toString', 'hasOwnProperty']) {
+      expect(signInMessage(code)).toBe('Sign in did not work. Try again.');
+    }
+  });
+
+  it('shows nothing without a code', () => {
+    expect(signInMessage(undefined)).toBeNull();
+    expect(signInMessage('')).toBeNull();
   });
 });
 

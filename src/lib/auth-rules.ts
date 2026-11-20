@@ -18,6 +18,20 @@ export const SIGN_IN_ERRORS = {
 
 export type SignInError = keyof typeof SIGN_IN_ERRORS;
 
+/**
+ * The message for an ?error= code, or null without one. Own keys only: a code such as "constructor"
+ * would otherwise find an inherited function and crash the page.
+ */
+export function signInMessage(code: string | undefined) {
+  if (!code) return null;
+  return Object.hasOwn(SIGN_IN_ERRORS, code) ? SIGN_IN_ERRORS[code as SignInError] : 'Sign in did not work. Try again.';
+}
+
+/** Bound action arguments come back from the browser, so a role is checked at runtime too. */
+export function isRole(value: unknown): value is Role {
+  return value === 'ADMIN' || value === 'EDITOR';
+}
+
 /** Empty or missing means any domain. Otherwise a comma-separated list, matched exactly. */
 export function emailDomainAllowed(email: string, domains: string | null | undefined) {
   const list = (domains ?? '')

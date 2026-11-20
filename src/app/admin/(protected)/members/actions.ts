@@ -12,6 +12,8 @@ import { adjustSchema } from '@/lib/validation/platform';
 
 export async function setMemberStatus(userId: string, status: 'ACTIVE' | 'SUSPENDED') {
   const admin = await requireRole('ADMIN');
+  // Bound arguments come back from the browser, so the status is checked here too.
+  if (status !== 'ACTIVE' && status !== 'SUSPENDED') throw new Error('Unknown status.');
   await db.$transaction(async (tx) => {
     await tx.memberProfile.update({ where: { userId }, data: { status } });
     // Suspension ends every session at once; requireMember() also refuses a suspended profile.

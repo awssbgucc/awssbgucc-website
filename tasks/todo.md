@@ -862,11 +862,12 @@ Joel asked for a full review of the site, with category A fixes made in small co
 
 Batch 1: security
 
-- [ ] S1 `next` and `eslint-config-next` to 15.5.29
-- [ ] S2 security headers, `poweredByHeader: false`
-- [ ] S3 sign-in error lookup by own key only, with tests
-- [ ] S4 upload route: 403 for a signed-in caller without permission
-- [ ] S5 check bound enum arguments in `setUserRole` and `setMemberStatus`
+- [x] S1 `next` and `eslint-config-next` to 15.5.29
+- [x] S2 security headers, `poweredByHeader: false`
+- [x] S3 sign-in error lookup by own key only, with tests
+- [x] S4 upload route: 403 for a signed-in caller without permission
+- [x] S5 check bound enum arguments in `setUserRole` and `setMemberStatus`
+- Checked: typecheck, lint, 257 unit tests, production build; headers on `/` and `/admin/sign-in`; `?error=__proto__` and `?error=constructor` now 200; upload 403 signed in, 401 signed out; events page in Chrome with no console errors
 
 Batch 2: data integrity
 
