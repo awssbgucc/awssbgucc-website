@@ -30,6 +30,17 @@ Not verified, with the reason:
 - **Google sign-in, S3 uploads, Amplify.** Each needs a real external action. Sessions were made directly in the local database instead, as the e2e tests do.
 - **Neon.** Read nothing, wrote nothing. Whether Neon has the platform migration and seed applied is still Joel's open item in docs/DEPLOY.md.
 
+After the fixes (commits ef50059, 89aa786, 8993f80, 6700459):
+
+| Check | Result |
+|---|---|
+| Types, lint and copy rules | Pass; the same 11 doc warnings |
+| Unit tests | 259 passed (6 new) |
+| Integration tests, local PGlite | 11 passed (2 new, `records.int.test.ts`) |
+| Production build | Pass; shared JS 102 kB and home 120 kB, unchanged |
+| End to end, `next start`, one worker, local database with the reviewed content imported | 129 passed, 0 failed, 27 skipped by design (1 new test, for D1) |
+| Error pages | Each exercised in Chrome: a real race on `/admin/users`, a portal save and a portal page load with the database stopped |
+
 ## 1. Critical security issues
 
 None found. The access model is sound: every dashboard page and action calls `requireRole()`, every portal page and action calls `requireMember()` or `requireUser()`, roles are read from the database on every request, and `src/lib/admin/guards.test.ts` fails the build if an action skips its guard. The runtime probe above agreed with the code.
@@ -144,11 +155,15 @@ None found. The access model is sound: every dashboard page and action calls `re
 - **Problem:** any error while rendering (a Neon cold start that times out, a connection limit, a server action that throws, such as "There must be at least one admin") replaces the whole page with Next's unstyled "Application error: a server-side exception has occurred", with no navigation and no way back.
 - **Fix:** an error page for the public site, the portal and the dashboard, inside each one's own layout, with a Try again button and a link home; and a `global-error.tsx` for failures in the root layout. Plain copy, existing tokens, no new components.
 
-### F2. No feedback while a portal or dashboard page loads. Medium. A. Fixed
+### F2. No feedback while a portal or dashboard page loads. Medium. C. Tried, reverted
 
 - **Where:** `src/app/builder/(app)`, `src/app/admin/(protected)`.
 - **Problem:** every portal and dashboard page is dynamic and reads the database. On a slow connection, or a Neon cold start, a click shows nothing until the next page arrives.
-- **Fix:** a `loading.tsx` in each, so the navigation stays and the content area says it is loading.
+- **What happened:** a `loading.tsx` in each area streamed a "Loading" state ahead of the content, as intended. It also broke four end-to-end flows and a status code, so it was taken out again:
+  - `/builder/projects/<someone else's id>` returned 200 instead of 404. Once streaming has started, a later `notFound()` cannot change the status. The not-found page still showed and nothing leaked, but the boundary test failed.
+  - After a server action, the page did not update in three flows (redeeming then applying a banner, an admin refund, adding a team member), and once in the admin removal flow.
+  - Without the two files, the same 18 member and admin flow tests pass on a fresh build.
+- **Recommendation:** keep loading feedback at the component level instead: the pending states on buttons (F3), and `<Suspense>` around slow sections of a page, which keeps the page's own status and redirects. Worth doing page by page if Neon cold starts are noticed in practice.
 
 ### F3. Destructive confirmations and Google sign-in have no pending state. Medium. A. Fixed
 
@@ -211,9 +226,24 @@ No action needed now. Two notes for growth:
 - **M2. Patch updates waiting.** `better-auth` 1.7.14 to 1.7.26, AWS SDK, `lucide-react`. Better Auth is auth, so update it on its own with the e2e flows. B (stack).
 - **M3. The code is in good shape.** Clear layering (`lib/` pure rules with tests, `engine.ts` for every award, thin actions), consistent guards, comments that say why. No dead code or unused dependencies stood out.
 
-## 8. Product and feature recommendations
+## 8. Recommendations
 
-Ranked at the end of the final report in tasks/todo.md (Audit, 20 Nov 2026).
+Ranked by value for the group. Impact and effort are relative to each other; none of these adds a feature for its own sake.
+
+| # | Recommendation | Why | Impact | Effort | Priority |
+|---|---|---|---|---|---|
+| 1 | Finish the portal launch checklist in docs/DEPLOY.md: platform migration and seed on Neon, `projects/*` in the bucket policy, Google consent screen published, the Data Protection Act check in the privacy notice | The portal is built and tested but cannot open to members until these are done. Nothing else on this list matters as much | High | Low, Joel's access needed | Now |
+| 2 | CI on every push: typecheck, lint, unit tests, a production build, and the integration tests against a Postgres service container (M1, D3) | Every check in this audit ran by hand. CI keeps them true, and a real Postgres finally tests the locking (D2, D3) | High | Low | Now |
+| 3 | Basic production monitoring: an Amplify or CloudWatch alarm on 5xx responses, and a free uptime check on `/` and `/builder` | Today an outage is noticed when a student says so. The new error pages show a reference that matches the server log, which only helps if someone reads the logs | High | Low | Next |
+| 4 | Decide S6: encrypt or discard Google OAuth tokens | Removes the most sensitive thing the database holds, which the app never uses | Medium | Low | Next |
+| 5 | Decide S7: a script Content Security Policy | Defence in depth against injected scripts, now that members can write text that goes public | Medium | Medium | Next |
+| 6 | Update Better Auth (1.7.14 to 1.7.26) on its own, with the e2e flows (M2) | Auth patches; kept apart so a regression is easy to trace | Medium | Low | Next |
+| 7 | Event structured data (schema.org `Event`) on event pages, and `lastModified` in the sitemap (P2) | Sessions can show in Google with date and venue, which helps students find the next one. Uses data the site already has | Medium | Low | Later |
+| 8 | A rotating check-in code on the projector view (S8) | Stops remote check-in from a shared photo, which matters once XP buys real rewards | Medium | Medium | When physical rewards start |
+| 9 | Lock the referral and last-admin checks (D4, D5) | Small correctness gaps that only bite under unusual timing | Low | Low | Later |
+| 10 | List queries that select only list fields (P1) | Keeps public pages light as the event archive grows | Low | Low | Past about 100 events |
+
+Not recommended: a redesign, new sections or more motion. The public site is consistent, accessible (axe clean on 17 Nov), fast enough on mobile and already says what the group does. The gains now are in launching the portal safely and keeping it running.
 
 ## Status
 
@@ -236,7 +266,7 @@ Ranked at the end of the final report in tasks/todo.md (Audit, 20 Nov 2026).
 | D5 | Low | | Not changed |
 | D6 | Low | A | Fixed |
 | F1 | High | A | Fixed |
-| F2 | Medium | A | Fixed |
+| F2 | Medium | C | Tried and reverted (broke 404 status and action refreshes) |
 | F3 | Medium | A | Fixed |
 | U1 | Medium | A | Fixed |
 | U2 | Low | A | Fixed |
