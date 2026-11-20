@@ -879,9 +879,14 @@ Batch 2: data integrity
 
 Batch 3: reliability and accessibility
 
-- [ ] F1 error pages for the public site, portal, dashboard and root
-- [ ] F2 loading states for the portal and dashboard
-- [ ] F3 pending state on confirmations and Google sign-in
-- [ ] U1 unique field IDs per form; U2 help text announced; U3 focus ring token; U4 dashboard skip link
+- [x] F1 error pages for the public site, portal, dashboard and root
+- [ ] F2 loading states for the portal and dashboard: built, then reverted. A route `loading.tsx` made `notFound()` answer 200 and stopped pages refreshing after some actions (4 e2e failures). See the audit
+- [x] F3 pending state on confirmations and Google sign-in
+- [x] U1 unique field IDs per form; U2 help text announced; U3 focus ring token; U4 dashboard skip link
 
 Verify each batch: typecheck, lint, unit tests, integration tests (local), production build, browser at 375 and 1280.
+
+- Batch 3 checked: typecheck, lint (0 errors, the same 11 doc warnings), 259 unit tests, 11 integration tests, production build (shared JS 102 kB, home 120 kB, unchanged)
+- 17 portal and dashboard forms: 139 fields, all labelled, no duplicate IDs, help text announced; dashboard skip link present
+- Error pages exercised in Chrome: the dashboard one through a real race (a row removed while the list was open), with the reference matching the server log and Try again recovering; the portal one by saving the profile with the database stopped; the root one by loading a portal page with the database stopped. During the outage, cached public pages kept serving
+- Full e2e suite on `next start`, one worker, local database with the reviewed content imported: 129 passed, 0 failed, 27 skipped by design. The first full run failed 16: 6 dev-only styleguide specs my run config did not exclude, 4 missing local content (fixed by importing it), and 6 caused by F2, which is reverted

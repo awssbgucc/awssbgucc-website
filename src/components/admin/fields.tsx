@@ -5,7 +5,7 @@ import { useState, type ReactNode } from 'react';
 import { Markdown } from '@/components/site/Markdown';
 import { Button } from '@/components/ui/Button';
 import { ACCEPTED_TYPES, uploadError, type UploadFolder } from '@/lib/uploads/rules';
-import { useFormState } from './AdminForm';
+import { useFieldId, useFormState } from './AdminForm';
 
 const INPUT = 'w-full rounded-sm border border-input-border bg-input px-3 py-2 text-base text-text';
 
@@ -13,19 +13,20 @@ type FieldProps = { name: string; label: string; help?: string; defaultValue?: s
 
 function Wrapper({ name, label, help, children }: { name: string; label: string; help?: string; children: ReactNode }) {
   const error = useFormState().errors?.[name];
+  const id = useFieldId(name);
   return (
     <div>
-      <label htmlFor={name} className="mb-1.5 block text-sm font-medium">
+      <label htmlFor={id} className="mb-1.5 block text-sm font-medium">
         {label}
       </label>
       {children}
       {help && (
-        <p id={`${name}-help`} className="mt-1.5 text-sm text-text-muted">
+        <p id={`${id}-help`} className="mt-1.5 text-sm text-text-muted">
           {help}
         </p>
       )}
       {error && (
-        <p id={`${name}-error`} className="mt-1.5 text-sm font-medium text-danger">
+        <p id={`${id}-error`} className="mt-1.5 text-sm font-medium text-danger">
           {error}
         </p>
       )}
@@ -33,37 +34,39 @@ function Wrapper({ name, label, help, children }: { name: string; label: string;
   );
 }
 
-/** After a failed save, what was typed wins over the saved value. */
-function useValue({ name, defaultValue }: FieldProps) {
+/** After a failed save, what was typed wins over the saved value. Help and error text are both announced. */
+function useValue({ name, help, defaultValue }: FieldProps) {
   const state = useFormState();
-  const describedBy = state.errors?.[name] ? `${name}-error` : undefined;
-  return { value: state.values?.[name] ?? String(defaultValue ?? ''), describedBy, invalid: !!state.errors?.[name] };
+  const id = useFieldId(name);
+  const error = !!state.errors?.[name];
+  const describedBy = [help && `${id}-help`, error && `${id}-error`].filter(Boolean).join(' ') || undefined;
+  return { id, value: state.values?.[name] ?? String(defaultValue ?? ''), describedBy, invalid: error };
 }
 
 export function TextField({ type = 'text', ...props }: FieldProps & { type?: string }) {
-  const { value, describedBy, invalid } = useValue(props);
+  const { id, value, describedBy, invalid } = useValue(props);
   return (
     <Wrapper {...props}>
       {/* The key re-applies the value, because React resets a form after its action runs. */}
-      <input key={value} id={props.name} name={props.name} type={type} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={`${INPUT} min-h-11`} />
+      <input key={value} id={id} name={props.name} type={type} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={`${INPUT} min-h-11`} />
     </Wrapper>
   );
 }
 
 export function TextArea({ rows = 3, ...props }: FieldProps & { rows?: number }) {
-  const { value, describedBy, invalid } = useValue(props);
+  const { id, value, describedBy, invalid } = useValue(props);
   return (
     <Wrapper {...props}>
-      <textarea key={value} id={props.name} name={props.name} rows={rows} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={INPUT} />
+      <textarea key={value} id={id} name={props.name} rows={rows} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={INPUT} />
     </Wrapper>
   );
 }
 
 export function SelectField({ options, ...props }: FieldProps & { options: { value: string; label: string }[] }) {
-  const { value, describedBy, invalid } = useValue(props);
+  const { id, value, describedBy, invalid } = useValue(props);
   return (
     <Wrapper {...props}>
-      <select key={value} id={props.name} name={props.name} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={`${INPUT} min-h-11`}>
+      <select key={value} id={id} name={props.name} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={`${INPUT} min-h-11`}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -89,14 +92,14 @@ export function CheckboxField({ name, label, help, defaultChecked = false }: { n
 }
 
 export function MarkdownField(props: FieldProps & { rows?: number }) {
-  const { value: initial, describedBy, invalid } = useValue(props);
+  const { id, value: initial, describedBy, invalid } = useValue(props);
   const [draft, setDraft] = useState<string | null>(null);
   const value = draft ?? initial;
   return (
     <Wrapper {...props}>
       <div className="grid gap-4 lg:grid-cols-2">
         <textarea
-          id={props.name}
+          id={id}
           name={props.name}
           rows={props.rows ?? 14}
           value={value}
@@ -122,7 +125,7 @@ type ImageFieldProps = FieldProps & { folder: UploadFolder; recordId?: string };
  * Nothing is kept until the form is saved. Needs a saved record, because keys contain its id.
  */
 export function ImageField({ folder, recordId, ...props }: ImageFieldProps) {
-  const { value: initial } = useValue(props);
+  const { id, value: initial, describedBy } = useValue(props);
   const [picked, setPicked] = useState<string | null>(null);
   const [status, setStatus] = useState<{ text: string; error: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -171,15 +174,15 @@ export function ImageField({ folder, recordId, ...props }: ImageFieldProps) {
         </div>
       )}
       <div className="flex flex-wrap items-center gap-4">
-        <label className={`inline-flex min-h-11 cursor-pointer items-center rounded-sm border border-border-strong px-5 text-sm font-medium text-text-strong focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-white hover:border-text-muted ${busy ? 'pointer-events-none opacity-60' : ''}`}>
+        <label className={`inline-flex min-h-11 cursor-pointer items-center rounded-sm border border-border-strong px-5 text-sm font-medium text-text-strong focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:border-text-muted ${busy ? 'pointer-events-none opacity-60' : ''}`}>
           {url ? 'Replace image' : 'Choose image'}
           <input
-            id={props.name}
+            id={id}
             type="file"
             accept={ACCEPTED_TYPES[folder].join(',')}
             disabled={busy}
             className="sr-only"
-            aria-describedby={props.help ? `${props.name}-help` : undefined}
+            aria-describedby={describedBy}
             onChange={(event) => {
               const file = event.target.files?.[0];
               event.target.value = '';

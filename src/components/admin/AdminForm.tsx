@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useActionState, useContext, type ReactNode } from 'react';
+import { createContext, useActionState, useContext, useId, type ReactNode } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Button } from '@/components/ui/Button';
 import type { FormState } from '@/lib/admin/forms';
@@ -8,6 +8,11 @@ import type { FormState } from '@/lib/admin/forms';
 const FormContext = createContext<FormState>({});
 
 export const useFormState = () => useContext(FormContext);
+
+// A prefix unique to each form, so two forms on one page (the award rules, for example) never share an element id.
+const FieldScope = createContext('');
+
+export const useFieldId = (name: string) => `${useContext(FieldScope)}${name}`;
 
 type AdminFormProps = {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
@@ -17,25 +22,28 @@ type AdminFormProps = {
 
 export function AdminForm({ action, children, submitLabel = 'Save' }: AdminFormProps) {
   const [state, formAction] = useActionState(action, {});
+  const scope = useId();
   return (
-    <FormContext.Provider value={state}>
-      <form action={formAction} className="flex max-w-[640px] flex-col gap-6" noValidate>
-        {children}
-        {state.message && (
-          <p role="alert" className="text-sm font-medium text-danger">
-            {state.message}
-          </p>
-        )}
-        {state.saved && (
-          <p role="status" className="text-sm font-medium text-lime">
-            Saved
-          </p>
-        )}
-        <div>
-          <SubmitButton label={submitLabel} />
-        </div>
-      </form>
-    </FormContext.Provider>
+    <FieldScope.Provider value={scope}>
+      <FormContext.Provider value={state}>
+        <form action={formAction} className="flex max-w-[640px] flex-col gap-6" noValidate>
+          {children}
+          {state.message && (
+            <p role="alert" className="text-sm font-medium text-danger">
+              {state.message}
+            </p>
+          )}
+          {state.saved && (
+            <p role="status" className="text-sm font-medium text-lime">
+              Saved
+            </p>
+          )}
+          <div>
+            <SubmitButton label={submitLabel} />
+          </div>
+        </form>
+      </FormContext.Provider>
+    </FieldScope.Provider>
   );
 }
 

@@ -77,3 +77,8 @@ Rule: when an event passes, change its body to the past tense, label the plan "O
 
 What happened: the technology board grew to 944 px on phones, but `.public-site { overflow-x: clip }` cut it off, so the page-width check passed while half the board was unreachable.
 Rule: in grids that hold horizontal scrollers, use minmax(0, 1fr) tracks; check element widths, not only document scroll width.
+
+## A route-level loading file changes more than the spinner
+
+What happened: a `loading.tsx` in the portal and dashboard made `notFound()` answer 200 (streaming had started) and stopped pages refreshing after some server actions; four e2e flows failed (20 Nov 2026).
+Rule: add loading feedback with `<Suspense>` around a slow section or a pending button state, not a route `loading.tsx`, and run the member and admin flow specs in e2e/dev before calling it done.
