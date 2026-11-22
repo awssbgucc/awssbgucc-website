@@ -923,6 +923,8 @@ Each on its own branch, for Joel's approval before merging:
 - [x] Joel approved all three (22 Nov). Rebased onto `main` and merged: ac1b317, cf9bc7d, f435521
 - [x] Merged code: typecheck, lint, copy check, 268 unit tests, 13 database tests (races skip on PGlite), production e2e 132 passed, 0 failed, 30 skipped
 - [x] Pushed to GitHub with Joel's approval; CI runs the race tests on PostgreSQL there
+- [x] First CI run on GitHub (run 45007769451, 0ca67d2): all three jobs passed. Database tests 22 passed on PostgreSQL 17, none skipped, so the race tests ran; production e2e 132 passed, 30 skipped
+- [x] Automated security review after the push: the CSP report route read chunked bodies in full. Fixed (19e43a1), with a test that fails on the old read. Waiting for Joel to approve the push
 
 Then
 
