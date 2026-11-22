@@ -6,10 +6,10 @@ import { Cta } from '../Cta';
 // Week 3 of the bootcamp, from the group's recap (source S1). The photos carry the bootcamp watermark
 // and the 31 Oct filenames; see docs/research/ASSET_INVENTORY.md.
 const BEATS: { id: PhotoId; step: string; title: string; text: string }[] = [
-  { id: 'facilitators', step: 'Concepts', title: 'Compute and storage, in plain terms', text: 'The session opened with the two services explained through real-life examples.' },
+  { id: 'facilitators', step: 'Concepts', title: 'Compute and storage, in plain terms', text: 'We started by breaking down cloud compute and storage with everyday examples.' },
   { id: 'website-on-screen', step: 'The lab', title: 'A Hostel Finder site, live on Amazon S3', text: 'By the end of the session, every participant had the site live on the internet.' },
-  { id: 'student-focus', step: 'The errors', title: 'Bucket policies pushed back', text: 'Some configurations and bucket policies failed at first. Participants troubleshot them together until they worked.' },
-  { id: 'kahoot', step: 'The podium', title: 'A Kahoot on three weeks of work', text: 'A quiz on everything from the first three weeks, with AWS swag for the podium.' },
+  { id: 'student-focus', step: 'Troubleshooting', title: 'Fixing bucket policy errors', text: 'Some configurations and bucket policies failed at first. Participants debugged them together until their sites loaded.' },
+  { id: 'kahoot', step: 'Quiz', title: 'A Kahoot quiz to wrap up', text: 'We finished with a quiz covering the first three weeks, with AWS swag for the top scorers.' },
 ];
 
 export function BootcampStory({ recapSlug }: { recapSlug?: string }) {

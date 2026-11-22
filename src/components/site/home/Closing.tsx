@@ -5,9 +5,9 @@ import { PixelMap } from '../PixelMap';
 import { SbgIcon, type SbgIconName, type SbgTone } from '../SbgIcon';
 
 const WAYS: { icon: SbgIconName; tone: SbgTone; who: string; what: string }[] = [
-  { icon: 'ladder', tone: 'purple', who: 'New to tech', what: 'Start with the bootcamp or one of our talks. Nobody expects you to know AWS yet.' },
-  { icon: 'wrench', tone: 'magenta', who: 'Already writing code', what: 'Come to a build session and put a project of your own online.' },
-  { icon: 'speaker', tone: 'blue', who: 'Thinking about work', what: 'Hear from people working in cloud about certifications and the paths into the field.' },
+  { icon: 'ladder', tone: 'purple', who: 'Start from the basics', what: 'Join the Saturday bootcamp or an online talk. No AWS experience is needed.' },
+  { icon: 'wrench', tone: 'magenta', who: 'Deploy a project', what: 'Come to an in-person build session and get a project of your own online.' },
+  { icon: 'speaker', tone: 'blue', who: 'Explore cloud careers', what: 'Hear from engineers working in the field about certifications, practical skills and career paths.' },
 ];
 
 /** The invitation, anchored to the place: the map with Cape Coast lit, and three ways in. */

@@ -44,9 +44,8 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
               <span className="hero-line"><span style={i(1)}>of builders.<span className="hero-cursor" aria-hidden="true" /></span></span>
             </h1>
             <p className="hero-lead">
-              We&apos;re the AWS Student Builder Group at University of Cape Coast, a student-led group open to every department. We run online
-              talks, a Saturday cloud bootcamp and hands-on build sessions for students who want to build software, from websites to cloud
-              infrastructure and AI. You can start with no experience.
+              A student-led technical community at the University of Cape Coast, open to every department. We run online talks, a Saturday cloud
+              bootcamp and hands-on campus sessions for students learning cloud computing, software development and AI. No prior experience needed.
             </p>
             <div className="hero-actions">
               <Cta href={meetupUrl}>Join on Meetup</Cta>
@@ -77,7 +76,7 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
             ) : (
               <a href={meetupUrl} className="cell m-next block-mint" style={i(3)}>
                 <span className="type-label">Sessions</span>
-                <span className="m-next-title">The next date goes up on Meetup first.</span>
+                <span className="m-next-title">New sessions are posted on Meetup first.</span>
               </a>
             )}
             <div className="cell block-blue m-blue" style={i(4)} aria-hidden="true" />

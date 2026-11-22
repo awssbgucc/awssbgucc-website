@@ -138,7 +138,7 @@ export function DisciplineExplorer({ disciplines, records }: { disciplines: Disc
                 <span className="board-tile-title">{d.title}</span>
                 <span className="board-tile-status">
                   {STATUS_LABEL[d.status]}
-                  {count > 0 && <span className="board-count">, {count} {count === 1 ? 'record' : 'records'}</span>}
+                  {count > 0 && <span className="board-count">, {count} {count === 1 ? 'entry' : 'entries'}</span>}
                 </span>
               </button>
             );
@@ -158,13 +158,13 @@ export function DisciplineExplorer({ disciplines, records }: { disciplines: Disc
                   <li key={record.key} ref={(element) => { if (element) stops.current.set(record.key, element); }} className={lit.has(record.key) ? 'is-lit' : undefined}>
                     <Link href={`/${record.kind === 'event' ? 'events' : 'blog'}/${record.slug}`} className={`board-stop tone-${current.tone}`}>
                       <span className="board-stop-cell" aria-hidden="true" />
-                      <span className="type-label">{record.kind === 'event' ? 'Session' : 'Story'}{record.date && `, ${short(record.date)}`}</span>
+                      <span className="type-label">{record.kind === 'event' ? 'Session' : 'Recap'}{record.date && `, ${short(record.date)}`}</span>
                       <span className="board-stop-title">{record.title}</span>
                     </Link>
                   </li>
                 ))}
               </ol>
-              <p className="board-rail-label type-label text-text-muted">The record so far: sessions by date, then stories</p>
+              <p className="board-rail-label type-label text-text-muted">Sessions and recaps so far, oldest first</p>
             </div>
           </>
         )}
@@ -180,14 +180,14 @@ export function DisciplineExplorer({ disciplines, records }: { disciplines: Disc
             <p className={`status-chip status-${d.status}`}>{STATUS_LABEL[d.status]}</p>
             <h3>{d.title}</h3>
             <p className="explorer-line">{d.line}</p>
-            <h4 className="type-label text-text-muted">At UCC so far</h4>
+            <h4 className="type-label text-text-muted">What we&apos;ve covered</h4>
             <p>{d.here}</p>
             {evidence.length > 0 && (
               <ul className="explorer-evidence">
                 {evidence.map((e) => (
                   <li key={`${e.kind}:${e.slug}`}>
                     <Link href={`/${e.kind === 'event' ? 'events' : 'blog'}/${e.slug}`}>
-                      <span className="type-label">{e.kind === 'event' ? 'Session' : 'Story'}</span>
+                      <span className="type-label">{e.kind === 'event' ? 'Session' : 'Recap'}</span>
                       {e.label}
                     </Link>
                   </li>

@@ -71,7 +71,7 @@ export default async function HomePage() {
       {events.length > 0 && (
         <section className="band band-grid" aria-labelledby="story-title">
           <Container>
-            <SectionHead label={first ? `Since ${formatDate(first.startsAt)}` : 'Our sessions'} title={<>What we&apos;ve<br />run so far.</>} id="story-title" action={<Cta href="/events" variant="arrow">All events</Cta>} />
+            <SectionHead label={first ? `Since ${formatDate(first.startsAt)}` : 'Our sessions'} title={<>Our events<br />so far</>} id="story-title" action={<Cta href="/events" variant="arrow">All events</Cta>} />
             <Staircase events={events} now={now} recaps={recaps} />
           </Container>
         </section>
@@ -103,9 +103,9 @@ export default async function HomePage() {
 
       <section className="band band-alt" aria-labelledby="explore-title">
         <Container>
-          <SectionHead label="More than certifications" title={<>What you can<br />build here.</>} id="explore-title">
-            Most of our sessions so far have been about cloud foundations and getting websites online. The other areas are open to any member who
-            wants to take them further. Pick one to see the sessions that covered it.
+          <SectionHead label="Beyond certifications" title={<>What we&apos;re<br />exploring</>} id="explore-title">
+            We&apos;ve started with cloud fundamentals and getting websites and apps online. There&apos;s plenty more to explore, from DevOps and
+            security to machine learning and data analytics. Choose an area to see what we&apos;ve covered.
           </SectionHead>
           <DisciplineExplorer disciplines={DISCIPLINES} records={records} />
         </Container>
@@ -124,11 +124,12 @@ export default async function HomePage() {
             </>
           ) : (
             <div className="projects-invite">
-              <SectionHead label="Built by members" title="Your project belongs here." id="projects-title">
-                If you have built something on AWS, at one of our sessions or on your own, share it through the Builder Portal and it can go up here.
+              <SectionHead label="Member projects" title="Share your AWS project" id="projects-title">
+                Built something using AWS? Submit it through the Builder Portal, whether you worked on it during a session or independently. Show us
+                what it does, how you built it and the AWS services behind it.
               </SectionHead>
               <ProjectSlots />
-              <Cta href="/builder/projects/new" variant="line">Share a project</Cta>
+              <Cta href="/builder/projects/new" variant="line">Submit a project</Cta>
             </div>
           )}
         </Container>
@@ -137,11 +138,11 @@ export default async function HomePage() {
       {(team.length > 0 || campus.length > 0) && (
         <section className="band band-alt" aria-labelledby="people-title">
           <Container>
-            <SectionHead label="Student-led" title={team.length > 0 ? 'The people who make it run.' : 'Working with us on campus.'} id="people-title" action={team.length > 0 ? <Cta href="/team" variant="arrow">Meet the team</Cta> : undefined} />
+            <SectionHead label={team.length > 0 ? 'Student-led' : 'On campus'} title={team.length > 0 ? 'Who runs the group' : 'Our campus partners'} id="people-title" action={team.length > 0 ? <Cta href="/team" variant="arrow">Meet the team</Cta> : undefined} />
             {team.length > 0 && <div className="team-grid">{team.slice(0, 4).map((person) => <TeamCard key={person.id} person={person} />)}</div>}
             {campus.length > 0 && (
               <div className="collaborators">
-                <p className="type-label text-text-muted">Campus partners</p>
+                {team.length > 0 && <p className="type-label text-text-muted">Campus partners</p>}
                 <div className="partner-row">{campus.map((partner) => <PartnerTile key={partner.id} partner={partner} />)}</div>
               </div>
             )}
