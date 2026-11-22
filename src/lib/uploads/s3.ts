@@ -1,5 +1,6 @@
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { errorMessage, logError } from '@/lib/log';
 import { isOwnUpload, keyFromUrl, type UploadFolder } from './rules';
 
 // Credentials come from the SDK's default chain: the Amplify compute role in production,
@@ -54,7 +55,7 @@ export async function deleteUnused(previous: (string | null | undefined)[], kept
     keys.map((key) =>
       s3()
         .send(new DeleteObjectCommand({ Bucket: bucket(), Key: key }))
-        .catch((error: unknown) => console.error(`Could not delete ${key} from S3`, error)),
+        .catch((error: unknown) => logError('s3_delete_failed', { key, message: errorMessage(error) })),
     ),
   );
 }

@@ -164,3 +164,24 @@ pnpm db:deploy && pnpm test:int
 ```
 
 Two limits of the PGlite server, found on 5 Nov 2026. `next build` opens more than 20 connections at once, and the server closes any connection over the limit, so the build fails with "Connection terminated unexpectedly"; use 100. And a client that drops its connection without closing it (a dev server restarting, or a stopped process) can stop the whole server with an unhandled `ECONNRESET`; start it again with the same folder, and no data is lost. Run one Next server at a time, and Playwright with one worker, on a laptop with little free memory.
+
+## Monitoring (added 22 Nov 2026)
+
+Free tiers only. Nothing here needs a paid service.
+
+What the app does already:
+
+- Every error thrown while rendering a page, running a server action or answering a route writes one JSON line, `{"level":"error","event":"request_error",...}`, from `src/instrumentation.ts`. It has the path without the query string, the route, the kind of request, a short message and the digest, which matches the "Reference" on the dashboard's error page. Next writes several lines for one failed page (one per layout), so treat counts as approximate.
+- `health_check_failed` and `s3_delete_failed` lines use the same shape.
+- `GET /api/health` answers 200 `{"status":"ok"}` when the app reaches the database, 503 `{"status":"unavailable"}` when it cannot, and nothing more.
+
+What Joel sets up, once, in the AWS and monitor accounts:
+
+1. **Server logs.** Amplify console, App settings, Advanced settings: make sure SSR app logs are on. Logs then appear under Monitoring, Hosting compute logs, as a CloudWatch log group per branch.
+2. **5xx alarm.** Amplify console, Monitoring, Alarms: an alarm on `5xxErrors`, Sum, 5 minutes, at 1 or more for 1 period, notifying an SNS topic with the team's email. Confirm the subscription email.
+3. **Error alarm from the logs.** CloudWatch, the branch's log group, Metric filters: pattern `{ $.event = "request_error" }`, metric value 1, namespace `sbg-ucc`. Then an alarm on that metric, Sum over 5 minutes, at 1 or more, to the same SNS topic. This catches failures that a page turns into a friendly error, which `5xxErrors` can miss. Add a second filter for `{ $.event = "s3_delete_failed" }` if orphaned uploads matter.
+4. **Uptime.** A free external monitor (UptimeRobot or Better Stack): the home page every 5 minutes, and `/api/health` every 60 minutes. Alert by email.
+
+Why `/api/health` is checked only hourly: each call wakes the Neon database, which then stays up for 5 minutes. Neon's free plan allows 100 compute-unit hours a month; a check every 5 minutes would keep the database awake all month (about 180 at 0.25 CU), and Neon suspends the project when the allowance runs out. Hourly costs about 15. The home page is served from the cache and never touches the database, so it can be checked as often as the monitor allows.
+
+CloudWatch alarms and SNS email stay inside the AWS free tier at this size (ten alarms, a few log megabytes a month).
