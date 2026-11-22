@@ -920,7 +920,9 @@ Each on its own branch, for Joel's approval before merging:
 - [x] Better Auth 1.7.14 to 1.7.26 (branch `deps/better-auth-1.7.26`, 1fae7bb). Unit, database and e2e suites pass (129); auth probe on a production build
 - [x] Content Security Policy (branch `security/csp`, dc17b22). e2e 132 passed with the new CSP spec; the spec fails with the theme hash removed; next dev checked
 - [x] The three branches merge cleanly with each other
-- [ ] Joel: approve or decline each branch
+- [x] Joel approved all three (22 Nov). Rebased onto `main` and merged: ac1b317, cf9bc7d, f435521
+- [x] Merged code: typecheck, lint, copy check, 268 unit tests, 13 database tests (races skip on PGlite), production e2e 132 passed, 0 failed, 30 skipped
+- [x] Pushed to GitHub with Joel's approval; CI runs the race tests on PostgreSQL there
 
 Then
 

@@ -256,9 +256,11 @@ Where each change lives:
 | Race tests, D4 and D5 fixed | `main`, cde3941 | No |
 | CI workflow | `main`, 86dc93f | Push, then optionally require it on `main` |
 | Error logging, health route, monitoring plan | `main`, cbfd227 | The AWS and uptime steps in docs/DEPLOY.md |
-| Stop storing Google tokens (S6) | branch `auth/discard-google-tokens` | Approval to merge |
-| Better Auth 1.7.26 (M2) | branch `deps/better-auth-1.7.26` | Approval to merge |
-| Content Security Policy (S7) | branch `security/csp` | Approval to merge |
+| Stop storing Google tokens (S6) | `main`, cf9bc7d | Approved and merged 22 Nov |
+| Better Auth 1.7.26 (M2) | `main`, ac1b317 | Approved and merged 22 Nov |
+| Content Security Policy (S7) | `main`, f435521 | Approved and merged 22 Nov |
+
+Joel approved all three on 22 Nov 2026. Each was rebased onto `main` in turn, so history stays linear. Checked on the merged code: typecheck, lint, copy check, 268 unit tests, 13 database tests on PGlite (the 9 race tests skip there and run in CI on PostgreSQL), and the production build with the full end-to-end suite on a fresh database with CI's placeholder environment: 132 passed, 0 failed, 30 skipped by design, 9.7 min.
 
 ### 9.1 Concurrency on real PostgreSQL (D2, D3, D4, D5)
 
@@ -387,11 +389,11 @@ Done without Joel:
 - Concurrency guarantees tested on real PostgreSQL; two gaps fixed (D4, D5)
 - CI written and replayed locally
 - Error logging, health route and monitoring plan
-- The three approval branches built and tested
+- The three approval branches built, tested, approved and merged
 
 Needs Joel's access or decision, in order:
 
-1. Approve or decline the three branches. Then push `main` (CI runs) and deploy.
+1. Done 22 Nov: the three branches approved, merged and pushed. Deploy comes with Phase 7 (the Amplify app does not exist yet).
 2. Neon: `pnpm db:deploy` and `pnpm db:seed` with the direct connection (docs/DEPLOY.md, Builder portal, step 2). Additive migration, create-only seed.
 3. S3 bucket policy: add `projects/*` to the live policy.
 4. Google OAuth: publish the consent screen (testing mode admits listed test users only); confirm the production redirect URI `https://<domain>/api/auth/callback/google`.
@@ -412,8 +414,8 @@ Still open, not urgent: S8 (rotating check-in code), S9 (Better Auth's in-memory
 | S3 | Low | A | Fixed |
 | S4 | Low | A | Fixed |
 | S5 | Low | A | Fixed |
-| S6 | Low | B | Fixed on branch `auth/discard-google-tokens`, waiting for approval (9.2) |
-| S7 | Low | B | Built and tested on branch `security/csp`, waiting for approval (9.4) |
+| S6 | Low | B | Fixed, merged (9.2). Old rows on Neon: optional SQL in 9.2 |
+| S7 | Low | B | Fixed, merged (9.4). Watch `csp_violation` for a week after deploy |
 | S8 | Info | C | Recommendation |
 | S9 | Info | B | Waiting for Joel; low risk, only Google sign-in endpoints are exposed |
 | S10 | Info | | Not changed |
@@ -432,4 +434,4 @@ Still open, not urgent: S8 (rotating check-in code), S9 (Better Auth's in-memory
 | U4 | Low | A | Fixed |
 | U5 | Low | | Already tracked |
 | M1 | | A | CI added (9.5) |
-| M2 | | B | Tested on branch `deps/better-auth-1.7.26`, waiting for approval (9.3) |
+| M2 | | B | Fixed, merged (9.3) |
