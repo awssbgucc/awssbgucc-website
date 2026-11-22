@@ -245,6 +245,164 @@ Ranked by value for the group. Impact and effort are relative to each other; non
 
 Not recommended: a redesign, new sections or more motion. The public site is consistent, accessible (axe clean on 17 Nov), fast enough on mobile and already says what the group does. The gains now are in launching the portal safely and keeping it running.
 
+## 9. Hardening and launch readiness, 22 Nov 2026
+
+Joel's second phase: real concurrency tests, Google token storage, the Better Auth update, a Content Security Policy, CI, monitoring and the portal launch checklist. Everything ran against local databases on a throwaway PostgreSQL 17.7 (the official portable binaries, unzipped into a scratch folder with Joel's approval, listening on 127.0.0.1 only). Nothing was read from or written to Neon, S3 or Google. Nothing was pushed or deployed.
+
+Where each change lives:
+
+| Change | Where | Needs Joel |
+|---|---|---|
+| Race tests, D4 and D5 fixed | `main`, cde3941 | No |
+| CI workflow | `main`, 86dc93f | Push, then optionally require it on `main` |
+| Error logging, health route, monitoring plan | `main`, cbfd227 | The AWS and uptime steps in docs/DEPLOY.md |
+| Stop storing Google tokens (S6) | branch `auth/discard-google-tokens` | Approval to merge |
+| Better Auth 1.7.26 (M2) | branch `deps/better-auth-1.7.26` | Approval to merge |
+| Content Security Policy (S7) | branch `security/csp` | Approval to merge |
+
+### 9.1 Concurrency on real PostgreSQL (D2, D3, D4, D5)
+
+New: `src/lib/platform/races.int.test.ts` and `src/lib/admin/users.int.test.ts`. Each case fires the requests together with `Promise.all` and repeats five rounds, because a race does not lose every time. They detect PGlite (`version()` reports wasm32) and skip there, so a pass on PGlite can no longer be mistaken for proof.
+
+| Case | Protection | Result | With the protection removed |
+|---|---|---|---|
+| Rate limit, 15 requests at a limit of 5, five keys | Row lock in `withinLimit` (D2) | Exactly 5 each time | Old code: 3 runs of 3 failed, up to 15 of 15 let through |
+| Two redemptions by one member | `lockMember` | One succeeds, balance right | Both succeed |
+| Six members, one item left | Conditional stock decrement | One succeeds, stock 0 | All six succeed |
+| Three cancels of one redemption | Conditional status update | One refund, stock restored once | All three succeed |
+| Two editors approve one submission | Conditional status update | One approval, paid once | Both succeed (the ledger's unique key still stops a second payment) |
+| Member and editor check the same person in | Unique key on CheckIn | One check-in, one award | Not mutated: needs a schema change |
+| One referred member at two sessions at once | Unique ledger key | Referrer paid once | |
+| Three referred members attend at once, referrer at 9 of 10 | Referrer row lock (new) | 10 | 12: **D5 confirmed and fixed** |
+| Two admins demote or remove each other at once | Admin rows locked in one transaction (new) | One change, one admin left | Both succeed, no admin left: **D4 confirmed and fixed** |
+
+All 21 database tests pass on real PostgreSQL, three runs in a row. D3 is resolved: CI runs these on a Postgres 17 service container on every push.
+
+Fixes:
+
+- **D5.** `rewardReferral` locks the referrer's profile row before counting this month's referrals. Deadlock check: every path takes at most this one profile lock, after its own inserts, and no path waits on another member's inserts while holding it.
+- **D4.** `changeAccess()` in `src/lib/admin/users.ts` locks every ADMIN row, re-checks that the actor is still an admin, re-reads the target and applies the rule, in one transaction. The two dashboard actions call it after `requireRole('ADMIN')`. Behaviour is otherwise unchanged; the D1 end-to-end test still passes.
+
+### 9.2 Google tokens (S6)
+
+Traced through Better Auth 1.7.14's source:
+
+- **Where written.** The OAuth callback (`oauth2/link-account`) stores `accessToken`, `refreshToken`, `idToken` and their expiry on the `account` row: on sign-up, on linking, and again on every sign-in (`updateAccountOnSignIn` defaults to on). All three paths go through `internalAdapter.createAccount`, `linkAccount` or `updateAccount`, which run the `account` database hooks.
+- **Who reads them.** Nothing in `src`. Inside Better Auth only `/get-access-token`, `/refresh-token` and `/account-info` (none called by the app) and sign-out's provider logout, which Google does not have.
+- **What Google issues.** The sign-in asks for `openid email profile` with no `access_type=offline` (checked on the live sign-in start: `access_type` is absent), so Google issues no refresh token. The access token reads the basic profile for one hour. The ID token is a signed one-hour identity assertion, and Better Auth's `/sign-in/social` accepts a Google ID token directly, so a leaked fresh one could start a session for that member within the hour.
+- **Encrypt or discard.** `account.encryptOAuthTokens` encrypts the access and refresh tokens only; the ID token stays in plain text. Discarding removes all three and costs nothing, because nothing uses them.
+
+Done on the branch: `databaseHooks.account.create.before` and `update.before` blank all five token fields (`withoutProviderTokens()` in `src/lib/auth-rules.ts`). Sign-in is unchanged: Better Auth reads the profile from the fresh token in memory before the row is written. The privacy notice now says the tokens are used once and not kept.
+
+Verified: a database test writes accounts through Better Auth's own `createAccount`, `updateAccount` and `linkAccount` and finds every token null, with `accountId` and `scope` intact; with the hooks removed it fails (`accessToken: "access"`). Unit tests, typecheck and lint pass on the branch. The end-to-end suite was not rerun on it: no end-to-end test goes through the Google callback, which is the only path the change touches. Not verified: a real Google sign-in, which needs Joel's Google client.
+
+Existing rows: tokens already in Neon expired within an hour of each sign-in, and none is a refresh token. Clearing them is tidiness, not urgency. After the branch is deployed, Joel can run on Neon (writes production data, so it is his call):
+
+```sql
+UPDATE "account" SET "accessToken" = NULL, "refreshToken" = NULL, "idToken" = NULL,
+  "accessTokenExpiresAt" = NULL, "refreshTokenExpiresAt" = NULL WHERE "providerId" = 'google';
+```
+
+### 9.3 Better Auth 1.7.14 to 1.7.26 (M2)
+
+Security advisories fixed after 1.7.14 (all in 1.7.16, published 3 Nov 2026), checked against this setup:
+
+| Advisory | Affects this app? |
+|---|---|
+| GHSA-9hm7-xhfp-cx58, unverified OAuth email treated as verified | No. Google sends `email_verified` as a boolean; the bug was string values, generic OAuth and Zoom. The app's own sign-in check relies on this flag, so the fix is still welcome |
+| GHSA-4wq4-2ppv-q3hg (critical), Expo authorization proxy signs values | No. Needs the `expo()` plugin. No secret rotation needed |
+| GHSA-fvxx-76fc-893x, revoked sessions with secondary storage or cookie cache | No. Neither is configured |
+| Phone number, email OTP, organisation, passkey, Stripe, SSO, Electron advisories | No. None of those plugins is used |
+
+Release notes 1.7.15 to 1.7.26, the "Action required" items: all concern plugins or options this app does not use (JWT, OAuth provider, MCP, SCIM, MongoDB, passkey, generic OAuth discovery). Relevant fixes: social providers no longer follow redirects on token exchange (1.7.15), `getSession` no longer keeps an expired session in context (1.7.22), and `better-call` 1.4.6 accepts POST requests with no body (1.7.26). On 1.7.14, a bodyless `POST /api/auth/sign-out` answers 415 and leaves the session valid. The app's own Sign out button sends a JSON body and was confirmed in Chrome to delete the session, so this is not a live bug.
+
+Migration: none. The lockfile change is limited to the Better Auth packages and `better-call`. The Prisma schema is unchanged and Better Auth's table definitions differ only in bundling.
+
+Verified on the branch: typecheck, lint, 259 unit tests, 21 database tests on real PostgreSQL, the full production end-to-end suite (129 passed, 0 failed, 27 skipped by design, the same as `main`), and the auth probe on a production build (sign-in start returns Google's URL with PKCE and state, a forged callback is refused with `state_mismatch`, session reading; a bodyless sign-out now answers 200 and deletes the session, where 1.7.14 answered 415 and kept it). Not verified: a real Google round trip.
+
+Recommendation: upgrade. No change in this app's behaviour was found, the update carries the 1.7.16 security fixes and closes the bodyless sign-out gap, and it is a patch release on the pinned minor. 1.7.27 (20 Nov) changes only plugins this app does not use.
+
+### 9.4 Content Security Policy (S7)
+
+Audit of what the pages load (source search plus the browser):
+
+- Scripts: Next's own chunks from `/_next/static`, Next's inline data scripts, and one inline theme script in the root layout. No third-party scripts, no `next/script`, no `eval`.
+- Styles: built CSS from the site, plus inline `style` attributes.
+- Fonts: self-hosted with `next/font/local`.
+- Images: the site, `/_next/image`, the uploads bucket (unoptimised previews in dashboard forms), and a `data:` PNG for the attendance QR code.
+- Requests: the site (server actions, Better Auth, `/api/uploads`) and the bucket (the browser's presigned PUT, same origin as `S3_PUBLIC_BASE_URL`).
+- Navigation to Google for sign-in is a full-page redirect, which CSP does not govern.
+- No frames, workers, plugins, or forms posting off-site.
+
+The policy, in `src/lib/csp.ts`:
+
+- **Public pages** (static, refreshed every 60 s): `script-src 'self' 'unsafe-inline'`. A per-request nonce would force every public page to render per request, losing the static cache and waking Neon on every visit. Even so, scripts cannot come from another site, and requests and images can reach only the site and the bucket.
+- **Portal, dashboard and sign-in pages** (already rendered per request): `src/middleware.ts` makes a nonce per response; `script-src 'nonce-…' 'strict-dynamic' 'sha256-<theme script>'`. An injected script does not run where the sessions and admin actions are.
+- Both: `default-src 'self'`, `style-src 'self' 'unsafe-inline'`, `img-src 'self' data: <bucket>`, `font-src 'self'`, `connect-src 'self' <bucket>`, `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`, `report-uri /api/csp-report`.
+- Violation reports are logged as `csp_violation` lines (directive, blocked origin, page path), so a page broken after deploy shows in CloudWatch.
+
+Verified on a production build of the branch:
+
+- Headers: `/`, `/events`, `/privacy` and `/api/health` carry the fixed form; `/sign-in`, `/admin/sign-in`, `/admin` and `/builder` a nonce, different on every request; one policy per response.
+- In Chrome: every script on `/sign-in` carries the nonce except the theme script, which runs by its hash; the theme applied and the page hydrated.
+- New end-to-end spec `e2e/dev/csp.spec.ts`: records every violation the browser reports on 8 public and sign-in pages and 16 portal and dashboard pages (signed in as an admin), including the attendance QR code (a `data:` image), the event form with its Markdown preview, and a real check-in submitted under the strict policy. None reported.
+- The whole production end-to-end suite with the policy on: 132 passed (the 129 plus 3 new), 0 failed.
+- The test can fail: with the theme hash left out of the policy, two of the three tests failed (the theme script was blocked and the page had no theme), and the server logged `csp_violation` lines naming `script-src-elem`, `inline` and `/sign-in`.
+- `next dev` with the development form: sign-in and home pages load, hydrate and report nothing.
+
+Not verified: a real upload to S3 (the bucket's origin is in `connect-src`; a unit test checks it matches the host the SDK signs presigned URLs for) and Google's sign-in redirect on the live domain (a full-page navigation, which the policy does not cover).
+
+Recommendation: merge and deploy it enforcing, not report-only. Every page and flow the tests reach is clean, and a report-only policy with no one reading the reports protects nothing. For the first week after deploy, search the logs for `csp_violation`; if a page breaks, revert the branch's one commit. Keeping `'unsafe-inline'` on public pages is a deliberate trade: the alternative makes every public page dynamic.
+
+### 9.5 CI (M1)
+
+`.github/workflows/ci.yml`, on every push to `main` and every pull request into it, read-only token, no secrets:
+
+| Job | Steps |
+|---|---|
+| Types, lint, copy and unit tests | `pnpm install --frozen-lockfile`, typecheck, lint (ESLint and the copy rules), unit tests |
+| Database tests on PostgreSQL | Postgres 17 service container; migrations; a drift check (`prisma migrate diff`, fails if the schema and migrations disagree); database and race tests on the empty database |
+| Production build and end-to-end tests | A second Postgres container; migrations, seed, development fixtures and the reviewed event history; Chromium; the production Playwright config, which builds, starts and runs the shared flows and the production checks; the report kept for 7 days on failure |
+
+The repository is public, so Actions minutes are free. The dev-server run (styleguide pages only) stays local.
+
+Verified before push, by replaying each job's commands here on fresh databases with the same placeholder environment: database job 21 of 21 passed, drift check clean (and exits 2 when the schema differs); end-to-end job 129 passed, 0 failed, 27 skipped by design, 10.5 minutes. Not verified: the run on GitHub itself, which needs the push. Joel's token has the `workflow` scope that pushing a workflow file needs.
+
+### 9.6 Monitoring
+
+Built (on `main`):
+
+- `src/instrumentation.ts` (`onRequestError`): one JSON line per server error, with the path without its query string, route, request type, a 300-character message and the digest shown on the dashboard's error page.
+- `GET /api/health`: 200 or 503, nothing else; logs `health_check_failed`.
+- S3 delete failures logged the same way.
+
+Verified on a production build: with the database stopped, `/api/health` answered 503 and logged one line; a portal page logged `request_error` lines with the matching digest and no query string (the `?q=` search term was absent from the log); the home page kept serving from the cache; health returned to 200 when the database came back. Next reports one failed page several times (once per layout), so counts are approximate. The full end-to-end suite has run with this code as part of the CSP branch, which is built on it.
+
+Plan (docs/DEPLOY.md, Monitoring), all free tier: SSR app logs on in Amplify; an Amplify alarm on `5xxErrors`; a CloudWatch metric filter and alarm on `request_error`; an external uptime check of the home page every 5 minutes and `/api/health` hourly. Hourly because each health call wakes Neon for 5 minutes, and Neon's free plan allows 100 compute-unit hours a month: a 5-minute database check would keep it awake all month (about 180) and Neon would suspend the project.
+
+### 9.7 Portal launch readiness
+
+Done without Joel:
+
+- Concurrency guarantees tested on real PostgreSQL; two gaps fixed (D4, D5)
+- CI written and replayed locally
+- Error logging, health route and monitoring plan
+- The three approval branches built and tested
+
+Needs Joel's access or decision, in order:
+
+1. Approve or decline the three branches. Then push `main` (CI runs) and deploy.
+2. Neon: `pnpm db:deploy` and `pnpm db:seed` with the direct connection (docs/DEPLOY.md, Builder portal, step 2). Additive migration, create-only seed.
+3. S3 bucket policy: add `projects/*` to the live policy.
+4. Google OAuth: publish the consent screen (testing mode admits listed test users only); confirm the production redirect URI `https://<domain>/api/auth/callback/google`.
+5. Privacy notice: the Data Protection Act 2012 (Act 843) check and the question to UCC (TODO in `src/app/(site)/privacy/page.tsx`).
+6. Code of conduct: review with the core team (TODO in `src/app/(site)/code-of-conduct/page.tsx`).
+7. Monitoring: the four AWS and uptime steps in docs/DEPLOY.md.
+8. GitHub: optionally require the CI checks on `main` (branch protection needs an admin of the repository).
+9. After the token branch is live: optionally clear old tokens with the SQL in 9.2.
+
+Still open, not urgent: S8 (rotating check-in code), S9 (Better Auth's in-memory rate limiter; only Google sign-in endpoints are exposed), S10 (build-time advisories inside Next and Prisma), F2 (loading feedback), U5, P1 and P2.
+
 ## Status
 
 | ID | Severity | Category | Status |
@@ -254,16 +412,16 @@ Not recommended: a redesign, new sections or more motion. The public site is con
 | S3 | Low | A | Fixed |
 | S4 | Low | A | Fixed |
 | S5 | Low | A | Fixed |
-| S6 | Low | B | Waiting for Joel |
-| S7 | Low | B | Waiting for Joel |
+| S6 | Low | B | Fixed on branch `auth/discard-google-tokens`, waiting for approval (9.2) |
+| S7 | Low | B | Built and tested on branch `security/csp`, waiting for approval (9.4) |
 | S8 | Info | C | Recommendation |
-| S9 | Info | B | Waiting for Joel |
+| S9 | Info | B | Waiting for Joel; low risk, only Google sign-in endpoints are exposed |
 | S10 | Info | | Not changed |
 | D1 | High | A | Fixed |
-| D2 | Medium | A | Fixed, race not reproducible here |
-| D3 | Medium | C | Recommendation |
-| D4 | Low | | Not changed |
-| D5 | Low | | Not changed |
+| D2 | Medium | A | Fixed; proven on real PostgreSQL (9.1) |
+| D3 | Medium | A | Resolved: race tests on real PostgreSQL, locally and in CI (9.1) |
+| D4 | Low | A | Confirmed on real PostgreSQL and fixed (9.1) |
+| D5 | Low | A | Confirmed on real PostgreSQL and fixed (9.1) |
 | D6 | Low | A | Fixed |
 | F1 | High | A | Fixed |
 | F2 | Medium | C | Tried and reverted (broke 404 status and action refreshes) |
@@ -273,3 +431,5 @@ Not recommended: a redesign, new sections or more motion. The public site is con
 | U3 | Low | A | Fixed |
 | U4 | Low | A | Fixed |
 | U5 | Low | | Already tracked |
+| M1 | | A | CI added (9.5) |
+| M2 | | B | Tested on branch `deps/better-auth-1.7.26`, waiting for approval (9.3) |

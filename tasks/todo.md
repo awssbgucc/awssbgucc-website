@@ -904,22 +904,26 @@ Batch 1: races on real PostgreSQL (main)
 
 Batch 2: CI (main)
 
-- [ ] GitHub Actions: typecheck, lint, unit tests, database tests on a Postgres service container, production build, on push to main and on pull requests
-- [ ] Run the same commands locally against the throwaway server before Joel pushes
+- [x] GitHub Actions: typecheck, lint, unit tests, database tests and a schema drift check on a Postgres service container, production build and the production e2e suite, on push to main and on pull requests (86dc93f)
+- [x] Replayed locally on fresh databases with the same placeholder environment: database job 21 passed; e2e job 129 passed, 0 failed, 27 skipped, 10.5 min. Not run on GitHub yet: needs the push
 
 Batch 3: monitoring (main)
 
-- [ ] `onRequestError` in `src/instrumentation.ts`: one JSON line per server error, no query strings, no secrets
-- [ ] A health route for an uptime check, cheap enough not to keep Neon awake
-- [ ] Monitoring plan in docs/DEPLOY.md: Amplify 5xx alarm, log metric filter, free uptime check
+- [x] `onRequestError` in `src/instrumentation.ts`: one JSON line per server error, no query strings, no secrets (cbfd227)
+- [x] `/api/health`, checked hourly at most so it does not keep Neon awake (free plan: 100 CU-hours a month)
+- [x] Monitoring plan in docs/DEPLOY.md: Amplify 5xx alarm, log metric filter and alarm, free uptime check
+- [x] Checked on a production build with the database stopped: health 503, request_error lines with digest and no query string, home page kept serving, health back to 200 after
 
 Each on its own branch, for Joel's approval before merging:
 
-- [ ] Google tokens: stop storing them (branch `auth/discard-google-tokens`)
-- [ ] Better Auth 1.7.14 to 1.7.26 (branch `deps/better-auth-1.7.26`)
-- [ ] Content Security Policy (branch `security/csp`)
+- [x] Google tokens: stop storing them (branch `auth/discard-google-tokens`, 776ddd5). Database test through Better Auth's own adapter; fails without the hook
+- [x] Better Auth 1.7.14 to 1.7.26 (branch `deps/better-auth-1.7.26`, 1fae7bb). Unit, database and e2e suites pass (129); auth probe on a production build
+- [x] Content Security Policy (branch `security/csp`, dc17b22). e2e 132 passed with the new CSP spec; the spec fails with the theme hash removed; next dev checked
+- [x] The three branches merge cleanly with each other
+- [ ] Joel: approve or decline each branch
 
 Then
 
-- [ ] Launch checklist split into Joel's steps and done steps
-- [ ] Audit section 9, final report
+- [x] Launch checklist split into Joel's steps and done steps (audit 9.7)
+- [x] Audit section 9
+- [x] Throwaway PostgreSQL stopped and deleted after the run
