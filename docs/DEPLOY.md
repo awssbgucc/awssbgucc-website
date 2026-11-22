@@ -153,4 +153,14 @@ pnpm test:e2e        # end-to-end tests run only when DATABASE_URL is local
 
 Environment variables set in the shell win over `.env` and `.env.local`, so this never touches the Neon branch those files point at.
 
-Two limits of this server, found on 5 Nov 2026. `next build` opens more than 20 connections at once, and the server closes any connection over the limit, so the build fails with "Connection terminated unexpectedly"; use 100. And a client that drops its connection without closing it (a dev server restarting, or a stopped process) can stop the whole server with an unhandled `ECONNRESET`; start it again with the same folder, and no data is lost. Run one Next server at a time, and Playwright with one worker, on a laptop with little free memory.
+PGlite runs one transaction at a time, so it cannot show a race. The race tests (`src/lib/platform/races.int.test.ts` and the admin access test) skip there and run only on a real PostgreSQL server: CI runs them on every push, against a service container. To run them on a laptop without Docker, unzip the official binaries (postgresql.org links them, "zip archive of the binaries") into a scratch folder, then:
+
+```
+pgsql/bin/initdb -D <folder> -U postgres --auth=trust
+pgsql/bin/pg_ctl -D <folder> -o "-p 5434 -c listen_addresses=127.0.0.1" -w start
+pgsql/bin/psql -h 127.0.0.1 -p 5434 -U postgres -c "create database sbg_test"
+export DATABASE_URL="postgresql://postgres@127.0.0.1:5434/sbg_test" DIRECT_URL="$DATABASE_URL"
+pnpm db:deploy && pnpm test:int
+```
+
+Two limits of the PGlite server, found on 5 Nov 2026. `next build` opens more than 20 connections at once, and the server closes any connection over the limit, so the build fails with "Connection terminated unexpectedly"; use 100. And a client that drops its connection without closing it (a dev server restarting, or a stopped process) can stop the whole server with an unhandled `ECONNRESET`; start it again with the same folder, and no data is lost. Run one Next server at a time, and Playwright with one worker, on a laptop with little free memory.

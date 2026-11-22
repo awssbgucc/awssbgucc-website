@@ -1,64 +1,23 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { db } from '@/lib/db';
+import { ensureRules, fixtures } from '@/test/int-fixtures';
 import { balances, cancelRedemption, checkInByEditor, checkInWithCode, redeem, removeCheckIn, reviewSubmission, RuleError } from './engine';
 
 // Each run makes its own users and events with a unique prefix, and removes them afterwards.
-const run = randomUUID().slice(0, 8);
-const id = (name: string) => `int-${run}-${name}`;
-const HOUR = 60 * 60 * 1000;
-
-async function makeMember(name: string, referredById: string | null = null) {
-  const userId = id(name);
-  await db.user.create({ data: { id: userId, name, email: `${userId}@example.test`, emailVerified: true } });
-  await db.memberProfile.create({
-    data: { userId, handle: userId, displayName: name, referralCode: userId.toUpperCase(), referredById, onboardedAt: new Date() },
-  });
-  return userId;
-}
-
-async function makeEvent(name: string, window: 'open' | 'closed' = 'open') {
-  const now = Date.now();
-  const opens = window === 'open' ? now - HOUR : now - 5 * HOUR;
-  const closes = window === 'open' ? now + HOUR : now - 4 * HOUR;
-  return db.event.create({
-    data: {
-      id: id(name),
-      slug: id(name),
-      title: `Integration ${name}`,
-      tag: 'BUILD',
-      format: 'IN_PERSON',
-      startsAt: new Date(opens),
-      endsAt: new Date(closes),
-      summary: 's',
-      body: 'b',
-      status: 'PUBLISHED',
-      checkInCode: 'ABC234',
-      checkInOpensAt: new Date(opens),
-      checkInClosesAt: new Date(closes),
-    },
-  });
-}
+const { id, makeMember, makeEvent, cleanUp, HOUR } = fixtures();
 
 let ama: string;
 let kofi: string;
 
 beforeAll(async () => {
   // The award rules and achievements come from the seed. Make sure the ones these tests rely on exist.
-  await db.awardRule.upsert({ where: { reason: 'CHECK_IN' }, create: { reason: 'CHECK_IN', xp: 50, credits: 10, description: 'test' }, update: { active: true } });
-  await db.awardRule.upsert({ where: { reason: 'REFERRAL' }, create: { reason: 'REFERRAL', xp: 25, credits: 5, description: 'test' }, update: { active: true } });
-  await db.awardRule.upsert({ where: { reason: 'SUBMISSION_APPROVED' }, create: { reason: 'SUBMISSION_APPROVED', xp: 150, credits: 30, description: 'test' }, update: { active: true } });
+  await ensureRules();
   ama = await makeMember('ama');
   kofi = await makeMember('kofi', ama);
 });
 
-afterAll(async () => {
-  await db.user.deleteMany({ where: { id: { startsWith: `int-${run}` } } });
-  await db.challenge.deleteMany({ where: { id: { startsWith: `int-${run}` } } });
-  await db.event.deleteMany({ where: { id: { startsWith: `int-${run}` } } });
-  await db.reward.deleteMany({ where: { id: { startsWith: `int-${run}` } } });
-  await db.auditLog.deleteMany({ where: { entityId: { startsWith: `int-${run}` } } });
-});
+afterAll(cleanUp);
 
 describe('check-in', () => {
   it('records once and pays once, even when the same check-in arrives three times at once', async () => {

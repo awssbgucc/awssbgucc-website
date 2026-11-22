@@ -97,6 +97,8 @@ async function recordCheckIn(tx: Tx, event: { id: string; title: string }, userI
 }
 
 async function rewardReferral(tx: Tx, referrerId: string, referredId: string, referredName: string) {
+  // Two people the same member referred can check in at once; the lock makes the monthly cap count one at a time.
+  await lockMember(tx, referrerId);
   const rule = await activeRule(tx, 'REFERRAL');
   const referrer = await tx.memberProfile.findUnique({ where: { userId: referrerId }, select: { status: true } });
   if (!rule || referrer?.status !== 'ACTIVE') return;

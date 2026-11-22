@@ -890,3 +890,36 @@ Verify each batch: typecheck, lint, unit tests, integration tests (local), produ
 - 17 portal and dashboard forms: 139 fields, all labelled, no duplicate IDs, help text announced; dashboard skip link present
 - Error pages exercised in Chrome: the dashboard one through a real race (a row removed while the list was open), with the reference matching the server log and Try again recovering; the portal one by saving the profile with the database stopped; the root one by loading a portal page with the database stopped. During the outage, cached public pages kept serving
 - Full e2e suite on `next start`, one worker, local database with the reviewed content imported: 129 passed, 0 failed, 27 skipped by design. The first full run failed 16: 6 dev-only styleguide specs my run config did not exclude, 4 missing local content (fixed by importing it), and 6 caused by F2, which is reverted
+
+## Hardening and launch readiness, 22 Nov 2026
+
+Joel asked for a second phase after the audit: real concurrency tests, Google token storage, the Better Auth update, a Content Security Policy, CI, monitoring and the portal launch checklist. Findings and evidence go in `tasks/WEBSITE_FULL_AUDIT.md`, section 9. Local databases only (a throwaway PostgreSQL 17.7 on 127.0.0.1:5434, from the official portable binaries, with Joel's approval); nothing written to Neon, S3 or Google; nothing pushed or deployed.
+
+Batch 1: races on real PostgreSQL (main)
+
+- [x] Race tests that skip on PGlite: rate limit burst, two redemptions, last item in stock, double cancel, double approval, code and editor check-in at once, first session twice, monthly referral cap, two admins demoting each other
+- [x] Each test fails when its protection is removed (seven mutations, all caught; the old rate limiter let up to 15 of 15 through a limit of 5)
+- [x] D5 fixed: the referrer's row is locked before the monthly cap is counted (12 awards against a cap of 10 before)
+- [x] D4 fixed: admin role changes and removals lock the admin rows in one transaction (both demotions went through before)
+
+Batch 2: CI (main)
+
+- [ ] GitHub Actions: typecheck, lint, unit tests, database tests on a Postgres service container, production build, on push to main and on pull requests
+- [ ] Run the same commands locally against the throwaway server before Joel pushes
+
+Batch 3: monitoring (main)
+
+- [ ] `onRequestError` in `src/instrumentation.ts`: one JSON line per server error, no query strings, no secrets
+- [ ] A health route for an uptime check, cheap enough not to keep Neon awake
+- [ ] Monitoring plan in docs/DEPLOY.md: Amplify 5xx alarm, log metric filter, free uptime check
+
+Each on its own branch, for Joel's approval before merging:
+
+- [ ] Google tokens: stop storing them (branch `auth/discard-google-tokens`)
+- [ ] Better Auth 1.7.14 to 1.7.26 (branch `deps/better-auth-1.7.26`)
+- [ ] Content Security Policy (branch `security/csp`)
+
+Then
+
+- [ ] Launch checklist split into Joel's steps and done steps
+- [ ] Audit section 9, final report

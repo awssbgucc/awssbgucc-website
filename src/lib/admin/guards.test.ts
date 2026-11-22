@@ -18,7 +18,7 @@ function walk(dir: string): string[] {
 
 const FUNCTION_START = /async function (\w+)\([^)]*\)[^{]*\{\s*\n\s*([^\n]+)/g;
 
-/** Local helpers whose own first statement is a guard, such as checkChange() in users/actions.ts. */
+/** Local helpers whose own first statement is a guard, so an action may call the helper first instead. */
 function guardedHelpers(source: string, guard: RegExp) {
   const names = new Set<string>();
   for (const match of source.matchAll(FUNCTION_START)) if (guard.test(match[2])) names.add(match[1]);
