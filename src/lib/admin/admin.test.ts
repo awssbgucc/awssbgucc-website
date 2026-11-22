@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseForm } from './forms';
-import { adminChangeError, hasRole, isRole, normaliseEmail, SIGN_IN_ERRORS, signInMessage } from '@/lib/auth-rules';
+import { adminChangeError, hasRole, isRole, normaliseEmail, SIGN_IN_ERRORS, signInMessage, withoutProviderTokens } from '@/lib/auth-rules';
 import { isCleanCopy, hasNoDashOrEmoji } from '@/lib/copy-rules';
 import { slugify } from '@/lib/slug';
 import { eventSchema } from '@/lib/validation/event';
@@ -76,6 +76,13 @@ describe('sign-in errors', () => {
   it('shows nothing without a code', () => {
     expect(signInMessage(undefined)).toBeNull();
     expect(signInMessage('')).toBeNull();
+  });
+});
+
+describe('google tokens', () => {
+  it('clears every token and keeps the account binding', () => {
+    const account = { providerId: 'google', accountId: 'sub', scope: 'openid', accessToken: 'a', refreshToken: 'r', idToken: 'i', accessTokenExpiresAt: new Date() };
+    expect(withoutProviderTokens(account)).toEqual({ providerId: 'google', accountId: 'sub', scope: 'openid', accessToken: null, refreshToken: null, idToken: null, accessTokenExpiresAt: null, refreshTokenExpiresAt: null });
   });
 });
 

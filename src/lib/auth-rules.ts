@@ -32,6 +32,14 @@ export function isRole(value: unknown): value is Role {
   return value === 'ADMIN' || value === 'EDITOR';
 }
 
+/**
+ * Google's tokens are used once, during sign-in, to read the verified email. The app never calls Google after
+ * that, so none is kept: a copy of the database then holds no Google credentials. Applied to every account write.
+ */
+export function withoutProviderTokens<T extends object>(account: T) {
+  return { ...account, accessToken: null, refreshToken: null, idToken: null, accessTokenExpiresAt: null, refreshTokenExpiresAt: null };
+}
+
 /** Empty or missing means any domain. Otherwise a comma-separated list, matched exactly. */
 export function emailDomainAllowed(email: string, domains: string | null | undefined) {
   const list = (domains ?? '')

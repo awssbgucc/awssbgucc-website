@@ -17,7 +17,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: 'What we store when you sign in',
     body: [
-      'From Google: your name, your email address, whether Google has verified it, your Google account id, the address of your Google profile photo (which the site does not show), and the sign-in tokens Google issues.',
+      'From Google: your name, your email address, whether Google has verified it, your Google account id, and the address of your Google profile photo (which the site does not show). Google also sends sign-in tokens; they are used once to read your email address and are not kept.',
       'From you: the profile you fill in (name, handle, programme, level, department, interests, a short bio, GitHub and LinkedIn links) and your privacy choices.',
       'From your activity: the sessions you check in at, challenge submissions and reviewer feedback, projects you add, XP and credit history, achievements, rewards you redeem and your notifications.',
       'For security: your session, the time it started, and the IP address and browser your sign-in came from.',

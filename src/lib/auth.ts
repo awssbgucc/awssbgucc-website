@@ -4,7 +4,7 @@ import { APIError } from 'better-auth/api';
 import { nextCookies } from 'better-auth/next-js';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { emailDomainAllowed, hasRole, normaliseEmail, SIGN_IN_ERRORS, type Role, type SignInError } from '@/lib/auth-rules';
+import { emailDomainAllowed, hasRole, normaliseEmail, SIGN_IN_ERRORS, withoutProviderTokens, type Role, type SignInError } from '@/lib/auth-rules';
 import { db } from '@/lib/db';
 
 // Two kinds of people sign in with Google: members and the core team.
@@ -59,6 +59,11 @@ export const auth = betterAuth({
           await assertCanSignIn(user);
         },
       },
+    },
+    // Sign-up, linking and the refresh on each sign-in all write the account row through these two.
+    account: {
+      create: { before: async (account) => ({ data: withoutProviderTokens(account) }) },
+      update: { before: async (account) => ({ data: withoutProviderTokens(account) }) },
     },
   },
   plugins: [nextCookies()],
