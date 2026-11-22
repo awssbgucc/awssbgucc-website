@@ -66,7 +66,7 @@ export function EventBrowser({ upcoming, past, empty }: { upcoming: Item[]; past
           ) : when === 'upcoming' && tag === 'ALL' && !query ? (
             <div className="py-8">{empty}</div>
           ) : (
-            <p className="py-8 text-text-muted">No events match.</p>
+            <p className="py-8 text-text-muted">No events match your filters.</p>
           )}
         </div>
       </div>

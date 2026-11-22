@@ -24,7 +24,7 @@ export function PostCard({ post, feature = false }: { post: Post; feature?: bool
           {external ? <a href={href} className="stretched">{post.title}</a> : <Link href={href} className="stretched">{post.title}</Link>}
         </h2>
         <p className="post-excerpt">{post.excerpt}</p>
-        <p className="post-by">{post.author}<span>{external ? 'Read the original' : 'Read the story'}</span></p>
+        <p className="post-by">{post.author}<span>{external ? 'Read original' : 'Read post'}</span></p>
       </div>
     </article>
   );

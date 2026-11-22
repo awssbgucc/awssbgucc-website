@@ -95,8 +95,8 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
         </div>
         <aside className="event-aside">
           <section className="aside-next">
-            <h2 className="type-label text-lime">{past ? 'Missed this one' : 'Going?'}</h2>
-            <p>{past ? 'New events go up on Meetup first.' : 'Register on Meetup. Any change to the time or room is posted there too.'}</p>
+            <h2 className="type-label text-lime">{past ? 'Missed this session' : 'Register on Meetup'}</h2>
+            <p>{past ? 'Upcoming events are posted on Meetup first.' : 'Register on Meetup so you receive updates if the time or room changes.'}</p>
             {past ? <Cta href="/events" variant="arrow">See all events</Cta> : event.meetupUrl && <Cta href={event.meetupUrl} variant="arrow">Open the Meetup listing</Cta>}
           </section>
           {past && attendance !== null && (
@@ -123,7 +123,7 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
           )}
           {challenges.length > 0 && (
             <section>
-              <h2 className="type-label text-text-muted">Keep building</h2>
+              <h2 className="type-label text-text-muted">Practice challenges</h2>
               <ul className="aside-links">
                 {challenges.map((c) => <li key={c.slug}><Link href={`/builder/challenges/${c.slug}`}><span>Challenge: {c.title}</span><span className="type-label">portal</span></Link></li>)}
               </ul>
@@ -151,13 +151,13 @@ export function EventDetail({ event, attendance = null, resources = [], recap = 
         <nav className="event-pager" aria-label="More sessions">
           {previous ? (
             <Link href={`/events/${previous.slug}`} className="pager-link">
-              <span className="type-label">Earlier, {formatDate(previous.startsAt)}</span>
+              <span className="type-label">Previous event, {formatDate(previous.startsAt)}</span>
               <span>{previous.title}</span>
             </Link>
           ) : <span />}
           {next && (
             <Link href={`/events/${next.slug}`} className="pager-link pager-next">
-              <span className="type-label">Later, {formatDate(next.startsAt)}</span>
+              <span className="type-label">Next event, {formatDate(next.startsAt)}</span>
               <span>{next.title}</span>
             </Link>
           )}

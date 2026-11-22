@@ -29,7 +29,7 @@ export default async function EventsPage() {
     <>
       <section className="band band-top">
         <Container>
-          <PageIntro label="What we run" title="Events" intro="Online talks with people working in cloud, hands-on build sessions on campus and a Saturday bootcamp. Every event is free, and you register on Meetup.">
+          <PageIntro label="What we run" title="Events" intro="Online talks with people working in cloud computing, hands-on campus build sessions and a Saturday bootcamp. Every event is free, with registration on Meetup.">
             {events.length > 0 && (
               <dl className="intro-stats">
                 <div><dt>Events run</dt><dd>{past.length}</dd></div>
@@ -44,7 +44,7 @@ export default async function EventsPage() {
 
       <section className="band band-alt" id="past-events" aria-labelledby="archive-title">
         <Container>
-          <SectionHead label="Archive" title="Every event so far." id="archive-title" />
+          <SectionHead label="Archive" title="Our events so far" id="archive-title" />
           <EventBrowser upcoming={upcoming.map(item)} past={past.map(item)} empty={<NoEvents />} />
         </Container>
       </section>
