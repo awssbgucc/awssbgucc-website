@@ -34,7 +34,7 @@ export function ProjectBrowser({ projects }: { projects: Item[] }) {
       <div aria-live="polite">
         <div key={`${stack}|${q}`} className="list-swap">
         {list.length === 0 ? (
-          <p className="text-text-muted">No projects match.</p>
+          <p className="text-text-muted">No projects match your filters.</p>
         ) : (
           <>
             <ProjectCard project={first} credit={first.credit} size="large" />

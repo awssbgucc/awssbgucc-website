@@ -10,7 +10,7 @@ const RULES = [
   ['Respect people', 'No harassment, insults or discrimination, in the room or online. Disagree with ideas, not with people.'],
   ['Submit your own work', 'Credit anyone who helped and any code you reused. Only name teammates who agreed to be named.'],
   ['Keep secrets out', 'Never put AWS keys, passwords or tokens in a repository, a screenshot or a submission.'],
-  ['Check in honestly', 'Check in only at sessions you attend. Sharing the code with people outside the room is cheating, and the record will be removed.'],
+  ['Check in honestly', 'Check in only at sessions you attend. Sharing a check-in code with people outside the room is not allowed, and the check-in will be removed.'],
   ['Mind the cost', 'Clean up the AWS resources you create in a lab. Nobody should get a surprise bill.'],
   ['Follow the event terms', 'Events follow the AWS Event Terms and Conditions.'],
 ];
@@ -21,7 +21,7 @@ export default async function CodeOfConductPage() {
     <Section>
       <div className="max-w-[68ch]">
         <h1 className="type-section">Code of conduct</h1>
-        <p className="mt-4 text-text-muted">For everyone at our sessions and in the builder portal.</p>
+        <p className="mt-4 text-text-muted">For everyone at our sessions and in the Builder Portal.</p>
         <dl className="mt-10 border-t border-border">
           {RULES.map(([title, body]) => (
             <div key={title} className="grid gap-2 border-b border-border py-5 sm:grid-cols-[200px_1fr] sm:gap-8">
@@ -43,7 +43,7 @@ export default async function CodeOfConductPage() {
         </dl>
         <h2 className="mt-10 text-lg font-semibold text-text-strong">If something goes wrong</h2>
         <p className="mt-3 text-text-muted">
-          Tell any member of the core team, or email {email}. The team can remove submissions, check-ins and rewards, and suspend accounts. Every such action is recorded.
+          Tell any member of the core team, or email {email}. The team can remove submissions, check-ins or rewards, and suspend accounts when needed. Every moderation action is logged.
         </p>
       </div>
     </Section>

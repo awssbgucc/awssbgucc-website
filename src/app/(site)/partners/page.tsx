@@ -21,7 +21,7 @@ export default async function PartnersPage() {
     <>
       <section className="band band-top">
         <Container>
-          <PageIntro label="Working together" title="Partners" intro="The student associations and organisations we work with at the University of Cape Coast." />
+          <PageIntro label="Campus and community" title="Partners" intro="The student associations and organisations we collaborate with at the University of Cape Coast." />
           {GROUPS.map(({ type, title }) => {
             const group = partners.filter((partner) => partner.type === type);
             if (group.length === 0) return null;
@@ -39,7 +39,8 @@ export default async function PartnersPage() {
       <section className="band band-alt" aria-labelledby="work-title">
         <Container>
           <SectionHead label="Associations, clubs and organisations" title="Work with us" id="work-title" action={<Cta href={`mailto:${email}`} variant="line">Email the team</Cta>}>
-            We work with departmental associations, clubs and organisations that want their members building with AWS. Email us and we will set up a call.
+            We collaborate with departmental associations, student clubs and organisations that want to introduce their members to AWS and cloud
+            computing. Send us an email to discuss a joint session or partnership.
           </SectionHead>
         </Container>
       </section>

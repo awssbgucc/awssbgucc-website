@@ -57,7 +57,7 @@ export default async function ProjectPage({ params }: Props) {
             )}
             {(project.demoUrl || project.repoUrl) && (
               <div className="project-links">
-                {project.demoUrl && <Cta href={project.demoUrl} variant="mint">Open the live project</Cta>}
+                {project.demoUrl && <Cta href={project.demoUrl} variant="mint">View live project</Cta>}
                 {project.repoUrl && <Cta href={project.repoUrl} variant="line">Source code</Cta>}
               </div>
             )}
@@ -75,7 +75,7 @@ export default async function ProjectPage({ params }: Props) {
         )}
         {more.length > 0 && (
           <div className="mt-20">
-            <p className="type-label mb-6 text-text-muted">More from members</p>
+            <p className="type-label mb-6 text-text-muted">More member projects</p>
             <div className="project-grid">{more.map((p) => <ProjectCard key={p.id} project={p} credit={projectCredit(p)?.name} />)}</div>
           </div>
         )}

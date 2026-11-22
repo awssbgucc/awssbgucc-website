@@ -9,8 +9,8 @@ export const metadata: Metadata = { title: 'Contact', description: 'Email the co
 export default async function ContactPage() {
   const s = await getSiteSettings();
   const channels = [
-    { label: 'Meetup', note: 'Every event, and the RSVP for it', href: s.meetupUrl },
-    { label: 'WhatsApp community', note: 'Updates on campus', href: s.whatsappUrl },
+    { label: 'Meetup', note: 'Event announcements and RSVPs', href: s.meetupUrl },
+    { label: 'WhatsApp community', note: 'Campus updates and reminders', href: s.whatsappUrl },
     { label: 'LinkedIn', note: null, href: s.linkedinUrl },
     { label: 'Instagram', note: null, href: s.instagramUrl },
     { label: 'X', note: null, href: s.xUrl },
@@ -19,7 +19,7 @@ export default async function ContactPage() {
   return (
     <section className="band band-top">
       <Container>
-      <PageIntro label="Get in touch" title="Contact" intro="The quickest way to reach the core team is email. For events and RSVPs, use Meetup." />
+      <PageIntro label="Get in touch" title="Contact" intro="Email is the fastest way to reach the core team. For upcoming events and RSVPs, head to Meetup." />
       <div className="grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-5">
           <p className="type-label text-text-muted">Email</p>
@@ -41,14 +41,14 @@ export default async function ContactPage() {
           <div className="contact-card">
             <h2 className="section-title">Work with us</h2>
             <p className="mt-3 text-text-muted">
-              We work with departmental associations, clubs and organisations that want their members building with AWS. Email us and we will set up a call.
+              Interested in co-hosting a workshop, speaking at a session or partnering with the group? Email the core team and we will get back to you.
             </p>
             <Button href={`mailto:${s.email}`} className="mt-6">
               Email the team
             </Button>
           </div>
           <p className="mt-6 text-sm text-text-muted">
-            A student-led group in the AWS Student Builder Groups program. For questions about AWS products or accounts, contact AWS directly; we cannot help with billing or account access.
+            A student-led group in the AWS Student Builder Groups program. For questions about AWS products, billing or account access, please contact AWS Support directly.
           </p>
         </div>
       </div>

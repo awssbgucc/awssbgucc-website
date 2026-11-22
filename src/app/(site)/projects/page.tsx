@@ -19,7 +19,7 @@ export default async function ProjectsPage() {
   return (
     <section className="band band-top">
       <Container>
-        <PageIntro label="Built by members" title="Projects" intro="Websites, apps and tools built by members, each with its code and the AWS services behind it.">
+        <PageIntro label="Member showcase" title="Projects" intro="Websites, apps and tools created by members, with source code and the AWS services behind each one.">
           {projects.length > 0 && (
             <dl className="intro-stats">
               <div><dt>Projects</dt><dd>{projects.length}</dd></div>
@@ -35,13 +35,13 @@ export default async function ProjectsPage() {
           <div className="projects-empty">
             <div className="projects-empty-copy" data-reveal="rise">
               <p className="type-label text-magenta">Share your work</p>
-              <h2 className="section-title">The first project here could be yours.</h2>
+              <h2 className="section-title">Be the first to share a project</h2>
               <p>
-                If you have built something at one of our sessions or on your own, share it through the Builder Portal with a screenshot, the AWS
-                services you used and a link to the code.
+                Built something using AWS? Submit it through the Builder Portal, whether you worked on it during a session or independently. Include
+                a screenshot or architecture diagram, the AWS services behind it and a link to the code.
               </p>
               <div className="flex flex-wrap items-center gap-6">
-                <Cta href="/builder/projects/new" variant="mint">Share a project</Cta>
+                <Cta href="/builder/projects/new" variant="mint">Submit a project</Cta>
                 <Cta href="/events" variant="arrow">Find a build session</Cta>
               </div>
               <p className="type-label mt-8 text-text-muted">What to include</p>

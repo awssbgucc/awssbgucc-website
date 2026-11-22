@@ -38,7 +38,7 @@ export async function Footer() {
         <div className="footer-grid">
           <div className="footer-brand">
             <Logo size="large" />
-            <p>A student-led group at the University of Cape Coast. Talks, a Saturday bootcamp and build sessions, free for every student.</p>
+            <p>A student-led technical community at the University of Cape Coast. Online talks, a Saturday bootcamp and hands-on sessions, free for all students.</p>
             <p className="font-display text-xs text-text-muted">5.10 N  1.25 W / Cape Coast, Ghana</p>
           </div>
           <Column title="Group" links={[...navLinks(s.scdPageEnabled), { href: '/partners', label: 'Partners' }, { href: '/contact', label: 'Contact' }]} />

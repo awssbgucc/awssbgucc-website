@@ -17,7 +17,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: 'What we store when you sign in',
     body: [
-      'From Google: your name, your email address, whether Google has verified it, your Google account id, and the address of your Google profile photo (which the site does not show). Google also sends sign-in tokens; they are used once to read your email address and are not kept.',
+      'From Google: your name, your email address, whether Google has verified it, your Google account ID, and the address of your Google profile photo (which the site does not show). Google also sends sign-in tokens; they are used once to read your email address and are not kept.',
       'From you: the profile you fill in (name, handle, programme, level, department, interests, a short bio, GitHub and LinkedIn links) and your privacy choices.',
       'From your activity: the sessions you check in at, challenge submissions and reviewer feedback, projects you add, XP and credit history, achievements, rewards you redeem and your notifications.',
       'For security: your session, the time it started, and the IP address and browser your sign-in came from.',
@@ -25,7 +25,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
   },
   {
     title: 'What we never collect',
-    body: ['Phone numbers, student ID numbers, dates of birth, home addresses or payment details. RSVPs stay on Meetup, under Meetup’s own terms.'],
+    body: ["Phone numbers, student ID numbers, dates of birth, home addresses or payment details. RSVPs stay on Meetup, under Meetup's own terms."],
   },
   {
     title: 'Who can see it',
@@ -43,9 +43,9 @@ const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: 'Your choices',
     body: [
-      'Change your profile and visibility at any time from the builder portal.',
+      'Change your profile and visibility at any time from the Builder Portal.',
       'Download your data as a file from your profile page.',
-      'Delete your account from your profile page. That removes your profile, check-ins, submissions, projects, XP, credits and redemptions. We keep a note that a deletion happened, with your email address and account id, so we can show the request was handled. The note does not include your profile or records.',
+      'Delete your account from your profile page. That removes your profile, check-ins, submissions, projects, XP, credits and redemptions. We keep a note that a deletion happened, with your email address and account ID, so we can show the request was handled. The note does not include your profile or records.',
       'To correct something, such as a missed check-in, send a request from your profile page or email us.',
     ],
   },
@@ -57,7 +57,7 @@ export default async function PrivacyPage() {
     <Section>
       <div className="max-w-[68ch]">
         <h1 className="type-section">Privacy notice</h1>
-        <p className="mt-4 text-text-muted">For the public site and the builder portal. Questions go to {email}.</p>
+        <p className="mt-4 text-text-muted">For the public site and the Builder Portal. Send any questions to {email}.</p>
         {SECTIONS.map((section) => (
           <section key={section.title} className="mt-10">
             <h2 className="text-lg font-semibold text-text-strong">{section.title}</h2>

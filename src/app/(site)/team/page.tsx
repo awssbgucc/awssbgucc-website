@@ -25,11 +25,11 @@ export default async function TeamPage() {
   return (
     <section className="band band-top">
       <Container>
-        <PageIntro label="Student-led" title="The team" intro="The students who plan the sessions, book the rooms, run the labs and keep the group going." />
+        <PageIntro label="Student-led" title="The team" intro="The students who plan sessions, coordinate venues, lead labs and run the group." />
         {team.length === 0 ? (
           <div className="quiet-empty" data-reveal="rise">
-            <h2 className="section-title">You will meet the team at the next session.</h2>
-            <p>Every event is listed on Meetup, and you can also reach us through the contact page.</p>
+            <h2 className="section-title">Meet us at our next session</h2>
+            <p>Upcoming events are listed on Meetup, and you can reach the core team through the contact page.</p>
             <Cta href={meetupUrl} variant="line">See our events on Meetup</Cta>
           </div>
         ) : (

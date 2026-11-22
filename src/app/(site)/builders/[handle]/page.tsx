@@ -83,7 +83,7 @@ export default async function BuilderProfilePage({ params }: Props) {
                 ))}
               </ul>
             )}
-            <p className="mt-3 text-xs text-text-muted">Achievements are records of the AWS Student Builder Group at University of Cape Coast. They are not AWS credentials.</p>
+            <p className="mt-3 text-xs text-text-muted">Achievements are issued by the AWS Student Builder Group at University of Cape Coast and are not AWS certifications or credentials.</p>
           </section>
         </div>
       </div>
@@ -101,9 +101,9 @@ export default async function BuilderProfilePage({ params }: Props) {
       )}
       <p className="mt-16 text-sm text-text-muted">
         <Link href="/sign-in" className="underline underline-offset-4">
-          Members can make their own profile public
+          Members can make their profile public
         </Link>{' '}
-        from the builder portal.
+        from the Builder Portal.
       </p>
     </Section>
   );
