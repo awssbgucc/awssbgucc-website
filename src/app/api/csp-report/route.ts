@@ -5,10 +5,13 @@ import { logError } from '@/lib/log';
  * deploy shows up in the server logs. Only the directive, the blocked origin and the page path are kept: full
  * URLs can carry query strings.
  */
+const LIMIT = 8_000;
+
 export async function POST(request: Request) {
-  if (Number(request.headers.get('content-length') ?? 0) > 8_000) return new Response(null, { status: 413 });
+  const text = await readUpTo(request, LIMIT);
+  if (text === null) return new Response(null, { status: 413 });
   try {
-    const body = JSON.parse((await request.text()).slice(0, 8_000));
+    const body = JSON.parse(text);
     const report = body?.['csp-report'] ?? {};
     logError('csp_violation', {
       directive: String(report['effective-directive'] ?? report['violated-directive'] ?? '').slice(0, 60),
@@ -19,6 +22,27 @@ export async function POST(request: Request) {
     // Not a report. Nothing to log.
   }
   return new Response(null, { status: 204 });
+}
+
+// Reads the body a chunk at a time and gives up past the limit. A chunked request has no Content-Length,
+// so checking the header alone would still read the whole body.
+async function readUpTo(request: Request, limit: number) {
+  if (Number(request.headers.get('content-length') ?? 0) > limit) return null;
+  if (!request.body) return '';
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > limit) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks).toString('utf8');
 }
 
 function originOf(value: unknown) {

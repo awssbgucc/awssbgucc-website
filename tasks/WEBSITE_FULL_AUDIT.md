@@ -341,6 +341,7 @@ The policy, in `src/lib/csp.ts`:
 - **Public pages** (static, refreshed every 60 s): `script-src 'self' 'unsafe-inline'`. A per-request nonce would force every public page to render per request, losing the static cache and waking Neon on every visit. Even so, scripts cannot come from another site, and requests and images can reach only the site and the bucket.
 - **Portal, dashboard and sign-in pages** (already rendered per request): `src/middleware.ts` makes a nonce per response; `script-src 'nonce-…' 'strict-dynamic' 'sha256-<theme script>'`. An injected script does not run where the sessions and admin actions are.
 - Both: `default-src 'self'`, `style-src 'self' 'unsafe-inline'`, `img-src 'self' data: <bucket>`, `font-src 'self'`, `connect-src 'self' <bucket>`, `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`, `report-uri /api/csp-report`.
+- The report route keeps only the directive, the blocked origin and the page path. It reads the body as a stream and answers 413 past 8,000 bytes, so a chunked request with no Content-Length cannot make it read more (fixed after the push, from an automated security review; a unit test fails with the old read).
 - Violation reports are logged as `csp_violation` lines (directive, blocked origin, page path), so a page broken after deploy shows in CloudWatch.
 
 Verified on a production build of the branch:
