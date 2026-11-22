@@ -25,14 +25,14 @@ export function DataControls({ handle }: { handle: string }) {
     <div className="flex flex-col gap-8 text-sm">
       <div>
         <p className="font-semibold text-text-strong">Download your data</p>
-        <p className="mt-1 text-text-muted">A JSON file with your profile, check-ins, submissions, projects, XP and credit history, and redemptions.</p>
+        <p className="mt-1 text-text-muted">Export a JSON file containing your profile, check-ins, submissions, projects, XP and credit history, and redemptions.</p>
         <a href="/api/me/export" className="mt-3 inline-flex min-h-11 items-center rounded-sm border border-border-strong px-4 font-medium text-text-strong hover:border-text-muted">
           Download JSON
         </a>
       </div>
 
       <form action={requestAction} className="flex flex-col gap-3">
-        <p className="font-semibold text-text-strong">Ask the team to correct something</p>
+        <p className="font-semibold text-text-strong">Request a data correction</p>
         <label htmlFor="kind" className="sr-only">
           Request type
         </label>
@@ -44,7 +44,7 @@ export function DataControls({ handle }: { handle: string }) {
           Details
         </label>
         <textarea id="details" name="details" rows={3} maxLength={1000} placeholder="What should change?" className={INPUT} />
-        {request.saved && <p role="status" className="font-medium text-lime">Sent. The team will reply by email.</p>}
+        {request.saved && <p role="status" className="font-medium text-lime">Request sent. The team will reply by email.</p>}
         {request.message && <p role="alert" className="font-medium text-danger">{request.message}</p>}
         <div>
           <Submit label="Send request" />
@@ -53,7 +53,7 @@ export function DataControls({ handle }: { handle: string }) {
 
       <div className="border-t border-border pt-6">
         <p className="font-semibold text-text-strong">Delete your account</p>
-        <p className="mt-1 text-text-muted">Removes your profile, check-ins, submissions, projects, XP, credits and redemptions. It cannot be undone.</p>
+        <p className="mt-1 text-text-muted">Permanently removes your profile, check-ins, submissions, projects, XP, credits and redemptions. This cannot be undone.</p>
         {!confirming ? (
           <button type="button" onClick={() => setConfirming(true)} className="mt-3 min-h-11 font-medium text-danger underline underline-offset-4">
             Delete my account

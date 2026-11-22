@@ -41,7 +41,7 @@ export default async function ProgressPage() {
 
   return (
     <>
-      <PageTitle label="Progress" title="Your record" intro="Everything here comes from verified records: check-ins at sessions, reviewed work and approved projects. Opening the portal earns nothing." />
+      <PageTitle label="Progress" title="Your record" intro="Your progress reflects verified participation: session check-ins, reviewed challenges and approved projects. Signing in alone does not earn XP." />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Panel className="lg:col-span-2">
@@ -61,7 +61,7 @@ export default async function ProgressPage() {
           </div>
         </Panel>
         <Panel title="How streaks work">
-          <p className="text-sm text-text-muted">A streak counts sessions in a row, not days. Missing a week of exams does not break it. Missing a session that ran check-in does.</p>
+          <p className="text-sm text-text-muted">Streaks count consecutive sessions with check-in enabled, not calendar days. Breaks between sessions do not reset your streak, though missing a session with check-in does.</p>
         </Panel>
       </div>
 
@@ -102,7 +102,7 @@ export default async function ProgressPage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_360px]">
         <Panel title="History">
           {ledger.length === 0 ? (
-            <p className="text-sm text-text-muted">Nothing yet. Your first check-in will appear here.</p>
+            <p className="text-sm text-text-muted">No activity yet. Your first session check-in will appear here.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[480px] text-left text-sm">
@@ -143,7 +143,7 @@ export default async function ProgressPage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-xs text-text-muted">Each thing is awarded once. Referral awards are capped at {REFERRAL_MONTHLY_CAP} a month. A removed check-in takes its award back.</p>
+            <p className="mt-4 text-xs text-text-muted">Each milestone is awarded once. Referral rewards are capped at {REFERRAL_MONTHLY_CAP} per month. Removing a check-in reverses its award.</p>
           </Panel>
           <Panel title="Levels">
             <ol className="grid grid-cols-2 gap-x-6 gap-y-1 font-display text-sm">

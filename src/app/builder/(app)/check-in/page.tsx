@@ -22,9 +22,9 @@ export default async function CheckInPage({ searchParams }: Props) {
 
   return (
     <>
-      <PageTitle label="Check in" title="Check in at a session" intro="Enter the code on the screen, or scan the QR code, while check-in is open. Your attendance goes on your record." />
+      <PageTitle label="Check in" title="Check in at a session" intro="Enter the code shown on screen, or scan the QR code, while check-in is open to record your attendance." />
       {open.length === 0 ? (
-        <EmptyState label="Check-in closed">No session has check-in open right now. It opens 30 minutes before a session starts. If you were there and missed it, ask an organiser to add you.</EmptyState>
+        <EmptyState label="Check-in closed">No session has check-in open right now. Check-in opens 30 minutes before a session starts. If you attended and missed the window, ask an organiser to mark you present.</EmptyState>
       ) : (
         <CheckInForm sessions={open} event={chosen} code={code ?? ''} />
       )}

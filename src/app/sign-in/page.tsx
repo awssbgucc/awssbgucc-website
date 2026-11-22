@@ -7,15 +7,15 @@ import { ThemeSelector } from '@/components/ui/ThemeSelector';
 import { signInMessage } from '@/lib/auth-rules';
 import { sessionUser } from '@/lib/member';
 
-export const metadata: Metadata = { title: 'Sign in to the builder portal', robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: 'Sign in to the Builder Portal', robots: { index: false, follow: false } };
 
 type Props = { searchParams: Promise<{ error?: string }> };
 
 const WHAT_YOU_DO = [
-  ['Check in', 'Enter the code shown in the room, and the session goes on your record.'],
-  ['Get the materials', 'Slides, repositories and lab guides from each session.'],
-  ['Build and submit', 'Take on challenges and get feedback from the technical team.'],
-  ['Share projects', 'Put what you build on the public projects page.'],
+  ['Check in', 'Enter the session code shown in the room to log your attendance.'],
+  ['Access materials', 'Find slides, repositories and lab guides from each session.'],
+  ['Submit challenges', 'Complete post-session challenges and get feedback from the technical team.'],
+  ['Share projects', 'Submit your AWS projects to feature them on the public projects page.'],
 ];
 
 export default async function MemberSignInPage({ searchParams }: Props) {
@@ -30,7 +30,7 @@ export default async function MemberSignInPage({ searchParams }: Props) {
           <BrandMark href="/" label="University of Cape Coast" />
           <div>
             <p className="type-label text-lime">Builder Portal</p>
-            <h1 className="type-hero mt-4 max-w-[12ch]">Your record of building.</h1>
+            <h1 className="type-hero mt-4 max-w-[12ch]">Track your sessions and projects.</h1>
             {/* Hidden on phones, so the sign-in button and any error message are on the first screen. */}
             <ul className="mt-10 hidden gap-6 sm:grid sm:grid-cols-2">
               {WHAT_YOU_DO.map(([title, copy]) => (
@@ -41,14 +41,14 @@ export default async function MemberSignInPage({ searchParams }: Props) {
               ))}
             </ul>
           </div>
-          <p className="text-sm text-text-muted">You still RSVP for events on Meetup. The portal keeps a record of what you do at and after each session.</p>
+          <p className="text-sm text-text-muted">Event RSVPs still happen on Meetup. The Builder Portal tracks your attendance, materials, challenges and projects.</p>
         </section>
         <section className="relative flex items-center px-6 py-12 lg:px-12">
           {/* In the corner of the sign-in column, so nothing that was already on the page moves. */}
           <ThemeSelector className="absolute top-3 right-6 lg:right-12" />
           <div className="w-full max-w-sm">
             <h2 className="type-section">Sign in</h2>
-            <p className="mt-3 text-text-muted">Use your Google account. New here? Signing in creates your member account, and the next screen sets up your profile.</p>
+            <p className="mt-3 text-text-muted">Use your Google account. New here? Signing in creates your account, and you will set up your profile on the next screen.</p>
             {message && (
               <p role="alert" className="mt-6 rounded-sm border border-danger/40 bg-danger/8 px-4 py-3 text-sm font-medium text-danger">
                 {message}

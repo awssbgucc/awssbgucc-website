@@ -15,10 +15,10 @@ export const metadata: Metadata = { title: 'Edit project' };
 type Props = { params: Promise<{ id: string }> };
 
 const STATUS_HELP: Record<string, string> = {
-  DRAFT: 'Only you can see this draft. Submit it when it is ready.',
-  PENDING: 'A reviewer will look at it. You can still edit it.',
-  APPROVED: 'It is on the public projects page. Editing it sends it back for review.',
-  REJECTED: 'It was not approved. Read the note, make changes and submit again.',
+  DRAFT: 'Only you can see this draft. Submit it for review when it is ready.',
+  PENDING: 'Your project is in review. You can still make edits while waiting.',
+  APPROVED: 'Published on the public projects page. Saving edits will send it back for review.',
+  REJECTED: 'Not approved yet. Read the reviewer note below, update your project and submit again.',
 };
 
 export default async function EditProjectPage({ params }: Props) {
@@ -53,18 +53,18 @@ export default async function EditProjectPage({ params }: Props) {
                 <button type="submit" disabled={!project.imageUrl} className="inline-flex min-h-11 items-center rounded-sm bg-primary px-5 text-sm font-medium text-on-primary hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50">
                   Submit for review
                 </button>
-                {!project.imageUrl && <p className="mt-2 text-xs text-text-muted">Add an image first.</p>}
+                {!project.imageUrl && <p className="mt-2 text-xs text-text-muted">Upload an image before submitting.</p>}
               </form>
             )}
             {project.status === 'APPROVED' && (
               <Link href={`/projects/${project.slug}`} className="mt-3 inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4">
-                View it publicly
+                View public page
               </Link>
             )}
           </Panel>
           <ProjectGuidance />
           <div className="border-t border-border pt-4">
-            <ConfirmAction action={deleteMemberProject.bind(null, project.id)} label="Delete project" question="This removes it everywhere." />
+            <ConfirmAction action={deleteMemberProject.bind(null, project.id)} label="Delete project" question="This permanently removes the project from your account and the public site." />
           </div>
         </div>
       </div>

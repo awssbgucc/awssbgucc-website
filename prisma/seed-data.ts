@@ -53,10 +53,10 @@ export const partners = [
 // Builder portal configuration. These are rules, not content, and the core team can change them in the dashboard.
 // TODO(joel): review the XP and credit values before launch.
 export const awardRules = [
-  { reason: 'CHECK_IN' as const, xp: 50, credits: 10, description: 'Checking in at a session with the code shown in the room' },
-  { reason: 'SUBMISSION_APPROVED' as const, xp: 150, credits: 30, description: 'A challenge submission approved by a reviewer. A challenge can set its own values.' },
-  { reason: 'PROJECT_APPROVED' as const, xp: 100, credits: 20, description: 'A project approved for the public showcase' },
-  { reason: 'REFERRAL' as const, xp: 25, credits: 5, description: 'Someone you referred attends their first session. Up to 10 a month.' },
+  { reason: 'CHECK_IN' as const, xp: 50, credits: 10, description: 'Checking in at a session with the room code.' },
+  { reason: 'SUBMISSION_APPROVED' as const, xp: 150, credits: 30, description: 'Getting a challenge submission approved by a reviewer. Individual challenges may set different values.' },
+  { reason: 'PROJECT_APPROVED' as const, xp: 100, credits: 20, description: 'Getting a project approved for the public showcase.' },
+  { reason: 'REFERRAL' as const, xp: 25, credits: 5, description: 'A referred member attends their first session (up to 10 per month).' },
 ];
 
 type Criterion = 'SESSIONS_ATTENDED' | 'SESSION_STREAK' | 'SUBMISSIONS_APPROVED' | 'PROJECTS_APPROVED' | 'REFERRALS';

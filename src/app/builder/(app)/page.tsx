@@ -101,13 +101,13 @@ export default async function BuilderHome() {
                 </div>
               </div>
             ) : (
-              <EmptyState label="Nothing scheduled">The next session will appear here as soon as the team publishes it. RSVPs open on Meetup.</EmptyState>
+              <EmptyState label="Nothing scheduled">Upcoming sessions will appear here once published. RSVPs open on Meetup.</EmptyState>
             )}
           </Panel>
 
           <Panel title="Open challenges" action={<TextLink href="/builder/challenges">All challenges</TextLink>}>
             {challenges.length === 0 ? (
-              <EmptyState label="No open challenges">Challenges are set after sessions. The next one will show here with its brief and deadline.</EmptyState>
+              <EmptyState label="No open challenges">Challenges are posted after sessions. Check back here for the brief and deadline.</EmptyState>
             ) : (
               <ul className="divide-y divide-border">
                 {challenges.slice(0, 3).map((challenge) => {
@@ -145,12 +145,12 @@ export default async function BuilderHome() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-3 text-sm text-text-muted">No materials were added for this session yet.</p>
+                  <p className="mt-3 text-sm text-text-muted">No materials have been added for this session yet.</p>
                 )}
               </>
             ) : (
               <EmptyState label="No sessions yet" action={<Button href="/builder/check-in">Check in</Button>}>
-                Check in at a session with the code shown in the room. Its slides and labs will appear here.
+                Check in at a session using the code shown in the room. Slides and lab guides will appear here afterwards.
               </EmptyState>
             )}
           </Panel>
@@ -158,8 +158,8 @@ export default async function BuilderHome() {
           <Panel title="Your record" action={<TextLink href="/builder/progress">Progress and rules</TextLink>}>
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
               <Stat value={record.counts.sessions} label="Sessions" />
-              <Stat value={record.counts.approvedSubmissions} label="Approved builds" />
-              <Stat value={record.counts.approvedProjects} label="Projects shipped" />
+              <Stat value={record.counts.approvedSubmissions} label="Challenges completed" />
+              <Stat value={record.counts.approvedProjects} label="Approved projects" />
               <Stat value={record.counts.achievements} label="Achievements" />
             </div>
             {record.sessions.length > 0 && (
@@ -194,7 +194,7 @@ export default async function BuilderHome() {
 
           <Panel title="Recent activity">
             {recent.length === 0 ? (
-              <p className="text-sm text-text-muted">Your XP and credits will be listed here as you take part.</p>
+              <p className="text-sm text-text-muted">Your XP and credits will appear here as you attend sessions and complete work.</p>
             ) : (
               <ul className="divide-y divide-border">
                 {recent.map((entry) => (
@@ -216,7 +216,7 @@ export default async function BuilderHome() {
           </Panel>
 
           <Panel title="Invite a classmate">
-            <p className="text-sm text-text-muted">Share your code. You are credited when they attend their first session, not when they sign up.</p>
+            <p className="text-sm text-text-muted">Share your referral code. You earn credit once a referred friend attends their first session, not when they sign up.</p>
             <div className="mt-4 flex items-center justify-between gap-3 rounded-sm border border-border-strong px-4 py-2">
               <span className="font-display text-lg tracking-wider text-text-strong">{profile.referralCode}</span>
               <CopyButton value={profile.referralCode} label="Copy code" />

@@ -46,9 +46,9 @@ export default async function ChallengesPage() {
 
   return (
     <>
-      <PageTitle label="Challenges" title="Build, submit, get feedback" intro="Each challenge has a brief, requirements and a deadline. A reviewer from the technical team approves the work before anything is awarded." />
+      <PageTitle label="Challenges" title="Practice challenges" intro="Each challenge includes a brief, requirements and a deadline. A reviewer from the technical team reviews your submission before XP and credits are awarded." />
       {challenges.length === 0 ? (
-        <EmptyState label="No challenges yet">The first challenge will be posted after a build session. You will get a notification.</EmptyState>
+        <EmptyState label="No challenges yet">Challenges are posted after build sessions. You will get a notification when one opens.</EmptyState>
       ) : (
         <div className="flex flex-col gap-10">
           <section>

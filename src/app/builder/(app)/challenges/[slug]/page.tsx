@@ -93,9 +93,9 @@ export default async function ChallengePage({ params }: Props) {
             )}
             {editable ? (
               <AdminForm action={submitChallenge.bind(null, challenge.id)} submitLabel={submission ? 'Update submission' : 'Submit'}>
-                <TextField name="repoUrl" label="GitHub repository" defaultValue={submission?.repoUrl} help="Public, with a README that explains what you built." />
+                <TextField name="repoUrl" label="GitHub repository" defaultValue={submission?.repoUrl} help="Public repository with a README explaining what you built." />
                 <TextField name="demoUrl" label="Live link" defaultValue={submission?.demoUrl} help="Optional." />
-                <TextArea name="notes" label="Notes for the reviewer" defaultValue={submission?.notes} help="Optional. What you tried, what you would do next." />
+                <TextArea name="notes" label="Notes for the reviewer" defaultValue={submission?.notes} help="Optional. Share what you tried, any trade-offs or what you would improve next." />
               </AdminForm>
             ) : submission ? (
               <dl className="flex flex-col gap-3 text-sm">
@@ -142,7 +142,7 @@ export default async function ChallengePage({ params }: Props) {
           {challenge.leaderboardEnabled && (
             <Panel title="Leaderboard">
               {board.length === 0 ? (
-                <p className="text-sm text-text-muted">Approved submissions are ranked here by the reviewer&apos;s score, then by who was approved first.</p>
+                <p className="text-sm text-text-muted">Approved submissions are ranked here by reviewer score, with earlier approvals breaking ties.</p>
               ) : (
                 <ol className="flex flex-col">
                   {board.map((entry, index) => {

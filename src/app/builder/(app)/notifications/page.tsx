@@ -19,7 +19,7 @@ export default async function NotificationsPage() {
       <PageTitle
         label="Notifications"
         title={unread ? `${unread} unread` : 'Notifications'}
-        intro="Check-ins, reviews, achievements and redemptions. Nothing here is sent by email."
+        intro="Updates on check-ins, reviews, achievements and redemptions. Notifications appear here only and are not emailed."
         action={
           unread > 0 ? (
             <form action={markAllRead}>
@@ -31,7 +31,7 @@ export default async function NotificationsPage() {
         }
       />
       {notifications.length === 0 ? (
-        <EmptyState label="All quiet">You will see your check-ins, reviews and achievements here.</EmptyState>
+        <EmptyState label="No notifications yet">Updates on your check-ins, reviews and achievements will appear here.</EmptyState>
       ) : (
         <ul className="border-t border-border">
           {notifications.map((n) => {

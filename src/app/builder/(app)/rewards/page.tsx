@@ -30,7 +30,7 @@ export default async function RewardsPage() {
       <PageTitle
         label="Rewards"
         title="Spend your credits"
-        intro="Credits come from the same verified activity as XP. Spending credits never lowers your XP or level."
+        intro="Credits are earned alongside XP from verified participation. Spending credits never reduces your XP or level."
         action={
           <div className="rounded-md border border-border bg-card px-5 py-3 text-right">
             <p className="type-label text-text-muted">Balance</p>
@@ -40,7 +40,7 @@ export default async function RewardsPage() {
       />
 
       {groups.length === 0 ? (
-        <EmptyState label="Nothing to redeem yet">The team has not added rewards. Your credits stay in your balance.</EmptyState>
+        <EmptyState label="Nothing to redeem yet">No rewards are available yet. Your credits stay in your balance.</EmptyState>
       ) : (
         <div className="flex flex-col gap-10">
           {groups.map(({ kind, items }) => (
@@ -88,7 +88,7 @@ export default async function RewardsPage() {
                     {formatDate(r.createdAt)}, {r.cost} credits{r.status === 'CANCELLED' ? ', refunded' : ''}
                   </p>
                 </div>
-                {r.status === 'PENDING' ? <Badge tone="lavender">Waiting for hand-over</Badge> : <StatusBadge status={r.status} />}
+                {r.status === 'PENDING' ? <Badge tone="lavender">Waiting for handover</Badge> : <StatusBadge status={r.status} />}
               </li>
             ))}
           </ul>

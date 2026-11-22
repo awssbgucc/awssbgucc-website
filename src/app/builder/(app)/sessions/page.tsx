@@ -41,12 +41,12 @@ export default async function SessionsPage() {
 
   return (
     <>
-      <PageTitle label="Sessions" title="Sessions and materials" intro="RSVP on Meetup. Check in at the session. Materials stay here afterwards." />
+      <PageTitle label="Sessions" title="Sessions and materials" intro="RSVP on Meetup, check in during the session, and come back here afterwards for slides and lab materials." />
       <section aria-labelledby="upcoming">
         <h2 id="upcoming" className="type-label mb-2 text-text-muted">
           Upcoming
         </h2>
-        {upcoming.length === 0 ? <EmptyState label="Nothing scheduled">The next session appears here when it is published.</EmptyState> : <div className="border-t border-border">{upcoming.map(row)}</div>}
+        {upcoming.length === 0 ? <EmptyState label="Nothing scheduled">Upcoming sessions will appear here once published.</EmptyState> : <div className="border-t border-border">{upcoming.map(row)}</div>}
       </section>
       <section aria-labelledby="past" className="mt-12">
         <h2 id="past" className="type-label mb-2 text-text-muted">

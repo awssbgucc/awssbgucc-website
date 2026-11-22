@@ -57,7 +57,7 @@ export async function completeOnboarding(_state: FormState, formData: FormData):
     if (!isUniqueError(error)) throw error;
     return withInterests({ errors: { handle: 'That handle is taken. Choose another.' } }, formData);
   }
-  await db.notification.create({ data: { userId: user.id, title: 'Welcome to the builder portal', body: 'Check in at your next session to start your record.', href: '/builder/sessions' } });
+  await db.notification.create({ data: { userId: user.id, title: 'Welcome to the Builder Portal', body: 'Check in at your next session to start your record.', href: '/builder/sessions' } });
   redirect('/builder');
 }
 

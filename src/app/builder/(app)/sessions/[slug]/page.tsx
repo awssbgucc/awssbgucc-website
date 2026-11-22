@@ -56,7 +56,7 @@ export default async function SessionPage({ params }: Props) {
               <Button href={`/builder/check-in?event=${event.slug}`}>Check in now</Button>
             ) : (
               <p className="text-sm text-text-muted">
-                {state === 'not-open' ? 'Check-in opens 30 minutes before the start.' : state === 'closed' ? 'Check-in has closed. If you attended, ask an organiser to add you.' : 'This session does not use check-in.'}
+                {state === 'not-open' ? 'Check-in opens 30 minutes before the session starts.' : state === 'closed' ? 'Check-in has closed. If you attended, ask an organiser to mark you present.' : 'Check-in is not enabled for this session.'}
               </p>
             )}
             {event.meetupUrl && event.endsAt > new Date() && (

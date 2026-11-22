@@ -18,12 +18,12 @@ export default async function MyProjectsPage() {
       <PageTitle
         label="Projects"
         title="Your projects"
-        intro="Write up something you built. Once a reviewer approves it, it appears on the public projects page."
+        intro="Write up an AWS project you worked on. Once approved by a reviewer, it appears on the public projects page."
         action={<Button href="/builder/projects/new">Add a project</Button>}
       />
       {projects.length === 0 ? (
         <EmptyState label="No projects yet" action={<Button href="/builder/projects/new">Add a project</Button>}>
-          Start a draft. Nothing is public until you submit it and a reviewer approves it.
+          Start a draft whenever you are ready. Nothing goes public until you submit it and a reviewer approves it.
         </EmptyState>
       ) : (
         <ul className="divide-y divide-border border-y border-border">

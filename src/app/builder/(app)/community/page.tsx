@@ -40,7 +40,7 @@ export default async function CommunityPage({ searchParams }: Props) {
 
   return (
     <>
-      <PageTitle label="Community" title="Members and projects" intro="Members who chose to be visible, and every approved project. Change your own visibility on your profile." />
+      <PageTitle label="Community" title="Members and projects" intro="Members who opted in to the directory, alongside approved community projects. You can update your visibility in your profile settings." />
 
       <form role="search" className="mb-8 flex flex-col gap-3 sm:flex-row" action="/builder/community">
         <label htmlFor="q" className="sr-only">
@@ -66,7 +66,7 @@ export default async function CommunityPage({ searchParams }: Props) {
           Members ({members.length})
         </h2>
         {members.length === 0 ? (
-          <EmptyState label="No members to show">{query || chosen ? 'Nobody visible matches that search.' : 'No member has made their profile visible yet.'}</EmptyState>
+          <EmptyState label="No members to show">{query || chosen ? 'No visible members match that search.' : 'No members have opted in to the directory yet.'}</EmptyState>
         ) : (
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {members.map((m) => (

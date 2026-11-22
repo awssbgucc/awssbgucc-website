@@ -42,7 +42,7 @@ export default async function ProfilePage() {
               <TextField name="programme" label="Programme" defaultValue={profile.programme} />
               <SelectField name="level" label="Level" defaultValue={profile.level ?? ''} options={[{ value: '', label: 'Prefer not to say' }, ...LEVELS_OF_STUDY.map((l) => ({ value: l, label: l }))]} />
               <TextField name="department" label="Department" defaultValue={profile.department} />
-              <TextArea name="bio" label="A line about you" defaultValue={profile.bio} help="280 characters at most." />
+              <TextArea name="bio" label="Short bio" defaultValue={profile.bio} help="Up to 280 characters." />
               <InterestsField selected={profile.interests} />
               <TextField name="githubUrl" label="GitHub" defaultValue={profile.githubUrl} />
               <TextField name="linkedinUrl" label="LinkedIn" defaultValue={profile.linkedinUrl} />

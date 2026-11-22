@@ -21,7 +21,7 @@ export default async function SignInPage({ searchParams }: Props) {
             {NO_ACCESS_MESSAGE}
           </p>
           <Link href="/builder" className="inline-flex min-h-11 items-center text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text-strong">
-            Go to the builder portal
+            Go to the Builder Portal
           </Link>
         </div>
       ) : (

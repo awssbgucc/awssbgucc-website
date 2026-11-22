@@ -10,9 +10,9 @@ import { INTERESTS, LEVELS_OF_STUDY } from '@/lib/platform/customise';
 import { completeOnboarding } from '../actions/profile';
 
 const STEPS = [
-  { title: 'About you', why: 'Your name and programme help the team plan sessions for the people who come.' },
-  { title: 'What you want to build', why: 'Interests decide which challenges and materials we put in front of you. Links are optional.' },
-  { title: 'Privacy', why: 'You choose who sees your profile. Nothing about you is public unless you say so.' },
+  { title: 'About you', why: 'Your name and programme help the team plan sessions that fit the students attending.' },
+  { title: 'Your interests', why: 'Pick topics you want to learn so we can surface relevant challenges and resources. Social links are optional.' },
+  { title: 'Privacy', why: 'Choose who can see your profile. Nothing is public unless you switch it on.' },
 ];
 
 // The step each field lives on, so a server error opens the right step.
@@ -76,7 +76,7 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
   return (
     <div className="mx-auto grid min-h-dvh max-w-[1100px] lg:grid-cols-[320px_1fr]">
       <aside className="relative border-b border-border px-6 py-8 lg:border-r lg:border-b-0 lg:py-16">
-        <p className="type-label text-lime">Builder portal</p>
+        <p className="type-label text-lime">Builder Portal</p>
         <p className="mt-3 text-sm text-text-muted">Signed in as {email}</p>
         <ol className="mt-8 hidden flex-col gap-6 lg:flex">
           {STEPS.map((s, index) => (
@@ -109,10 +109,10 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
           <Field id="displayName" label="Your name" error={err('displayName')}>
             <input id="displayName" name="displayName" required maxLength={60} defaultValue={v('displayName', name)} autoComplete="name" aria-invalid={!!err('displayName')} aria-describedby={describe('displayName')} className={INPUT} />
           </Field>
-          <Field id="handle" label="Handle" help="Your profile address. Lowercase letters, numbers and hyphens." error={err('handle')}>
+          <Field id="handle" label="Handle" help="Used in your profile URL. Lowercase letters, numbers and hyphens only." error={err('handle')}>
             <input id="handle" name="handle" required minLength={3} maxLength={30} pattern="[a-z0-9][a-z0-9\-]{1,28}[a-z0-9]" defaultValue={v('handle', handle)} aria-invalid={!!err('handle')} aria-describedby={describe('handle', true)} className={`${INPUT} font-display`} />
           </Field>
-          <Field id="programme" label="Programme" help="For example, BSc Computer Science. Optional." error={err('programme')}>
+          <Field id="programme" label="Programme" help="For example, BSc Computer Science (optional)." error={err('programme')}>
             <input id="programme" name="programme" maxLength={80} defaultValue={v('programme')} aria-describedby={describe('programme', true)} className={INPUT} />
           </Field>
           <div className="grid gap-6 sm:grid-cols-2">
@@ -131,7 +131,7 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
         </fieldset>
 
         <fieldset ref={(el) => { fieldsets.current[1] = el; }} hidden={step !== 1} className="step-in mt-8 flex max-w-[640px] flex-col gap-6">
-          <legend className="sr-only">What you want to build</legend>
+          <legend className="sr-only">Your interests</legend>
           <div role="group" aria-labelledby="interests-label">
             <p id="interests-label" className="mb-3 text-sm font-medium">
               Interests <span className="text-text-muted">(up to six)</span>
@@ -147,7 +147,7 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
               ))}
             </div>
           </div>
-          <Field id="bio" label="A line about you" help="Optional. 280 characters at most." error={err('bio')}>
+          <Field id="bio" label="Short bio" help="Optional. Up to 280 characters." error={err('bio')}>
             <textarea id="bio" name="bio" rows={3} maxLength={280} defaultValue={v('bio')} aria-describedby={describe('bio', true)} className={INPUT} />
           </Field>
           <div className="grid gap-6 sm:grid-cols-2">
@@ -184,7 +184,7 @@ export function WelcomeForm({ name, handle, email }: { name: string; handle: str
             <input type="checkbox" name="showOnLeaderboards" defaultChecked={v('showOnLeaderboards') === 'on'} className="size-5 accent-text-strong" />
             Show my name on challenge leaderboards
           </label>
-          <Field id="referralCode" label="Referral code" help="Optional. If a member invited you, enter their code. They are credited when you attend your first session." error={err('referralCode')}>
+          <Field id="referralCode" label="Referral code" help="Optional. If another member invited you, enter their code. They receive credit once you attend your first session." error={err('referralCode')}>
             <input id="referralCode" name="referralCode" maxLength={20} defaultValue={v('referralCode')} aria-invalid={!!err('referralCode')} aria-describedby={describe('referralCode', true)} className={`${INPUT} font-display uppercase`} />
           </Field>
           <div>
