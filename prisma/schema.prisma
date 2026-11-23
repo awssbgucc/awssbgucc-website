@@ -92,6 +92,9 @@ model TeamMember {
   level     String?
   photoUrl  String?
   linkedin  String?
+  github    String?
+  xUrl      String?
+  instagram String?
   order     Int       @default(0)
   active    Boolean   @default(true)
   updatedBy String?

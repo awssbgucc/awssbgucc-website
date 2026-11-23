@@ -127,6 +127,31 @@ describe('copy rules on save', () => {
     const result = parseForm(teamSchema, form({ name: `Joel ${EMOJI}`, role: 'Lead', roleGroup: 'LEADER', programme: '', level: '', linkedin: '' }));
     expect(result.ok).toBe(false);
   });
+
+  it('accepts optional team social links and rejects invalid urls', () => {
+    const valid = parseForm(teamSchema, form({
+      name: 'Joel Anarba',
+      role: 'Group Leader',
+      roleGroup: 'LEADER',
+      programme: 'BSc Computer Science',
+      level: 'Level 300',
+      linkedin: 'https://www.linkedin.com/in/joel',
+      github: 'https://github.com/joel',
+      xUrl: 'https://x.com/joel',
+      instagram: 'https://instagram.com/joel',
+    }));
+    expect(valid.ok).toBe(true);
+    const invalid = parseForm(teamSchema, form({
+      name: 'Joel Anarba',
+      role: 'Group Leader',
+      roleGroup: 'LEADER',
+      programme: '',
+      level: '',
+      linkedin: '',
+      github: 'http://github.com/joel',
+    }));
+    expect(invalid.ok).toBe(false);
+  });
 });
 
 describe('event publish rules', () => {

@@ -3,11 +3,13 @@ import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
+import { FaqList } from '@/components/site/FaqList';
 import { Staircase } from '@/components/site/home/Staircase';
 import { PageIntro } from '@/components/site/PageIntro';
 import { PhotoWall } from '@/components/site/PhotoWall';
 import { PixelMap } from '@/components/site/PixelMap';
 import { SectionHead } from '@/components/site/SectionHead';
+import { PUBLIC_FAQS } from '@/lib/content/faqs';
 import { getEvents, getPosts, getSiteSettings } from '@/lib/content/queries';
 import { photo, type PhotoId } from '@/lib/content/media';
 import { pastEvents } from '@/lib/content/selectors';
@@ -109,7 +111,14 @@ export default async function AboutPage() {
         </Container>
       </section>
 
-      <section className="band" aria-labelledby="programme-title">
+      <section className="band" id="faq" aria-labelledby="faq-title">
+        <Container>
+          <SectionHead label="Common questions" title="Frequently asked questions" id="faq-title" action={<Cta href="/contact" variant="arrow">Ask us something else</Cta>} />
+          <FaqList items={PUBLIC_FAQS} />
+        </Container>
+      </section>
+
+      <section className="band band-alt" aria-labelledby="programme-title">
         <Container>
           <div className="programme-note">
             <div data-reveal="rise">

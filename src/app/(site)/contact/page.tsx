@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ArrowUpRight } from 'lucide-react';
 import { ContactForm, CopyEmailButton } from '@/components/site/ContactForm';
+import { Link } from '@/components/site/motion/TransitionLink';
 import { PageIntro } from '@/components/site/PageIntro';
 import { SocialIcon, type SocialKind } from '@/components/site/SocialIcons';
 import { Container } from '@/components/ui/Container';
@@ -101,6 +102,14 @@ export default async function ContactPage() {
                   </ul>
                 </div>
               )}
+
+              <p className="text-sm text-text-muted">
+                Looking for quick answers about membership, laptops or bootcamp vouchers?{' '}
+                <Link href="/about#faq" className="text-text-strong underline underline-offset-4">
+                  Read our FAQs
+                </Link>
+                .
+              </p>
 
               <p className="text-sm text-text-muted">
                 An independent, student-led community in the AWS Student Builder Groups program. For questions about AWS products, billing or account access, please contact AWS Support directly.

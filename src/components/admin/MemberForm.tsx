@@ -19,6 +19,9 @@ export function MemberForm({ member }: { member?: TeamMember }) {
       <TextField name="programme" label="Programme" defaultValue={member?.programme} />
       <TextField name="level" label="Level" defaultValue={member?.level} />
       <TextField name="linkedin" label="LinkedIn link" defaultValue={member?.linkedin} />
+      <TextField name="github" label="GitHub link" defaultValue={member?.github} />
+      <TextField name="xUrl" label="X link" defaultValue={member?.xUrl} />
+      <TextField name="instagram" label="Instagram link" defaultValue={member?.instagram} />
       <ImageField name="photoUrl" label="Photo" folder="team" recordId={member?.id} defaultValue={member?.photoUrl} help="JPEG, PNG or WebP, up to 5 MB. Shown square, so a square photo fits best." />
       <CheckboxField name="active" label="Show on the public site" defaultChecked={member?.active ?? false} />
     </AdminForm>
