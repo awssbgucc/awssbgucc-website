@@ -24,6 +24,13 @@ export const getTeam = cache(() => db.teamMember.findMany({ where: { active: tru
 
 export const getPartners = cache(() => db.partner.findMany({ where: { status: 'PUBLISHED' }, orderBy: { order: 'asc' } }));
 
+export const getCertifications = cache(() =>
+  db.memberCertification.findMany({
+    where: { status: 'PUBLISHED' },
+    orderBy: [{ order: 'asc' }, { earnedAt: { sort: 'desc', nulls: 'last' } }],
+  }),
+);
+
 export const getPosts = cache(() =>
   db.post.findMany({ where: { status: 'PUBLISHED' }, orderBy: { publishedAt: { sort: 'desc', nulls: 'last' } } }),
 );

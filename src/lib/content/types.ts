@@ -1,6 +1,9 @@
 export type {
+  CertLevel,
+  CertPathway,
   Event,
   EventTag,
+  MemberCertification,
   Partner,
   PartnerType,
   Post,

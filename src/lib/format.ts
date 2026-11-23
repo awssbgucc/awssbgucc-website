@@ -14,6 +14,17 @@ export function formatDate(date: Date) {
   return `${part('weekday')} ${part('day')} ${part('month')?.slice(0, 3)} ${part('year')}`;
 }
 
+/** Nov 2026 */
+export function formatMonthYear(date: Date) {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: TIME_ZONE,
+    month: 'short',
+    year: 'numeric',
+  }).formatToParts(date);
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value;
+  return `${part('month')?.slice(0, 3)} ${part('year')}`;
+}
+
 /** 9:30 AM */
 export function formatTime(date: Date) {
   return new Intl.DateTimeFormat('en-US', {

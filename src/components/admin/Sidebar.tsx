@@ -15,6 +15,7 @@ const GROUPS: { title: string; admin?: boolean; links: { href: string; label: st
       { href: '/admin/announcements', label: 'Announcements' },
       { href: '/admin/team', label: 'Team' },
       { href: '/admin/partners', label: 'Partners' },
+      { href: '/admin/certifications', label: 'Certifications' },
       { href: '/admin/scd', label: 'Community Day' },
     ],
   },

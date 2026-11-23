@@ -8,6 +8,7 @@ import { postSchema } from '@/lib/validation/post';
 import { adminProjectSchema, MEMBER_WRITE_UP_MAX, memberProjectSchema } from '@/lib/validation/project';
 import { settingsSchema } from '@/lib/validation/settings';
 import { accraInputToDate, COPY_MESSAGE, dateToAccraInput } from '@/lib/validation/shared';
+import { certificationSchema } from '@/lib/validation/certification';
 import { teamSchema } from '@/lib/validation/team';
 
 const EM_DASH = String.fromCharCode(0x2014);
@@ -250,5 +251,60 @@ describe('project write-ups', () => {
 
   it('leaves editors free to write a longer curated write-up', () => {
     expect(adminProjectSchema.safeParse({ ...project, body: long, slug: '', credits: '', status: 'DRAFT' }).success).toBe(true);
+  });
+});
+
+describe('certifications', () => {
+  const base = {
+    memberName: 'Ama Mensah',
+    programme: '',
+    levelOfStudy: '',
+    certName: 'AWS Certified Cloud Practitioner',
+    certCode: '',
+    certLevel: 'FOUNDATIONAL',
+    pathway: '',
+    credlyUrl: 'https://www.credly.com/badges/example-badge-id',
+    earnedAt: '',
+    status: 'PUBLISHED',
+  };
+
+  it('accepts minimal valid input with optional fields left blank', () => {
+    const result = parseForm(certificationSchema, form(base));
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data.programme).toBeNull();
+      expect(result.data.pathway).toBeNull();
+      expect(result.data.earnedAt).toBeNull();
+    }
+  });
+
+  it('accepts full details including AmaliTech pathway and earned date', () => {
+    const result = parseForm(certificationSchema, form({
+      ...base,
+      programme: 'BSc Computer Science',
+      levelOfStudy: 'Level 300',
+      certCode: 'CLF-C02',
+      pathway: 'AMALITECH',
+      earnedAt: '2026-10-15',
+    }));
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data.pathway).toBe('AMALITECH');
+      expect(result.data.earnedAt?.toISOString()).toBe('2026-10-15T00:00:00.000Z');
+    }
+  });
+
+  it('rejects non-https Credly URLs and invalid dates', () => {
+    const badUrl = parseForm(certificationSchema, form({ ...base, credlyUrl: 'http://www.credly.com/badges/123' }));
+    expect(badUrl.ok).toBe(false);
+    const badDate = parseForm(certificationSchema, form({ ...base, earnedAt: '2026-02-31' }));
+    expect(badDate.ok).toBe(false);
+  });
+
+  it('rejects dashes and emojis in text fields', () => {
+    const withDash = parseForm(certificationSchema, form({ ...base, certName: `Cloud ${EM_DASH} Practitioner` }));
+    expect(withDash.ok).toBe(false);
+    const withEmoji = parseForm(certificationSchema, form({ ...base, memberName: `Ama ${EMOJI}` }));
+    expect(withEmoji.ok).toBe(false);
   });
 });

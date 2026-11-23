@@ -63,7 +63,12 @@ export default async function ResourcesPage() {
             label="Builder Portal"
             title="Session slides and study packs"
             id="portal-materials-title"
-            action={<Cta href="/builder/sessions" variant="mint">Open the Builder Portal</Cta>}
+            action={
+              <div className="flex flex-wrap items-center gap-4">
+                <Cta href="/builder/sessions" variant="mint">Open the Builder Portal</Cta>
+                <Cta href="/certifications" variant="arrow">See certified members</Cta>
+              </div>
+            }
           >
             Slides, bootcamp study packs, starter repositories and shared exam prep notes from our sessions are kept inside the Builder Portal for
             members. Sign in with Google to access materials from sessions you attend.

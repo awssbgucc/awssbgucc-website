@@ -12,6 +12,7 @@ const PAGES = [
   { path: '/blog', heading: 'Writing' },
   { path: '/projects', heading: 'Projects' },
   { path: '/resources', heading: 'Resources' },
+  { path: '/certifications', heading: 'Certifications' },
   { path: '/contact', heading: 'Contact' },
   { path: '/privacy', heading: 'Privacy notice' },
   { path: '/code-of-conduct', heading: 'Code of conduct' },

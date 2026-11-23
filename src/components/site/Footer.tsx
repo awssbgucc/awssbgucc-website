@@ -45,7 +45,10 @@ export async function Footer() {
               <a href={`mailto:${s.email}`} className="footer-email">{s.email}</a>
             </div>
           </div>
-          <Column title="Group" links={[...navLinks(s.scdPageEnabled), { href: '/partners', label: 'Partners' }]} />
+          <Column
+            title="Group"
+            links={[...navLinks(s.scdPageEnabled), { href: '/certifications', label: 'Certifications' }, { href: '/partners', label: 'Partners' }]}
+          />
           <Column title="Members" links={[{ href: '/builder', label: 'Builder Portal' }, { href: '/code-of-conduct', label: 'Code of conduct' }, { href: '/privacy', label: 'Privacy notice' }]} />
           <Column
             title="Learn on AWS"

@@ -45,6 +45,20 @@ enum PartnerType {
   COMMUNITY
 }
 
+enum CertLevel {
+  FOUNDATIONAL
+  ASSOCIATE
+  PROFESSIONAL
+  SPECIALTY
+}
+
+enum CertPathway {
+  BOOTCAMP_VOUCHER
+  AMALITECH
+  SELF_STUDY
+  OTHER
+}
+
 model AdminUser {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -112,6 +126,24 @@ model Partner {
   status      Status      @default(DRAFT)
   updatedBy   String?
   updatedAt   DateTime    @updatedAt
+}
+
+model MemberCertification {
+  id           String       @id @default(cuid())
+  memberName   String
+  programme    String?
+  levelOfStudy String?
+  certName     String
+  certCode     String?
+  certLevel    CertLevel    @default(FOUNDATIONAL)
+  pathway      CertPathway?
+  credlyUrl    String
+  earnedAt     DateTime?
+  order        Int          @default(0)
+  status       Status       @default(DRAFT)
+  updatedBy    String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
 
 model Post {
