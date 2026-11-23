@@ -1,6 +1,5 @@
 import { Link } from '@/components/site/motion/TransitionLink';
 import { Container } from '@/components/ui/Container';
-import { ThemeSelector } from '@/components/ui/ThemeSelector';
 import { getSiteSettings } from '@/lib/content/queries';
 import { Cta } from './Cta';
 import { Logo } from './Logo';
@@ -21,8 +20,7 @@ export async function Nav() {
         <nav aria-label="Main" className="hidden xl:block">
           <NavLinks links={links} />
         </nav>
-        <div className="header-actions hidden items-center gap-6 xl:flex">
-          <ThemeSelector className="header-theme" />
+        <div className="header-actions hidden shrink-0 items-center gap-5 xl:flex">
           <Link href="/builder" className="nav-link">
             Builder Portal
           </Link>

@@ -54,7 +54,7 @@ test.describe('first visit follows the device', () => {
 });
 
 test.describe('choosing', () => {
-  test.beforeEach(({}, info) => test.skip(info.project.name !== 'desktop', 'The header selector shows from 1280px; the phone menu has its own test.'));
+  test.beforeEach(({}, info) => test.skip(info.project.name !== 'desktop', 'The footer selector is tested on desktop; the phone menu has its own test.'));
 
   test('a manual choice beats the device, and System hands back to it', async ({ browser }) => {
     const context = await browser.newContext({ colorScheme: 'light', viewport: { width: 1280, height: 800 } });
