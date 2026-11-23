@@ -45,7 +45,7 @@ const nextConfig: NextConfig = {
 
 export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG || 'aws-sbg-ucc',
-  project: process.env.SENTRY_PROJECT,
+  project: process.env.SENTRY_PROJECT || 'website',
   sentryUrl: process.env.SENTRY_URL || 'https://de.sentry.io/',
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: !process.env.CI,
