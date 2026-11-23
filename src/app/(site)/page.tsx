@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
 import { FeatureEvent } from '@/components/site/FeatureEvent';
@@ -7,15 +8,35 @@ import { DisciplineExplorer } from '@/components/site/home/DisciplineExplorer';
 import { HeroMosaic } from '@/components/site/home/HeroMosaic';
 import { PhotoReel } from '@/components/site/home/PhotoReel';
 import { Staircase } from '@/components/site/home/Staircase';
-import { PartnerTile } from '@/components/site/PartnerTile';
 import { ProjectCard, ProjectSlots } from '@/components/site/ProjectCard';
 import { SectionHead } from '@/components/site/SectionHead';
 import { TeamCard } from '@/components/site/TeamCard';
 import { boardRecords, DISCIPLINES } from '@/lib/content/disciplines';
 import { allPhotos, eventPhoto, photo, photoDate, type EventPhotoId } from '@/lib/content/media';
-import { getEvents, getPartners, getPosts, getProjects, getSiteSettings, getTeam } from '@/lib/content/queries';
+import { getEvents, getPosts, getProjects, getSiteSettings, getTeam } from '@/lib/content/queries';
 import { pastEvents, projectCredit, upcomingEvents } from '@/lib/content/selectors';
 import { formatDate } from '@/lib/format';
+
+const PARTNER_CALL = [
+  {
+    num: '01',
+    tone: 'mint',
+    title: 'Campus associations and clubs',
+    text: 'Co-host beginner-friendly cloud workshops, study tracks and hands-on labs for students in your department or club.',
+  },
+  {
+    num: '02',
+    tone: 'blue',
+    title: 'Companies and industry teams',
+    text: 'Share real-world cloud experience through guest talks, technical workshops, career sessions and student build days.',
+  },
+  {
+    num: '03',
+    tone: 'purple',
+    title: 'Sponsors and supporters',
+    text: 'Support bootcamps, campus build sessions, swag or Student Community Day at the University of Cape Coast.',
+  },
+] as const;
 
 // From Code to Cloud in the order it happened, without the two hero photos. About as long as the bootcamp strip, so
 // both drift at the same pace; every photo from the day is on the event page.
@@ -35,7 +56,7 @@ const BUILD_DAY: EventPhotoId[] = [
 ];
 
 export default async function HomePage() {
-  const [s, events, partners, team, projects, posts] = await Promise.all([getSiteSettings(), getEvents(), getPartners(), getTeam(), getProjects(), getPosts()]);
+  const [s, events, team, projects, posts] = await Promise.all([getSiteSettings(), getEvents(), getTeam(), getProjects(), getPosts()]);
   const now = new Date();
   const next = upcomingEvents(events, now)[0];
   const past = pastEvents(events, now);
@@ -44,7 +65,6 @@ export default async function HomePage() {
   const records = boardRecords(DISCIPLINES, events, sitePosts);
   const weekThree = sitePosts.find((p) => p.slug === 'first-website-on-amazon-s3');
   const first = [...events].sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime())[0];
-  const campus = partners.filter((p) => p.type === 'CAMPUS');
   const buildDay = past.find((e) => e.slug === 'from-code-to-cloud');
   const buildDayPhotos = BUILD_DAY.map((id) => {
     const image = eventPhoto(id);
@@ -135,20 +155,46 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {(team.length > 0 || campus.length > 0) && (
+      {team.length > 0 && (
         <section className="band band-alt" aria-labelledby="people-title">
           <Container>
-            <SectionHead label={team.length > 0 ? 'Student-led' : 'On campus'} title={team.length > 0 ? 'Who runs the group' : 'Our campus partners'} id="people-title" action={team.length > 0 ? <Cta href="/team" variant="arrow">Meet the team</Cta> : undefined} />
-            {team.length > 0 && <div className="team-grid">{team.slice(0, 4).map((person) => <TeamCard key={person.id} person={person} />)}</div>}
-            {campus.length > 0 && (
-              <div className="collaborators">
-                {team.length > 0 && <p className="type-label text-text-muted">Campus partners</p>}
-                <div className="partner-row">{campus.map((partner) => <PartnerTile key={partner.id} partner={partner} />)}</div>
-              </div>
-            )}
+            <SectionHead label="Student-led" title="Who runs the group" id="people-title" action={<Cta href="/team" variant="arrow">Meet the team</Cta>} />
+            <div className="team-grid">{team.slice(0, 4).map((person) => <TeamCard key={person.id} person={person} />)}</div>
           </Container>
         </section>
       )}
+
+      <section className={`band ${team.length > 0 ? '' : 'band-alt'}`} aria-labelledby="partners-call-title">
+        <Container>
+          <div className="partner-call">
+            <SectionHead
+              label="Call for partners"
+              title="Partner with us"
+              id="partners-call-title"
+              action={<Cta href="/contact?topic=partnership" variant="mint">Become a partner</Cta>}
+            >
+              We are inviting campus associations, tech companies and external organisations to partner with our community at the University of Cape
+              Coast. Reach out if you would like to co-host workshops, provide speakers, support bootcamps or sponsor events.
+            </SectionHead>
+            <ol className="partner-call-grid" data-reveal="steps">
+              {PARTNER_CALL.map((item, index) => (
+                <li key={item.num} className="partner-call-card" style={{ '--i': index } as CSSProperties}>
+                  <div className="partner-call-head">
+                    <span className="type-label text-text-muted">{item.num}</span>
+                    <span className={`swatch swatch-${item.tone}`} aria-hidden="true" />
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </li>
+              ))}
+            </ol>
+            <div className="partner-call-foot">
+              <p className="text-sm text-text-muted">Representing a student association, tech company or organisation? Tell us how you would like to work together.</p>
+              <Cta href="/contact?topic=partnership" variant="arrow">Go to the contact page</Cta>
+            </div>
+          </div>
+        </Container>
+      </section>
 
       <Closing meetupUrl={s.meetupUrl} />
     </>

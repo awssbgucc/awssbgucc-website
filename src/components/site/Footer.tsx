@@ -41,7 +41,7 @@ export async function Footer() {
             <p>A student-led technical community at the University of Cape Coast. Online talks, bootcamps and hands-on sessions, free for all students.</p>
             <p className="font-display text-xs text-text-muted">5.10 N  1.25 W / Cape Coast, Ghana</p>
           </div>
-          <Column title="Group" links={[...navLinks(s.scdPageEnabled), { href: '/partners', label: 'Partners' }, { href: '/contact', label: 'Contact' }]} />
+          <Column title="Group" links={[...navLinks(s.scdPageEnabled), { href: '/partners', label: 'Partners' }]} />
           <Column title="Members" links={[{ href: '/builder', label: 'Builder Portal' }, { href: '/code-of-conduct', label: 'Code of conduct' }, { href: '/privacy', label: 'Privacy notice' }]} />
           <Column title="Connect" links={connect} />
           <Column

@@ -39,7 +39,7 @@ export function MobileMenu({ meetupUrl, whatsappUrl, links }: Props) {
     return () => { document.body.style.overflow = previous; };
   }, [open]);
 
-  const items = [...links, { href: '/partners', label: 'Partners' }, { href: '/contact', label: 'Contact' }];
+  const items = [...links, { href: '/partners', label: 'Partners' }];
   return (
     <div className="xl:hidden">
       <button ref={trigger} type="button" aria-expanded={open} aria-controls="mobile-menu" aria-label="Open menu" className="menu-button" onClick={() => { dialog.current?.showModal(); setOpen(true); }}>

@@ -4,6 +4,7 @@ export const NAV_LINKS = [
   { href: '/projects', label: 'Projects' },
   { href: '/team', label: 'Team' },
   { href: '/blog', label: 'Writing' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 /** The Community Day link appears only while its page is switched on. */
