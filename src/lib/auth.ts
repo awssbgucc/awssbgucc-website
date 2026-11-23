@@ -4,7 +4,17 @@ import { APIError } from 'better-auth/api';
 import { nextCookies } from 'better-auth/next-js';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { emailDomainAllowed, hasRole, normaliseEmail, SIGN_IN_ERRORS, withoutProviderTokens, type Role, type SignInError } from '@/lib/auth-rules';
+import {
+  authBaseUrlConfig,
+  authUseSecureCookies,
+  emailDomainAllowed,
+  hasRole,
+  normaliseEmail,
+  SIGN_IN_ERRORS,
+  withoutProviderTokens,
+  type Role,
+  type SignInError,
+} from '@/lib/auth-rules';
 import { db } from '@/lib/db';
 
 // Two kinds of people sign in with Google: members and the core team.
@@ -31,9 +41,16 @@ async function assertCanSignIn(user: { id?: string; email?: string; emailVerifie
   }
 }
 
+const configuredSiteUrl = process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_SITE_URL;
+
 export const auth = betterAuth({
   secret: process.env.AUTH_SECRET,
-  baseURL: process.env.NEXT_PUBLIC_SITE_URL,
+  baseURL: authBaseUrlConfig(configuredSiteUrl, process.env.AUTH_ALLOWED_HOSTS),
+  trustedOrigins: ['http://localhost', 'http://localhost:*', 'http://127.0.0.1', 'http://127.0.0.1:*'],
+  advanced: {
+    trustedProxyHeaders: true,
+    useSecureCookies: authUseSecureCookies(configuredSiteUrl, process.env.NODE_ENV === 'production'),
+  },
   database: prismaAdapter(db, { provider: 'postgresql' }),
   socialProviders: {
     google: {

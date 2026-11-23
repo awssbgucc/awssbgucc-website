@@ -80,8 +80,11 @@ describe('homeStats', () => {
 });
 
 describe('seed data', () => {
-  it('seeds Joel as the one admin', () => {
-    expect(adminUsers).toEqual([expect.objectContaining({ email: 'anarbajoel@gmail.com', role: 'ADMIN' })]);
+  it('seeds Joel and the group email as admins', () => {
+    expect(adminUsers).toEqual([
+      expect.objectContaining({ email: 'anarbajoel@gmail.com', role: 'ADMIN' }),
+      expect.objectContaining({ email: 'awssbgucc@gmail.com', role: 'ADMIN' }),
+    ]);
   });
 
   it('keeps the gates and the team off until reviewed', () => {

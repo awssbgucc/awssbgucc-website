@@ -1,6 +1,9 @@
 // From the Seed data section of docs/CONTENT.md. No events are seeded: the team adds them from the dashboard.
 
-export const adminUsers = [{ email: 'anarbajoel@gmail.com', name: 'Joel Anarba Amuni', role: 'ADMIN' as const }];
+export const adminUsers = [
+  { email: 'anarbajoel@gmail.com', name: 'Joel Anarba Amuni', role: 'ADMIN' as const },
+  { email: 'awssbgucc@gmail.com', name: 'AWS SBG UCC', role: 'ADMIN' as const },
+];
 
 export const siteSettings = {
   id: 1,

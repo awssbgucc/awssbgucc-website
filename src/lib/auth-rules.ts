@@ -69,3 +69,43 @@ export function adminChangeError(change: {
   if (targetRole === 'ADMIN' && nextRole !== 'ADMIN' && adminCount <= 1) return 'There must be at least one admin.';
   return null;
 }
+
+const DEFAULT_ALLOWED_HOSTS = ['localhost', 'localhost:*', '127.0.0.1', '127.0.0.1:*', '*.amplifyapp.com'];
+
+/**
+ * Dynamic Better Auth baseURL configuration.
+ * Behind reverse proxies such as AWS Amplify Hosting, Next.js receives an internal localhost request URL, so we
+ * trust forwarded proxy headers against an explicit host allowlist instead of letting OAuth fall back to localhost.
+ */
+export function authBaseUrlConfig(siteUrl: string | null | undefined, extraHosts?: string | null | undefined) {
+  const hosts = new Set<string>(DEFAULT_ALLOWED_HOSTS);
+  let fallback = 'http://localhost:3000';
+
+  const trimmedSite = siteUrl?.trim();
+  if (trimmedSite) {
+    try {
+      const parsed = new URL(trimmedSite);
+      if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && parsed.host) {
+        hosts.add(parsed.host);
+        fallback = parsed.origin;
+      }
+    } catch {
+      // Ignore malformed env values and fall back safely to the allowlist defaults.
+    }
+  }
+
+  for (const raw of (extraHosts ?? '').split(',')) {
+    const cleaned = raw.trim().replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+    if (cleaned) hosts.add(cleaned);
+  }
+
+  return { allowedHosts: [...hosts], fallback };
+}
+
+/** Keeps plain HTTP cookie compatibility for local e2e production runs while enforcing secure cookies on HTTPS. */
+export function authUseSecureCookies(siteUrl: string | null | undefined, isProd: boolean) {
+  const trimmed = siteUrl?.trim();
+  if (trimmed?.startsWith('http://')) return false;
+  if (trimmed?.startsWith('https://')) return true;
+  return isProd;
+}
