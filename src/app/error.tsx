@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { RetryButton } from '@/components/ui/RetryButton';
@@ -7,7 +8,10 @@ import { RetryButton } from '@/components/ui/RetryButton';
 // Catches failures in the public, portal and dashboard layouts themselves, such as the database being unreachable.
 // It reads nothing from the database, so it still renders when that is the problem.
 export default function AppError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
-  useEffect(() => console.error(error), [error]);
+  useEffect(() => {
+    console.error(error);
+    Sentry.captureException(error);
+  }, [error]);
   return (
     <main className="flex min-h-dvh items-center justify-center bg-bg p-6">
       <div className="flex max-w-md flex-col items-center gap-5 text-center">

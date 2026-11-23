@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
+  TrendingUp,
   Trophy,
   UserCheck,
   UserCog,
@@ -33,6 +34,7 @@ import { BrandMark } from '@/components/ui/BrandMark';
 
 export type AdminIconName =
   | 'overview'
+  | 'analytics'
   | 'events'
   | 'posts'
   | 'mail'
@@ -56,6 +58,7 @@ export type AdminIconName =
 
 const ICONS: Record<AdminIconName, LucideIcon> = {
   overview: LayoutDashboard,
+  analytics: TrendingUp,
   events: CalendarDays,
   posts: FileText,
   mail: Mail,

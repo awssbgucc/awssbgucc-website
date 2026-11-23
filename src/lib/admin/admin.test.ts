@@ -21,6 +21,15 @@ import { accraInputToDate, COPY_MESSAGE, dateToAccraInput } from '@/lib/validati
 import { certificationSchema } from '@/lib/validation/certification';
 import { adminSubscriberSchema, escapeCsvCell, newsletterCampaignSchema, subscribeSchema } from '@/lib/validation/newsletter';
 import { teamSchema } from '@/lib/validation/team';
+import {
+  analyticsPayloadSchema,
+  dailyVisitorHash,
+  detectDeviceType,
+  extractReferrerHost,
+  isBotUserAgent,
+  normalisePath,
+  shouldTrackPath,
+} from '@/lib/analytics';
 
 const EM_DASH = String.fromCharCode(0x2014);
 const EN_DASH = String.fromCharCode(0x2013);
@@ -370,5 +379,58 @@ describe('newsletter validation and CSV export', () => {
     expect(escapeCsvCell('+233123')).toBe("'+233123");
     expect(escapeCsvCell('-1')).toBe("'-1");
     expect(escapeCsvCell('@evil')).toBe("'@evil");
+  });
+});
+
+describe('analytics helpers', () => {
+  it('validates and normalises collect payloads', () => {
+    const valid = analyticsPayloadSchema.safeParse({
+      eventType: 'cta_click',
+      path: '/events',
+      label: 'Join on Meetup',
+      utmSource: 'whatsapp',
+      utmMedium: '',
+    });
+    expect(valid.success).toBe(true);
+    if (valid.success) {
+      expect(valid.data.label).toBe('Join on Meetup');
+      expect(valid.data.utmMedium).toBeNull();
+    }
+
+    expect(analyticsPayloadSchema.safeParse({ eventType: 'pageview', path: 'events' }).success).toBe(false);
+    expect(analyticsPayloadSchema.safeParse({ eventType: 'other', path: '/' }).success).toBe(false);
+  });
+
+  it('filters bots and internal paths cleanly', () => {
+    expect(isBotUserAgent('')).toBe(true);
+    expect(isBotUserAgent('Googlebot/2.1 (+http://www.google.com/bot.html)')).toBe(true);
+    expect(isBotUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36')).toBe(false);
+
+    expect(normalisePath('/events/?utm=1#top')).toBe('/events');
+    expect(normalisePath('///')).toBe('/');
+    expect(shouldTrackPath('/events')).toBe(true);
+    expect(shouldTrackPath('/admin/analytics')).toBe(false);
+    expect(shouldTrackPath('/api/health')).toBe(false);
+    expect(shouldTrackPath('/monitoring')).toBe(false);
+  });
+
+  it('extracts external referrer hosts without self or local referrals', () => {
+    expect(extractReferrerHost('https://www.google.com/search?q=aws+ucc', 'awssbgucc.org')).toBe('google.com');
+    expect(extractReferrerHost('https://www.awssbgucc.org/events', 'awssbgucc.org')).toBeNull();
+    expect(extractReferrerHost('http://localhost:3000/events', 'awssbgucc.org')).toBeNull();
+    expect(extractReferrerHost('javascript:alert(1)', 'awssbgucc.org')).toBeNull();
+  });
+
+  it('detects device categories and rotates anonymous visitor hashes daily', () => {
+    expect(detectDeviceType('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0')).toBe('desktop');
+    expect(detectDeviceType('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Mobile/15E148')).toBe('mobile');
+    expect(detectDeviceType('Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X)')).toBe('tablet');
+
+    const h1 = dailyVisitorHash('203.0.113.5', 'Chrome/130', '2026-11-23', 'secret');
+    const h2 = dailyVisitorHash('203.0.113.5', 'Chrome/130', '2026-11-23', 'secret');
+    const hNextDay = dailyVisitorHash('203.0.113.5', 'Chrome/130', '2026-11-24', 'secret');
+    expect(h1).toBe(h2);
+    expect(h1).not.toBe(hNextDay);
+    expect(h1).not.toContain('203.0.113.5');
   });
 });

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { recordServerAnalyticsEvent } from '@/lib/analytics';
 import { getSiteSettings } from '@/lib/content/queries';
 import { sendContactEmail } from '@/lib/email/resend';
 import { errorMessage, logError } from '@/lib/log';
@@ -81,6 +82,12 @@ export async function POST(request: Request) {
   try {
     const result = await sendContactEmail(parsed.data, recipient);
     if (result.ok) {
+      await recordServerAnalyticsEvent({
+        eventType: 'contact_submit',
+        path: '/contact',
+        label: parsed.data.topic,
+        request,
+      });
       return NextResponse.json({ ok: true });
     }
     if (result.code === 'NOT_CONFIGURED') {

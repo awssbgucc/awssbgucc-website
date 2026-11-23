@@ -1,10 +1,16 @@
 'use client';
 
 import '@/styles/globals.css';
+import * as Sentry from '@sentry/nextjs';
+import { useEffect } from 'react';
 
 // Replaces the root layout when that layout itself fails, so it brings its own <html> and <body>.
 // No theme script runs here, so it shows the dark theme, the approved baseline.
-export default function GlobalError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
   return (
     <html lang="en-GB">
       <body>

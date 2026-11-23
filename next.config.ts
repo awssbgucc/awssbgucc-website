@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { withSentryConfig } from '@sentry/nextjs/config';
 import type { NextConfig } from 'next';
 import { contentSecurityPolicy } from './src/lib/csp';
 import { THEME_SCRIPT } from './src/lib/theme';
@@ -42,4 +43,10 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG || 'joel-anarba',
+  project: process.env.SENTRY_PROJECT || 'aws-sbg-ucc',
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+});

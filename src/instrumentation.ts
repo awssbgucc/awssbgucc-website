@@ -1,12 +1,23 @@
+import * as Sentry from '@sentry/nextjs';
 import type { Instrumentation } from 'next';
 import { errorMessage, logError } from '@/lib/log';
+
+export async function register() {
+  if (process.env.NEXT_RUNTIME === 'nodejs') {
+    await import('./sentry.server.config');
+  }
+
+  if (process.env.NEXT_RUNTIME === 'edge') {
+    await import('./sentry.edge.config');
+  }
+}
 
 /**
  * Every error thrown while rendering a page, running a server action or answering a route, as one searchable line.
  * The digest is the "Reference" the dashboard's error page shows. The query string is dropped: it can hold codes
  * or search terms.
  */
-export const onRequestError: Instrumentation.onRequestError = (error, request, context) => {
+export const onRequestError: Instrumentation.onRequestError = async (error, request, context) => {
   logError('request_error', {
     digest: (error as { digest?: string } | null)?.digest,
     method: request.method,
@@ -15,4 +26,5 @@ export const onRequestError: Instrumentation.onRequestError = (error, request, c
     type: context.routeType,
     message: errorMessage(error),
   });
+  await Sentry.captureRequestError(error, request, context);
 };

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { recordServerAnalyticsEvent } from '@/lib/analytics';
 import { getSiteSettings } from '@/lib/content/queries';
 import { buildWelcomeEmail, isResendConfigured, sendNewsletterEmail } from '@/lib/email/newsletter';
 import { clientIp, readBodyUpTo } from '@/lib/http';
@@ -99,6 +100,13 @@ export async function POST(request: Request) {
       logError('newsletter_welcome_failed', { message: errorMessage(error) });
     }
   }
+
+  await recordServerAnalyticsEvent({
+    eventType: 'newsletter_subscribe',
+    path: `/${source === 'home' || source === 'site' ? '' : source}`,
+    label: `Newsletter (${source})`,
+    request,
+  });
 
   return NextResponse.json({
     ok: true,

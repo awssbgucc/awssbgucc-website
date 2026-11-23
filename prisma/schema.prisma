@@ -712,3 +712,21 @@ model ScdFaq {
   answer   String
   order    Int    @default(0)
 }
+
+model AnalyticsEvent {
+  id           String   @id @default(cuid())
+  eventType    String
+  path         String
+  label        String?
+  referrerHost String?
+  utmSource    String?
+  utmMedium    String?
+  utmCampaign  String?
+  deviceType   String   @default("desktop")
+  visitorHash  String
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([eventType, createdAt])
+  @@index([path, createdAt])
+}

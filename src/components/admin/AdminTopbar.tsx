@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import type { Role } from '@/lib/auth-rules';
 
 const SECTION_NAMES: Record<string, string> = {
+  analytics: 'Analytics',
   events: 'Events and check-in',
   posts: 'Posts',
   newsletter: 'Newsletter',

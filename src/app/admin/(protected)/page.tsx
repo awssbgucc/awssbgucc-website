@@ -77,7 +77,7 @@ export default async function OverviewPage() {
         title="Overview"
         description="Snapshot of campus events, builders, newsletter reach and pending reviews."
         action={{ href: '/admin/events/new', label: 'New event' }}
-        secondaryAction={{ href: '/admin/reports', label: 'View reports' }}
+        secondaryAction={{ href: '/admin/analytics', label: 'Site analytics' }}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

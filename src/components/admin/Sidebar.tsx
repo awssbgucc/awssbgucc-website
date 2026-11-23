@@ -21,6 +21,7 @@ export async function Sidebar({ role, email }: { role: Role; email: string }) {
       title: 'Content',
       links: [
         { href: '/admin', label: 'Overview', icon: 'overview' },
+        { href: '/admin/analytics', label: 'Analytics', icon: 'analytics' },
         { href: '/admin/events', label: 'Events and check-in', icon: 'events' },
         { href: '/admin/posts', label: 'Posts', icon: 'posts' },
         { href: '/admin/newsletter', label: 'Newsletter', icon: 'mail', badge: activeSubscribers, badgeTone: 'lime' },

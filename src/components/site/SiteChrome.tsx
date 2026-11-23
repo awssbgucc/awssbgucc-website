@@ -1,6 +1,7 @@
 import '@/styles/public.css';
 import '@/styles/motion.css';
 import type { ReactNode } from 'react';
+import { AnalyticsTracker } from './AnalyticsTracker';
 import { AnnouncementBar } from './AnnouncementBar';
 import { Footer } from './Footer';
 import { Nav } from './Nav';
@@ -14,6 +15,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
       <main id="main">{children}</main>
       <Footer />
       <RevealObserver />
+      <AnalyticsTracker />
     </div>
   );
 }

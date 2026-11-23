@@ -44,8 +44,17 @@ const SECTIONS: { title: string; body: string[] }[] = [
     ],
   },
   {
+    title: 'Site visits and error monitoring',
+    body: [
+      'We record basic first-party visit counts without cookies: the page visited, external referring website domain, campaign query tags if present, device category (desktop, mobile or tablet), key community link clicks, and a daily rotating anonymous hash computed on our server. Raw IP addresses are not stored in our analytics table.',
+      'We also use Sentry to record unexpected application errors and slow request diagnostics so we can fix broken pages quickly.',
+    ],
+  },
+  {
     title: 'Where it is kept',
-    body: ['In a PostgreSQL database hosted by Neon, and images in an Amazon S3 bucket. The site runs on AWS Amplify Hosting.'],
+    body: [
+      'In a PostgreSQL database hosted by Neon, and images in an Amazon S3 bucket. The site runs on AWS Amplify Hosting, newsletter emails are sent via Resend, and error diagnostics are processed via Sentry.',
+    ],
   },
   {
     title: 'Your choices',
