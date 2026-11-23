@@ -96,7 +96,7 @@ export default async function HomePage() {
       <section className="band" aria-label="Inside the bootcamp">
         <Container>
           <BootcampStory recapSlug={weekThree?.slug} />
-          <p className="type-label reel-label">Bootcamp weeks 2 and 3, Sat 24 and Sat 31 Oct 2026</p>
+          <p className="type-label reel-label">Inside the Zero to Cloud Practitioner bootcamp</p>
         </Container>
         <PhotoReel photos={reel} label="Bootcamp photographs" />
       </section>

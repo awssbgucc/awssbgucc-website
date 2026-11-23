@@ -39,7 +39,7 @@ These rules come from the AWS Student Builder Group Leader Handbook, the AWS Stu
 
 ### Affiliation wording
 
-11. Footer line, exactly: "A student-led group in the AWS Student Builder Groups program. Run by students at the University of Cape Coast, not by Amazon Web Services."
+11. Footer line, exactly: "An independent, student-led community at the University of Cape Coast, part of the AWS Student Builder Groups program." (Updated by Joel, 23 Nov 2026.)
 12. Never write "official AWS website", "powered by AWS", "sponsored by AWS", "endorsed by AWS", or "AWS partner". Never list AWS as a sponsor, unless AWS formally sponsors a specific event and that is confirmed in writing.
 13. When describing what AWS provides, state the fact plainly: "Members get free access to AWS Skill Builder courses."
 

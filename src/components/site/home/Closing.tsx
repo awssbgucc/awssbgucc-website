@@ -5,7 +5,7 @@ import { PixelMap } from '../PixelMap';
 import { SbgIcon, type SbgIconName, type SbgTone } from '../SbgIcon';
 
 const WAYS: { icon: SbgIconName; tone: SbgTone; who: string; what: string }[] = [
-  { icon: 'ladder', tone: 'purple', who: 'Start from the basics', what: 'Join the Saturday bootcamp or an online talk. No AWS experience is needed.' },
+  { icon: 'ladder', tone: 'purple', who: 'Start from the basics', what: 'Join our community, attend an event or jump into an ongoing bootcamp. No AWS experience is needed, and we are here to help you get started whenever you join.' },
   { icon: 'wrench', tone: 'magenta', who: 'Deploy a project', what: 'Come to an in-person build session and get a project of your own online.' },
   { icon: 'speaker', tone: 'blue', who: 'Explore cloud careers', what: 'Hear from engineers working in the field about certifications, practical skills and career paths.' },
 ];

@@ -38,7 +38,7 @@ export async function Footer() {
         <div className="footer-grid">
           <div className="footer-brand">
             <Logo size="large" />
-            <p>A student-led technical community at the University of Cape Coast. Online talks, a Saturday bootcamp and hands-on sessions, free for all students.</p>
+            <p>A student-led technical community at the University of Cape Coast. Online talks, bootcamps and hands-on sessions, free for all students.</p>
             <p className="font-display text-xs text-text-muted">5.10 N  1.25 W / Cape Coast, Ghana</p>
           </div>
           <Column title="Group" links={[...navLinks(s.scdPageEnabled), { href: '/partners', label: 'Partners' }, { href: '/contact', label: 'Contact' }]} />
@@ -55,7 +55,7 @@ export async function Footer() {
         </div>
         <div className="footer-legal">
           <p className="max-w-[62ch]">
-            A student-led group in the AWS Student Builder Groups program. Run by students at the University of Cape Coast, not by Amazon Web Services.
+            An independent, student-led community at the University of Cape Coast, part of the AWS Student Builder Groups program.
           </p>
           <a href={AWS_EVENT_TERMS_URL} className="footer-link">
             AWS Event Terms and Conditions

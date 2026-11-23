@@ -3,13 +3,12 @@ import type { CSSProperties } from 'react';
 import { photo, type PhotoId } from '@/lib/content/media';
 import { Cta } from '../Cta';
 
-// Week 3 of the bootcamp, from the group's recap (source S1). The photos carry the bootcamp watermark
-// and the 31 Oct filenames; see docs/research/ASSET_INVENTORY.md.
+// Four real bootcamp photographs illustrating what happens in a typical session and what participants can expect.
 const BEATS: { id: PhotoId; step: string; title: string; text: string }[] = [
-  { id: 'facilitators', step: 'Concepts', title: 'Compute and storage, in plain terms', text: 'We started by breaking down cloud compute and storage with everyday examples.' },
-  { id: 'website-on-screen', step: 'The lab', title: 'A Hostel Finder site, live on Amazon S3', text: 'By the end of the session, every participant had the site live on the internet.' },
-  { id: 'student-focus', step: 'Troubleshooting', title: 'Fixing bucket policy errors', text: 'Some configurations and bucket policies failed at first. Participants debugged them together until their sites loaded.' },
-  { id: 'kahoot', step: 'Quiz', title: 'A Kahoot quiz to wrap up', text: 'We finished with a quiz covering the first three weeks, with AWS swag for the top scorers.' },
+  { id: 'facilitators', step: 'Concepts', title: 'Cloud fundamentals, explained plainly', text: 'Sessions open with core AWS services and exam topics broken down through everyday examples, with no prior cloud background assumed.' },
+  { id: 'website-on-screen', step: 'Hands-on labs', title: 'Deploying real projects on AWS', text: 'Participants move from concepts straight into the AWS console, deploying live web projects such as a Hostel Finder site on Amazon S3.' },
+  { id: 'student-focus', step: 'Troubleshooting', title: 'Working through real errors together', text: 'When configurations or bucket policies fail, facilitators and classmates debug them together until everyone gets their setup working.' },
+  { id: 'kahoot', step: 'Review quizzes', title: 'Checking what stuck with a quiz', text: 'Sessions wrap up with interactive Kahoot quizzes covering recent topics, with AWS swag for top scorers.' },
 ];
 
 export function BootcampStory({ recapSlug }: { recapSlug?: string }) {
@@ -20,7 +19,7 @@ export function BootcampStory({ recapSlug }: { recapSlug?: string }) {
           <p className="type-label text-lavender">Bootcamp, with CITSA</p>
           <h2 className="section-title">Zero to Cloud Practitioner</h2>
           <p>
-            Twelve Saturdays of preparation for the AWS Certified Cloud Practitioner exam (CLF-C02), run with the Computer Science and Information
+            A 12-week preparation programme for the AWS Certified Cloud Practitioner exam (CLF-C02), run with the Computer Science and Information
             Technology Student Association. Sessions mix exam topics with practical work on AWS services. Participants who attend consistently and
             score 70% or higher on the official AWS Skill Builder practice exam are eligible for a certification exam voucher.
           </p>
@@ -31,7 +30,7 @@ export function BootcampStory({ recapSlug }: { recapSlug?: string }) {
           <div className="col-span-full"><dt>Length</dt><dd>12 weeks, from Sat 17 Oct 2026</dd></div>
         </dl>
       </div>
-      <div className="beats" data-reveal="steps" role="region" aria-label="Week 3 in four photographs" tabIndex={0}>
+      <div className="beats" data-reveal="steps" role="region" aria-label="What happens in a bootcamp session" tabIndex={0}>
         {BEATS.map((beat, index) => {
           const image = photo(beat.id);
           return (
@@ -49,8 +48,8 @@ export function BootcampStory({ recapSlug }: { recapSlug?: string }) {
         })}
       </div>
       <div className="bootcamp-foot">
-        <p className="type-label text-text-muted">Week 3, Sat 31 Oct 2026</p>
-        {recapSlug && <Cta href={`/blog/${recapSlug}`} variant="arrow">Read the week 3 recap</Cta>}
+        <p className="type-label text-text-muted">What to expect at each session</p>
+        {recapSlug && <Cta href={`/blog/${recapSlug}`} variant="arrow">Read a session recap</Cta>}
       </div>
     </div>
   );

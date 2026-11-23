@@ -64,7 +64,7 @@ export const DISCIPLINES: Discipline[] = [
     tone: 'blue',
     status: 'covered',
     line: 'Where AWS certifications fit, career paths in cloud computing and the practical skills employers look for.',
-    here: 'A careers talk with Nathaniel Agbenyenu, plus Cloud Practitioner exam preparation in the Saturday bootcamp.',
+    here: 'A careers talk with Nathaniel Agbenyenu, plus Cloud Practitioner exam preparation in the Zero to Cloud Practitioner bootcamp.',
     sources: ['S2', 'S4', 'S9'],
     evidence: [
       { kind: 'event', slug: 'building-your-aws-career', label: 'Building Your AWS Career, Sat 26 Sep 2026' },

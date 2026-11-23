@@ -101,7 +101,7 @@ export default async function AboutPage() {
 
       <section className="band band-alt" aria-labelledby="gallery-title">
         <Container>
-          <SectionHead label="Zero to Cloud Practitioner" title="Weeks 2 and 3 of the bootcamp" id="gallery-title" />
+          <SectionHead label="Zero to Cloud Practitioner" title="Inside the bootcamp" id="gallery-title" />
           <PhotoWall
             label="Bootcamp photographs"
             photos={GALLERY.map((item) => ({ ...photo(item.id), caption: item.caption, shape: item.shape }))}
@@ -116,8 +116,8 @@ export default async function AboutPage() {
               <Image src="/brand/sbg-chip-purple.svg" alt="" width={56} height={56} unoptimized />
               <h2 id="programme-title" className="section-title">Part of a global program, run by UCC students</h2>
               <p>
-                AWS Student Builder Groups give members access to hands-on learning, technical events and AWS resources. Our group is run
-                independently by students at the University of Cape Coast, not by Amazon Web Services.
+                AWS Student Builder Groups give members access to hands-on learning, technical events and AWS resources. Our group is an
+                independent, student-led community at the University of Cape Coast.
               </p>
               <div className="flex flex-wrap gap-6">
                 <Cta href={s.meetupUrl} variant="mint">Join on Meetup</Cta>

@@ -44,8 +44,8 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
               <span className="hero-line"><span style={i(1)}>of builders.<span className="hero-cursor" aria-hidden="true" /></span></span>
             </h1>
             <p className="hero-lead">
-              A student-led technical community at the University of Cape Coast, open to every department. We run online talks, a Saturday cloud
-              bootcamp and hands-on campus sessions for students learning cloud computing, software development and AI. No prior experience needed.
+              A student-led technical community at the University of Cape Coast, open to students from every department. We run online talks, 
+              bootcamps and hands-on campus sessions for students learning cloud computing, software development, AI and other emerging technologies on AWS. No prior experience needed. Just come ready to learn and build.
             </p>
             <div className="hero-actions">
               <Cta href={meetupUrl}>Join on Meetup</Cta>

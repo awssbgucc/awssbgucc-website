@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const FOOTER_LINE =
-  'A student-led group in the AWS Student Builder Groups program. Run by students at the University of Cape Coast, not by Amazon Web Services.';
+  'An independent, student-led community at the University of Cape Coast, part of the AWS Student Builder Groups program.';
 
 const PAGES = [
   { path: '/', heading: 'A campus of builders.' },
