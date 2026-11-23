@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ArrowUpRight } from 'lucide-react';
 import { ContactForm, CopyEmailButton } from '@/components/site/ContactForm';
 import { PageIntro } from '@/components/site/PageIntro';
+import { SocialIcon, type SocialKind } from '@/components/site/SocialIcons';
 import { Container } from '@/components/ui/Container';
 import { getSiteSettings } from '@/lib/content/queries';
 
@@ -18,13 +19,14 @@ const PARTNER_WAYS = [
 
 export default async function ContactPage() {
   const s = await getSiteSettings();
-  const channels = [
-    { label: 'Meetup', note: 'Event announcements and RSVPs', href: s.meetupUrl },
-    { label: 'WhatsApp community', note: 'Campus updates and reminders', href: s.whatsappUrl },
-    { label: 'LinkedIn', note: 'Recaps and community news', href: s.linkedinUrl },
-    { label: 'Instagram', note: 'Event photos and updates', href: s.instagramUrl },
-    { label: 'X', note: 'Announcements', href: s.xUrl },
-  ].filter((c): c is { label: string; note: string; href: string } => !!c.href);
+  const rawChannels: { kind: SocialKind; label: string; note: string; href: string | null }[] = [
+    { kind: 'meetup', label: 'Meetup', note: 'Event announcements and RSVPs', href: s.meetupUrl },
+    { kind: 'whatsapp', label: 'WhatsApp community', note: 'Campus updates and reminders', href: s.whatsappUrl },
+    { kind: 'linkedin', label: 'LinkedIn', note: 'Recaps and community news', href: s.linkedinUrl },
+    { kind: 'instagram', label: 'Instagram', note: 'Event photos and updates', href: s.instagramUrl },
+    { kind: 'x', label: 'X', note: 'Announcements', href: s.xUrl },
+  ];
+  const channels = rawChannels.filter((c): c is { kind: SocialKind; label: string; note: string; href: string } => !!c.href);
 
   return (
     <>
@@ -82,10 +84,15 @@ export default async function ContactPage() {
                   <ul>
                     {channels.map((c) => (
                       <li key={c.label}>
-                        <a href={c.href}>
-                          <span>
-                            <span className="block font-medium text-text-strong">{c.label}</span>
-                            <span className="block text-sm text-text-muted">{c.note}</span>
+                        <a href={c.href} {...(c.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                          <span className="flex items-center gap-3.5">
+                            <span className="text-text-muted">
+                              <SocialIcon kind={c.kind} size={18} />
+                            </span>
+                            <span>
+                              <span className="block font-medium text-text-strong">{c.label}</span>
+                              <span className="block text-sm text-text-muted">{c.note}</span>
+                            </span>
                           </span>
                           <ArrowUpRight size={18} aria-hidden className="shrink-0 text-text-muted" />
                         </a>

@@ -1,12 +1,18 @@
 import { cache } from 'react';
 import { db } from '@/lib/db';
+import { DEFAULT_SOCIAL_URLS } from '@/lib/site';
 
 // Everything here is for the public site, so it reads published and active records only.
 
 export const getSiteSettings = cache(async () => {
   const settings = await db.siteSettings.findUnique({ where: { id: 1 } });
   if (!settings) throw new Error('Site settings are missing. Run pnpm db:seed.');
-  return settings;
+  return {
+    ...settings,
+    linkedinUrl: settings.linkedinUrl ?? DEFAULT_SOCIAL_URLS.linkedin,
+    instagramUrl: settings.instagramUrl ?? DEFAULT_SOCIAL_URLS.instagram,
+    xUrl: settings.xUrl ?? DEFAULT_SOCIAL_URLS.x,
+  };
 });
 
 export const getEvents = cache(() => db.event.findMany({ where: { status: 'PUBLISHED' } }));

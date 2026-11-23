@@ -10,10 +10,9 @@ export const siteSettings = {
   // TODO(joel): WhatsApp community link
   whatsappUrl: null,
   builderCenterUrl: 'https://bit.ly/4pNTKvI',
-  // TODO(joel): LinkedIn, Instagram and X links
-  linkedinUrl: null,
-  instagramUrl: null,
-  xUrl: null,
+  linkedinUrl: 'https://www.linkedin.com/company/awssbgucc',
+  instagramUrl: 'https://www.instagram.com/awssbgucc',
+  xUrl: 'https://x.com/awssbgucc',
   // TODO(joel): members on Meetup and departments represented
   membersCount: null,
   departmentsCount: null,
