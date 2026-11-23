@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react';
 import type { Metadata } from 'next';
 import { Empty, PageHeader, TABLE, TableWrap, TD, TH } from '@/components/admin/ui';
 import { requireRole } from '@/lib/auth';
@@ -15,14 +16,25 @@ export default async function AuditPage({ searchParams }: Props) {
   const entries = await db.auditLog.findMany({ where: filter ? { action: { startsWith: filter } } : {}, orderBy: { createdAt: 'desc' }, take: 300 });
   return (
     <>
-      <PageHeader title="Audit log" />
-      <p className="mb-6 max-w-[62ch] text-sm text-text-muted">Sensitive actions: check-in changes, reviews, balance adjustments, rewards, suspensions and deletions. Content edits are recorded on each record instead.</p>
-      <form className="mb-6 flex max-w-md gap-3" role="search">
-        <label htmlFor="action" className="sr-only">
-          Filter by action
-        </label>
-        <input id="action" name="action" defaultValue={filter} placeholder="For example member. or checkin." className="min-h-11 flex-1 rounded-sm border border-input-border bg-input px-3" />
-        <button type="submit" className="min-h-11 rounded-sm bg-primary px-5 text-sm font-medium text-on-primary">
+      <PageHeader
+        title="Audit log"
+        description="Sensitive actions: check-in changes, reviews, balance adjustments, rewards, suspensions, newsletter broadcasts and deletions."
+      />
+      <form className="mb-6 flex max-w-lg flex-wrap items-center gap-3 rounded-lg border border-border-strong bg-card p-3.5" role="search">
+        <div className="relative min-w-[200px] flex-1">
+          <Search aria-hidden size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-text-muted" />
+          <label htmlFor="action" className="sr-only">
+            Filter by action
+          </label>
+          <input
+            id="action"
+            name="action"
+            defaultValue={filter}
+            placeholder="For example member. or checkin."
+            className="min-h-10 w-full rounded-md border border-input-border bg-input pr-3 pl-9 text-sm text-text-strong placeholder:text-text-faint focus:border-focus focus:outline-none"
+          />
+        </div>
+        <button type="submit" className="min-h-10 rounded-md bg-primary px-4 text-sm font-medium text-on-primary transition-colors hover:bg-primary/90">
           Filter
         </button>
       </form>

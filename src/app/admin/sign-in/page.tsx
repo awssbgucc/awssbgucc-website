@@ -13,24 +13,35 @@ type Props = { searchParams: Promise<{ error?: string }> };
 export default async function SignInPage({ searchParams }: Props) {
   const { error } = await searchParams;
   return (
-    <main className="relative flex min-h-dvh items-center justify-center p-6">
+    <main className="relative flex min-h-dvh items-center justify-center bg-bg-alt p-6">
       <ThemeSelector className="absolute top-4 right-4" />
-      {error ? (
-        <div className="flex flex-col items-center gap-4 text-center">
-          <p role="alert" className="font-medium">
-            {NO_ACCESS_MESSAGE}
-          </p>
-          <Link href="/builder" className="inline-flex min-h-11 items-center text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text-strong">
-            Go to the Builder Portal
-          </Link>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center gap-6 text-center">
-          <Image src="/brand/sbg-chip-purple.svg" alt="" width={64} height={64} unoptimized />
-          <h1 className="type-section">Sign in</h1>
-          <GoogleSignIn />
-        </div>
-      )}
+      <div className="w-full max-w-sm rounded-lg border border-border-strong bg-card p-8 text-center">
+        {error ? (
+          <div className="flex flex-col items-center gap-4">
+            <Image src="/brand/sbg-chip-purple.svg" alt="" width={48} height={48} unoptimized />
+            <p role="alert" className="text-sm font-medium text-danger">
+              {NO_ACCESS_MESSAGE}
+            </p>
+            <Link href="/builder" className="inline-flex min-h-10 items-center text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text-strong">
+              Go to the Builder Portal
+            </Link>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-4">
+            <Image src="/brand/sbg-chip-purple.svg" alt="" width={52} height={52} unoptimized />
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight text-text-strong">Sign in</h1>
+              <p className="mt-1 text-sm text-text-muted">Core team dashboard for AWS SBG UCC.</p>
+            </div>
+            <div className="pt-2">
+              <GoogleSignIn />
+            </div>
+            <Link href="/" className="text-xs text-text-muted underline underline-offset-4 hover:text-text-strong">
+              Back to public site
+            </Link>
+          </div>
+        )}
+      </div>
     </main>
   );
 }

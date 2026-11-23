@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Empty, LINK, PageHeader, TABLE, TableWrap, TD, TH } from '@/components/admin/ui';
@@ -29,25 +30,42 @@ export default async function MembersPage({ searchParams }: Props) {
 
   return (
     <>
-      <PageHeader title="Members" />
-      <form role="search" className="mb-6 flex max-w-2xl flex-wrap gap-3">
-        <label htmlFor="q" className="sr-only">
-          Search members
-        </label>
-        <input id="q" name="q" defaultValue={query} placeholder="Name, handle or email" className="min-h-11 flex-1 rounded-sm border border-input-border bg-input px-3" />
+      <PageHeader title="Members" description="Builder Portal accounts, session check-ins and profile status." />
+      <form role="search" className="mb-6 flex max-w-3xl flex-wrap items-center gap-3 rounded-lg border border-border-strong bg-card p-3.5">
+        <div className="relative min-w-[200px] flex-1">
+          <Search aria-hidden size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-text-muted" />
+          <label htmlFor="q" className="sr-only">
+            Search members
+          </label>
+          <input
+            id="q"
+            name="q"
+            defaultValue={query}
+            placeholder="Name, handle or email"
+            className="min-h-10 w-full rounded-md border border-input-border bg-input pr-3 pl-9 text-sm text-text-strong placeholder:text-text-faint focus:border-focus focus:outline-none"
+          />
+        </div>
         <label htmlFor="status" className="sr-only">
           Status
         </label>
-        <select id="status" name="status" defaultValue={status} className="min-h-11 rounded-sm border border-input-border bg-input px-3">
+        <select
+          id="status"
+          name="status"
+          defaultValue={status}
+          className="min-h-10 rounded-md border border-input-border bg-input px-3 text-sm text-text-strong focus:border-focus focus:outline-none"
+        >
           <option value="">Any status</option>
           <option value="ACTIVE">Active</option>
           <option value="SUSPENDED">Suspended</option>
         </select>
-        <button type="submit" className="min-h-11 rounded-sm bg-primary px-5 text-sm font-medium text-on-primary">
+        <button
+          type="submit"
+          className="min-h-10 rounded-md bg-primary px-4 text-sm font-medium text-on-primary transition-colors hover:bg-primary/90"
+        >
           Search
         </button>
       </form>
-      <p className="mb-4 text-sm text-text-muted">
+      <p className="mb-4 text-xs font-medium text-text-muted">
         Showing {members.length} of {total} members.
       </p>
       {members.length === 0 ? (
@@ -77,7 +95,7 @@ export default async function MembersPage({ searchParams }: Props) {
                   </td>
                   <td className={TD}>{[m.programme, m.level].filter(Boolean).join(', ')}</td>
                   <td className={`${TD} font-display`}>{m.user._count.checkIns}</td>
-                  <td className={`${TD} font-display text-xs`}>{formatDate(m.createdAt)}</td>
+                  <td className={`${TD} font-display text-xs whitespace-nowrap`}>{formatDate(m.createdAt)}</td>
                   <td className={TD}>
                     <StatusBadge status={m.onboardedAt ? m.status : 'DRAFT'} />
                   </td>

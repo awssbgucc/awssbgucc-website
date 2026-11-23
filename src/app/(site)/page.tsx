@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
 import { FeatureEvent } from '@/components/site/FeatureEvent';
+import { NewsletterBand } from '@/components/site/NewsletterBand';
 import { BootcampStory } from '@/components/site/home/BootcampStory';
 import { Closing } from '@/components/site/home/Closing';
 import { DisciplineExplorer } from '@/components/site/home/DisciplineExplorer';
@@ -195,6 +196,8 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
+
+      <NewsletterBand source="home" surface="grid" />
 
       <Closing meetupUrl={s.meetupUrl} whatsappUrl={s.whatsappUrl} />
     </>

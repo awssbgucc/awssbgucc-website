@@ -1,6 +1,7 @@
+import { Activity, CheckSquare, FolderGit2, TrendingUp, Users } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { LINK, PageHeader, TABLE, TableWrap, TD, TH } from '@/components/admin/ui';
+import { LINK, PageHeader, Panel, StatCard, TABLE, TableWrap, TD, TH } from '@/components/admin/ui';
 import { requireRole } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { formatDate } from '@/lib/format';
@@ -8,16 +9,6 @@ import { formatDate } from '@/lib/format';
 export const metadata: Metadata = { title: 'Reports' };
 
 const DAY = 24 * 60 * 60 * 1000;
-
-function Figure({ label, value, hint }: { label: string; value: number; hint?: string }) {
-  return (
-    <div className="rounded-md border border-border bg-card p-4">
-      <p className="text-sm text-text-muted">{label}</p>
-      <p className="font-display text-3xl text-text-strong">{value}</p>
-      {hint && <p className="mt-1 text-xs text-text-muted">{hint}</p>}
-    </div>
-  );
-}
 
 // Counts only, from stored records. Nothing about individual members leaves this page.
 export default async function ReportsPage() {
@@ -51,72 +42,98 @@ export default async function ReportsPage() {
 
   return (
     <>
-      <PageHeader title="Reports" />
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Figure label="Member accounts" value={members} hint={`${onboarded} finished onboarding`} />
-        <Figure label="New in the last 30 days" value={newMembers} />
-        <Figure label="Checked in, last 30 days" value={activeMembers} hint="Members with at least one check-in" />
-        <Figure label="Check-ins recorded" value={checkIns} />
-        <Figure label="Approved projects" value={approvedProjects} />
+      <PageHeader title="Reports" description="Aggregate participation, attendance and member breakdown across the group." />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard label="Member accounts" value={members} hint={`${onboarded} finished onboarding`} icon={<Users aria-hidden size={18} />} tone="lime" />
+        <StatCard label="New (30 days)" value={newMembers} icon={<TrendingUp aria-hidden size={18} />} tone="blue" />
+        <StatCard
+          label="Active (30 days)"
+          value={activeMembers}
+          hint="Members with at least one check-in"
+          icon={<Activity aria-hidden size={18} />}
+          tone="purple"
+        />
+        <StatCard label="Check-ins recorded" value={checkIns} icon={<CheckSquare aria-hidden size={18} />} tone="magenta" />
+        <StatCard label="Approved projects" value={approvedProjects} icon={<FolderGit2 aria-hidden size={18} />} tone="lime" />
         {submissions.map((s) => (
-          <Figure key={s.status} label={`Submissions: ${s.status.toLowerCase().replace('_', ' ')}`} value={s._count} />
+          <StatCard
+            key={s.status}
+            label={`Submissions: ${s.status.toLowerCase().replace('_', ' ')}`}
+            value={s._count}
+            icon={<CheckSquare aria-hidden size={18} />}
+            tone="neutral"
+          />
         ))}
       </div>
 
-      <h2 className="mt-12 mb-3 text-lg font-semibold">Recent sessions</h2>
-      {sessions.length === 0 ? (
-        <p className="text-text-muted">No session has run check-in yet.</p>
-      ) : (
-        <TableWrap>
-          <table className={TABLE}>
-            <thead>
-              <tr>
-                <th className={TH}>Session</th>
-                <th className={TH}>Date</th>
-                <th className={TH}>Check-ins</th>
-                <th className={TH}>Public figure</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sessions.map((s) => (
-                <tr key={s.id}>
-                  <td className={TD}>
-                    <Link href={`/admin/events/${s.id}/attendance`} className={LINK}>
-                      {s.title}
-                    </Link>
-                  </td>
-                  <td className={`${TD} font-display text-xs`}>{formatDate(s.startsAt)}</td>
-                  <td className={`${TD} font-display`}>{s._count.checkIns}</td>
-                  <td className={`${TD} font-display`}>{s.attendance ?? 'not set'}</td>
+      <section className="mt-10">
+        <h2 className="mb-3 text-base font-semibold text-text-strong">Recent sessions</h2>
+        {sessions.length === 0 ? (
+          <p className="text-sm text-text-muted">No session has run check-in yet.</p>
+        ) : (
+          <TableWrap>
+            <table className={TABLE}>
+              <thead>
+                <tr>
+                  <th className={TH}>Session</th>
+                  <th className={TH}>Date</th>
+                  <th className={TH}>Check-ins</th>
+                  <th className={TH}>Public figure</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableWrap>
-      )}
-
-      <div className="mt-12 grid gap-10 lg:grid-cols-3">
-        {[
-          ['Interests', interests],
-          ['Levels', levels],
-          ['Top programmes', programmes],
-        ].map(([title, rows]) => (
-          <section key={title as string}>
-            <h2 className="mb-3 text-lg font-semibold">{title as string}</h2>
-            {(rows as [string, number][]).length === 0 ? (
-              <p className="text-sm text-text-muted">No data yet.</p>
-            ) : (
-              <ul className="space-y-1.5 text-sm">
-                {(rows as [string, number][]).map(([label, count]) => (
-                  <li key={label} className="flex justify-between gap-4 border-b border-border pb-1.5">
-                    <span>{label}</span>
-                    <span className="font-display text-text-muted">{count}</span>
-                  </li>
+              </thead>
+              <tbody>
+                {sessions.map((s) => (
+                  <tr key={s.id}>
+                    <td className={TD}>
+                      <Link href={`/admin/events/${s.id}/attendance`} className={LINK}>
+                        {s.title}
+                      </Link>
+                    </td>
+                    <td className={`${TD} font-display text-xs whitespace-nowrap`}>{formatDate(s.startsAt)}</td>
+                    <td className={`${TD} font-display`}>{s._count.checkIns}</td>
+                    <td className={`${TD} font-display`}>{s.attendance ?? 'not set'}</td>
+                  </tr>
                 ))}
-              </ul>
-            )}
-          </section>
-        ))}
+              </tbody>
+            </table>
+          </TableWrap>
+        )}
+      </section>
+
+      <div className="mt-10 grid gap-6 lg:grid-cols-3">
+        {(
+          [
+            ['Interests', interests],
+            ['Levels', levels],
+            ['Top programmes', programmes],
+          ] as [string, [string, number][]][]
+        ).map(([title, rows]) => {
+          const max = rows[0]?.[1] ?? 1;
+          return (
+            <Panel key={title} title={title}>
+              {rows.length === 0 ? (
+                <p className="text-sm text-text-muted">No data yet.</p>
+              ) : (
+                <ul className="space-y-3 text-sm">
+                  {rows.map(([label, count]) => {
+                    const width = `${Math.max(8, Math.round((count / max) * 100))}%`;
+                    return (
+                      <li key={label} className="space-y-1">
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="truncate text-text">{label}</span>
+                          <span className="font-display text-xs text-text-muted tabular-nums">{count}</span>
+                        </div>
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-bg-alt">
+                          <div className="h-full rounded-full bg-lime" style={{ width }} />
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </Panel>
+          );
+        })}
       </div>
     </>
   );

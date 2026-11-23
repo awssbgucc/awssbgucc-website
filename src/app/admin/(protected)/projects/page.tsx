@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Empty, LINK, PageHeader, TABLE, TableWrap, TD, TH } from '@/components/admin/ui';
+import { Empty, FilterPills, LINK, PageHeader, TABLE, TableWrap, TD, TH } from '@/components/admin/ui';
 import { Badge, StatusBadge } from '@/components/ui/Badge';
 import { requireRole } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -9,27 +9,43 @@ import { formatDate } from '@/lib/format';
 export const metadata: Metadata = { title: 'Projects' };
 
 type Props = { searchParams: Promise<{ status?: string }> };
-const STATUSES = ['PENDING', 'APPROVED', 'DRAFT', 'REJECTED'] as const;
+const STATUSES = [
+  { key: 'PENDING', label: 'In review' },
+  { key: 'APPROVED', label: 'Approved' },
+  { key: 'DRAFT', label: 'Draft' },
+  { key: 'REJECTED', label: 'Not accepted' },
+] as const;
 
 export default async function AdminProjectsPage({ searchParams }: Props) {
   await requireRole();
   const params = await searchParams;
-  const status = STATUSES.find((s) => s === params.status) ?? 'PENDING';
-  const projects = await db.project.findMany({
-    where: { status },
-    orderBy: { updatedAt: 'desc' },
-    include: { owner: { select: { profile: { select: { displayName: true } } } } },
-  });
+  const status = STATUSES.find((s) => s.key === params.status)?.key ?? 'PENDING';
+  const [projects, counts] = await Promise.all([
+    db.project.findMany({
+      where: { status },
+      orderBy: { updatedAt: 'desc' },
+      include: { owner: { select: { profile: { select: { displayName: true } } } } },
+    }),
+    db.project.groupBy({ by: ['status'], _count: true }),
+  ]);
+  const countMap = new Map(counts.map((c) => [c.status, c._count]));
+
   return (
     <>
-      <PageHeader title="Projects" action={{ href: '/admin/projects/new', label: 'Add a curated project' }} />
-      <nav aria-label="Filter by status" className="mb-6 flex flex-wrap gap-2">
-        {STATUSES.map((s) => (
-          <Link key={s} href={`/admin/projects?status=${s}`} aria-current={s === status ? 'page' : undefined} className={`min-h-10 rounded-full border px-3.5 py-2 text-sm font-medium ${s === status ? 'border-text-strong' : 'border-border-strong'}`}>
-            <StatusBadge status={s} />
-          </Link>
-        ))}
-      </nav>
+      <PageHeader
+        title="Projects"
+        description="Approve member builds or add curated projects to the public gallery."
+        action={{ href: '/admin/projects/new', label: 'Add a curated project' }}
+      />
+      <FilterPills
+        label="Filter by status"
+        items={STATUSES.map(({ key, label }) => ({
+          label,
+          href: `/admin/projects?status=${key}`,
+          active: key === status,
+          count: countMap.get(key) ?? 0,
+        }))}
+      />
       {projects.length === 0 ? (
         <Empty>None.</Empty>
       ) : (
@@ -53,7 +69,7 @@ export default async function AdminProjectsPage({ searchParams }: Props) {
                     {p.featured && <Badge tone="lime">Featured</Badge>}
                   </td>
                   <td className={TD}>{p.owner?.profile?.displayName ?? p.credits ?? 'Curated'}</td>
-                  <td className={`${TD} font-display text-xs`}>{formatDate(p.updatedAt)}</td>
+                  <td className={`${TD} font-display text-xs whitespace-nowrap`}>{formatDate(p.updatedAt)}</td>
                   <td className={TD}>
                     <StatusBadge status={p.status} />
                   </td>

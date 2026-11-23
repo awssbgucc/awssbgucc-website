@@ -4,6 +4,7 @@ import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
 import { EventBrowser } from '@/components/site/EventBrowser';
 import { FeatureEvent } from '@/components/site/FeatureEvent';
+import { NewsletterBand } from '@/components/site/NewsletterBand';
 import { NoEvents } from '@/components/site/NoEvents';
 import { PageIntro } from '@/components/site/PageIntro';
 import { SectionHead } from '@/components/site/SectionHead';
@@ -80,6 +81,8 @@ export default async function EventsPage() {
           </div>
         </Container>
       </section>
+
+      <NewsletterBand source="events" surface="alt" />
     </>
   );
 }

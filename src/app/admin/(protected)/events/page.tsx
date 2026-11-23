@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Empty, LINK, PageHeader, StatusPill, TABLE, TableWrap, TD, TH } from '@/components/admin/ui';
+import { Empty, FilterPills, LINK, PageHeader, StatusPill, TABLE, TableWrap, TD, TH } from '@/components/admin/ui';
 import { Tag } from '@/components/ui/Tag';
 import { requireRole } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -9,14 +9,6 @@ import { formatDate } from '@/lib/format';
 export const metadata: Metadata = { title: 'Events' };
 
 type Props = { searchParams: Promise<{ status?: string; when?: string }> };
-
-const FILTERS = [
-  { label: 'All', query: {} },
-  { label: 'Draft', query: { status: 'DRAFT' } },
-  { label: 'Published', query: { status: 'PUBLISHED' } },
-  { label: 'Upcoming', query: { when: 'upcoming' } },
-  { label: 'Past', query: { when: 'past' } },
-];
 
 export default async function AdminEventsPage({ searchParams }: Props) {
   await requireRole();
@@ -30,18 +22,24 @@ export default async function AdminEventsPage({ searchParams }: Props) {
     orderBy: { startsAt: 'desc' },
   });
 
+  const filters = [
+    { label: 'All', href: '/admin/events', active: !status && !when },
+    { label: 'Draft', href: '/admin/events?status=DRAFT', active: status === 'DRAFT' },
+    { label: 'Published', href: '/admin/events?status=PUBLISHED', active: status === 'PUBLISHED' },
+    { label: 'Upcoming', href: '/admin/events?when=upcoming', active: when === 'upcoming' },
+    { label: 'Past', href: '/admin/events?when=past', active: when === 'past' },
+  ];
+
   return (
     <>
-      <PageHeader title="Events" action={{ href: '/admin/events/new', label: 'New event' }} />
-      <nav aria-label="Filter" className="mb-6 flex flex-wrap gap-4">
-        {FILTERS.map(({ label, query }) => (
-          <Link key={label} href={{ pathname: '/admin/events', query }} className="flex min-h-11 items-center text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text-strong">
-            {label}
-          </Link>
-        ))}
-      </nav>
+      <PageHeader
+        title="Events"
+        description="Manage talks, hands-on sessions, bootcamps and venue check-in codes."
+        action={{ href: '/admin/events/new', label: 'New event' }}
+      />
+      <FilterPills items={filters} />
       {events.length === 0 ? (
-        <Empty>No events here yet.</Empty>
+        <Empty action={{ href: '/admin/events/new', label: 'New event' }}>No events here yet.</Empty>
       ) : (
         <TableWrap>
           <table className={TABLE}>
@@ -51,6 +49,7 @@ export default async function AdminEventsPage({ searchParams }: Props) {
                 <th className={TH}>Tag</th>
                 <th className={TH}>Date</th>
                 <th className={TH}>Status</th>
+                <th className={TH}>Attendance</th>
               </tr>
             </thead>
             <tbody>
@@ -64,9 +63,17 @@ export default async function AdminEventsPage({ searchParams }: Props) {
                   <td className={TD}>
                     <Tag tag={event.tag} />
                   </td>
-                  <td className={TD}>{formatDate(event.startsAt)}</td>
+                  <td className={`${TD} font-display text-xs whitespace-nowrap`}>{formatDate(event.startsAt)}</td>
                   <td className={TD}>
                     <StatusPill published={event.status === 'PUBLISHED'} />
+                  </td>
+                  <td className={TD}>
+                    <Link
+                      href={`/admin/events/${event.id}/attendance`}
+                      className="inline-flex min-h-8 items-center rounded-md border border-border-strong bg-bg px-2.5 text-xs font-medium text-text-strong hover:border-text-muted hover:bg-card-raised"
+                    >
+                      Check-in
+                    </Link>
                   </td>
                 </tr>
               ))}

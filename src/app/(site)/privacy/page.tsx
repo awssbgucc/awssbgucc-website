@@ -28,6 +28,13 @@ const SECTIONS: { title: string; body: string[] }[] = [
     body: ["Phone numbers, student ID numbers, dates of birth, home addresses or payment details. RSVPs stay on Meetup, under Meetup's own terms."],
   },
   {
+    title: 'Newsletter subscriptions',
+    body: [
+      'When you subscribe to our newsletter, we store your email address, any first name you choose to share, which page you subscribed from, and a private unsubscribe token.',
+      'We use this only to email community updates, event announcements and recaps via Resend. Every email includes a one-click link to unsubscribe immediately.',
+    ],
+  },
+  {
     title: 'Who can see it',
     body: [
       'Your profile is private unless you change it. Private means only you and the core team can see it.',

@@ -59,6 +59,16 @@ enum CertPathway {
   OTHER
 }
 
+enum SubscriberStatus {
+  SUBSCRIBED
+  UNSUBSCRIBED
+}
+
+enum NewsletterStatus {
+  DRAFT
+  SENT
+}
+
 model AdminUser {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -144,6 +154,32 @@ model MemberCertification {
   updatedBy    String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+}
+
+model NewsletterSubscriber {
+  id               String           @id @default(cuid())
+  email            String           @unique
+  name             String?
+  status           SubscriberStatus @default(SUBSCRIBED)
+  source           String           @default("site")
+  unsubscribeToken String           @unique @default(cuid())
+  subscribedAt     DateTime         @default(now())
+  unsubscribedAt   DateTime?
+  updatedAt        DateTime         @updatedAt
+}
+
+model NewsletterCampaign {
+  id          String           @id @default(cuid())
+  subject     String
+  previewText String?
+  body        String
+  status      NewsletterStatus @default(DRAFT)
+  sentCount   Int              @default(0)
+  sentAt      DateTime?
+  sentBy      String?
+  updatedBy   String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 }
 
 model Post {

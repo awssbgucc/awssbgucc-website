@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { contactSchema, isContactTopic } from '@/lib/validation/contact';
+import { buildCampaignEmail, buildWelcomeEmail, markdownToEmailHtml, sendNewsletterEmail } from './newsletter';
 import { buildContactEmail, escapeHtml, sendContactEmail } from './resend';
 
 const VALID = {
@@ -75,5 +76,59 @@ describe('resend email helper', () => {
     expect(url).toBe('https://api.resend.com/emails');
     expect(init.method).toBe('POST');
     expect(init.headers.Authorization).toBe('Bearer re_test_key');
+  });
+});
+
+describe('newsletter email helpers', () => {
+  it('escapes raw HTML in Markdown and renders headings, lists, bold and links', () => {
+    const html = markdownToEmailHtml('# Welcome <script>bad()</script>\n\nRead **more** at [our site](https://example.com).\n\n- First item\n- Second item');
+    expect(html).toContain('&lt;script&gt;bad()&lt;/script&gt;');
+    expect(html).toContain('<strong');
+    expect(html).toContain('href="https://example.com"');
+    expect(html).toContain('<ul');
+    expect(html).toContain('First item');
+  });
+
+  it('builds welcome and campaign emails with List-Unsubscribe headers', () => {
+    const welcome = buildWelcomeEmail({
+      email: 'student@ucc.edu.gh',
+      name: 'Ama',
+      unsubscribeUrl: 'https://example.com/newsletter/unsubscribe?token=abc',
+      siteUrl: 'https://example.com',
+      from: 'AWS SBG UCC <news@example.com>',
+    });
+    expect(welcome.to).toEqual(['student@ucc.edu.gh']);
+    expect(welcome.headers?.['List-Unsubscribe']).toBe('<https://example.com/newsletter/unsubscribe?token=abc>');
+    expect(welcome.html).toContain('Hi Ama,');
+
+    const campaign = buildCampaignEmail({
+      email: 'student@ucc.edu.gh',
+      subscriberName: 'Ama',
+      subject: 'Next Saturday session',
+      previewText: 'Bring your laptop.',
+      body: 'Join us in LT5 at 4:30 PM.',
+      unsubscribeUrl: 'https://example.com/newsletter/unsubscribe?token=abc',
+      siteUrl: 'https://example.com',
+      from: 'AWS SBG UCC <news@example.com>',
+    });
+    expect(campaign.subject).toBe('Next Saturday session');
+    expect(campaign.html).toContain('Bring your laptop.');
+    expect(campaign.text).toContain('Unsubscribe: https://example.com/newsletter/unsubscribe?token=abc');
+  });
+
+  it('handles missing key and successful Resend sends', async () => {
+    const payload = buildWelcomeEmail({
+      email: 'student@ucc.edu.gh',
+      unsubscribeUrl: 'https://example.com/newsletter/unsubscribe?token=abc',
+      siteUrl: 'https://example.com',
+    });
+    expect(await sendNewsletterEmail(payload, { apiKey: '' })).toEqual({ ok: false, code: 'NOT_CONFIGURED' });
+
+    const fetchImpl = vi.fn().mockResolvedValue(new Response(JSON.stringify({ id: 'news_1' }), { status: 200 }));
+    const res = await sendNewsletterEmail(payload, {
+      apiKey: 're_test_key',
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+    });
+    expect(res).toEqual({ ok: true, id: 'news_1' });
   });
 });

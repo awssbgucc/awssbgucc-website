@@ -1,13 +1,14 @@
 'use client';
 
+import { Trash2, Upload } from 'lucide-react';
 import Image from 'next/image';
 import { useState, type ReactNode } from 'react';
 import { Markdown } from '@/components/site/Markdown';
-import { Button } from '@/components/ui/Button';
 import { ACCEPTED_TYPES, uploadError, type UploadFolder } from '@/lib/uploads/rules';
 import { useFieldId, useFormState } from './AdminForm';
 
-const INPUT = 'w-full rounded-sm border border-input-border bg-input px-3 py-2 text-base text-text';
+const INPUT =
+  'w-full rounded-md border border-input-border bg-input px-3.5 py-2 text-sm text-text-strong transition-colors placeholder:text-text-faint hover:border-text-muted focus:border-focus focus:outline-none';
 
 type FieldProps = { name: string; label: string; help?: string; defaultValue?: string | number | null };
 
@@ -16,17 +17,17 @@ function Wrapper({ name, label, help, children }: { name: string; label: string;
   const id = useFieldId(name);
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium">
+      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-text-strong">
         {label}
       </label>
       {children}
       {help && (
-        <p id={`${id}-help`} className="mt-1.5 text-sm text-text-muted">
+        <p id={`${id}-help`} className="mt-1.5 text-xs text-text-muted">
           {help}
         </p>
       )}
       {error && (
-        <p id={`${id}-error`} className="mt-1.5 text-sm font-medium text-danger">
+        <p id={`${id}-error`} className="mt-1.5 text-xs font-medium text-danger">
           {error}
         </p>
       )}
@@ -48,7 +49,7 @@ export function TextField({ type = 'text', ...props }: FieldProps & { type?: str
   return (
     <Wrapper {...props}>
       {/* The key re-applies the value, because React resets a form after its action runs. */}
-      <input key={value} id={id} name={props.name} type={type} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={`${INPUT} min-h-11`} />
+      <input key={value} id={id} name={props.name} type={type} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={`${INPUT} min-h-10`} />
     </Wrapper>
   );
 }
@@ -66,7 +67,7 @@ export function SelectField({ options, ...props }: FieldProps & { options: { val
   const { id, value, describedBy, invalid } = useValue(props);
   return (
     <Wrapper {...props}>
-      <select key={value} id={id} name={props.name} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={`${INPUT} min-h-11`}>
+      <select key={value} id={id} name={props.name} defaultValue={value} aria-invalid={invalid} aria-describedby={describedBy} className={`${INPUT} min-h-10`}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -81,12 +82,12 @@ export function CheckboxField({ name, label, help, defaultChecked = false }: { n
   const state = useFormState();
   const checked = state.values ? state.values[name] === 'on' : defaultChecked;
   return (
-    <div>
-      <label className="flex min-h-11 items-center gap-3 text-sm font-medium">
-        <input key={String(checked)} type="checkbox" name={name} defaultChecked={checked} className="size-5 accent-text-strong" />
-        {label}
+    <div className="rounded-md border border-border bg-bg/60 px-3.5 py-2.5 transition-colors hover:border-border-strong">
+      <label className="flex min-h-9 cursor-pointer items-center gap-3 text-sm font-medium text-text-strong">
+        <input key={String(checked)} type="checkbox" name={name} defaultChecked={checked} className="size-4 rounded-sm accent-primary" />
+        <span>{label}</span>
       </label>
-      {help && <p className="text-sm text-text-muted">{help}</p>}
+      {help && <p className="mt-1 pl-7 text-xs text-text-muted">{help}</p>}
     </div>
   );
 }
@@ -97,7 +98,7 @@ export function MarkdownField(props: FieldProps & { rows?: number }) {
   const value = draft ?? initial;
   return (
     <Wrapper {...props}>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-3 lg:grid-cols-2">
         <textarea
           id={id}
           name={props.name}
@@ -106,10 +107,10 @@ export function MarkdownField(props: FieldProps & { rows?: number }) {
           onChange={(event) => setDraft(event.target.value)}
           aria-invalid={invalid}
           aria-describedby={describedBy}
-          className={`${INPUT} font-display text-sm`}
+          className={`${INPUT} font-display text-xs leading-relaxed`}
         />
-        <div role="region" aria-label="Preview" className="min-h-24 overflow-auto rounded-sm border border-border p-3">
-          <Markdown>{value}</Markdown>
+        <div role="region" aria-label="Preview" className="min-h-24 overflow-auto rounded-md border border-border bg-bg p-3.5 text-sm">
+          {value.trim() ? <Markdown>{value}</Markdown> : <p className="text-xs text-text-faint">Live Markdown preview appears here.</p>}
         </div>
       </div>
     </Wrapper>
@@ -133,9 +134,9 @@ export function ImageField({ folder, recordId, ...props }: ImageFieldProps) {
 
   if (!recordId) {
     return (
-      <div>
-        <p className="mb-1.5 text-sm font-medium">{props.label}</p>
-        <p className="text-sm text-text-muted">Save first, then add an image.</p>
+      <div className="rounded-md border border-dashed border-border-strong bg-bg/50 px-3.5 py-3">
+        <p className="text-sm font-medium text-text-strong">{props.label}</p>
+        <p className="mt-1 text-xs text-text-muted">Save first, then add an image.</p>
       </div>
     );
   }
@@ -169,13 +170,16 @@ export function ImageField({ folder, recordId, ...props }: ImageFieldProps) {
     <Wrapper {...props}>
       <input type="hidden" name={props.name} value={url} />
       {url && (
-        <div className={`relative mb-3 overflow-hidden rounded-sm border border-border bg-card-raised ${isLogo ? 'h-20 w-48' : 'size-40'}`}>
+        <div className={`relative mb-3 overflow-hidden rounded-md border border-border-strong bg-bg-alt ${isLogo ? 'h-20 w-48' : 'size-36'}`}>
           <Image src={url} alt="" fill unoptimized sizes="192px" className={isLogo ? 'object-contain p-3' : 'object-cover'} />
         </div>
       )}
-      <div className="flex flex-wrap items-center gap-4">
-        <label className={`inline-flex min-h-11 cursor-pointer items-center rounded-sm border border-border-strong px-5 text-sm font-medium text-text-strong focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:border-text-muted ${busy ? 'pointer-events-none opacity-60' : ''}`}>
-          {url ? 'Replace image' : 'Choose image'}
+      <div className="flex flex-wrap items-center gap-3">
+        <label
+          className={`inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-border-strong bg-bg px-4 text-sm font-medium text-text-strong transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:border-text-muted hover:bg-card-raised ${busy ? 'pointer-events-none opacity-60' : ''}`}
+        >
+          <Upload aria-hidden size={15} />
+          <span>{url ? 'Replace image' : 'Choose image'}</span>
           <input
             id={id}
             type="file"
@@ -191,13 +195,21 @@ export function ImageField({ folder, recordId, ...props }: ImageFieldProps) {
           />
         </label>
         {url && !busy && (
-          <Button variant="text" onClick={() => { setPicked(''); setStatus({ text: 'Removed. Save to keep the change.', error: false }); }}>
-            Remove image
-          </Button>
+          <button
+            type="button"
+            onClick={() => {
+              setPicked('');
+              setStatus({ text: 'Removed. Save to keep the change.', error: false });
+            }}
+            className="inline-flex min-h-10 items-center gap-1.5 rounded-md border border-danger/35 bg-danger/8 px-3.5 text-xs font-medium text-danger transition-colors hover:border-danger hover:bg-danger/15"
+          >
+            <Trash2 aria-hidden size={14} />
+            <span>Remove image</span>
+          </button>
         )}
       </div>
       {status && (
-        <p role="status" className={`mt-1.5 text-sm font-medium ${status.error ? 'text-danger' : 'text-text-muted'}`}>
+        <p role="status" className={`mt-1.5 text-xs font-medium ${status.error ? 'text-danger' : 'text-text-muted'}`}>
           {status.text}
         </p>
       )}

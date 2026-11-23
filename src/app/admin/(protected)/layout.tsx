@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { AdminTopbar } from '@/components/admin/AdminTopbar';
 import { Sidebar } from '@/components/admin/Sidebar';
 import { requireRole } from '@/lib/auth';
 
@@ -10,9 +11,12 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         Skip to content
       </a>
       <Sidebar role={admin.role} email={admin.email} />
-      <main id="admin-main" className="min-w-0 flex-1 p-6 lg:p-10">
-        {children}
-      </main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AdminTopbar role={admin.role} />
+        <main id="admin-main" className="min-w-0 flex-1">
+          <div className="mx-auto w-full max-w-[1280px] p-5 sm:p-6 lg:p-8">{children}</div>
+        </main>
+      </div>
     </div>
   );
 }

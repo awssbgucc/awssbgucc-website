@@ -1,8 +1,8 @@
 'use client';
 
+import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { createContext, useActionState, useContext, useId, type ReactNode } from 'react';
 import { useFormStatus } from 'react-dom';
-import { Button } from '@/components/ui/Button';
 import type { FormState } from '@/lib/admin/forms';
 
 const FormContext = createContext<FormState>({});
@@ -18,27 +18,34 @@ type AdminFormProps = {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
   children: ReactNode;
   submitLabel?: string;
+  framed?: boolean;
+  wide?: boolean;
 };
 
-export function AdminForm({ action, children, submitLabel = 'Save' }: AdminFormProps) {
+export function AdminForm({ action, children, submitLabel = 'Save', framed = true, wide = false }: AdminFormProps) {
   const [state, formAction] = useActionState(action, {});
   const scope = useId();
+  const widthClass = wide ? 'max-w-[920px]' : 'max-w-[680px]';
+  const frameClass = framed ? 'rounded-lg border border-border-strong bg-card p-6 sm:p-7' : '';
+
   return (
     <FieldScope.Provider value={scope}>
       <FormContext.Provider value={state}>
-        <form action={formAction} className="flex max-w-[640px] flex-col gap-6" noValidate>
+        <form action={formAction} className={`flex flex-col gap-5 ${widthClass} ${frameClass}`} noValidate>
           {children}
           {state.message && (
-            <p role="alert" className="text-sm font-medium text-danger">
-              {state.message}
-            </p>
+            <div role="alert" className="flex items-start gap-2.5 rounded-md border border-danger/40 bg-danger/10 px-3.5 py-2.5 text-sm font-medium text-danger">
+              <AlertCircle aria-hidden size={16} className="mt-0.5 shrink-0" />
+              <span>{state.message}</span>
+            </div>
           )}
           {state.saved && (
-            <p role="status" className="text-sm font-medium text-lime">
-              Saved
-            </p>
+            <div role="status" className="inline-flex items-center gap-2 self-start rounded-md border border-lime/40 bg-lime/10 px-3.5 py-2 text-sm font-medium text-lime">
+              <CheckCircle2 aria-hidden size={16} />
+              <span>Saved</span>
+            </div>
           )}
-          <div>
+          <div className="pt-1">
             <SubmitButton label={submitLabel} />
           </div>
         </form>
@@ -50,8 +57,13 @@ export function AdminForm({ action, children, submitLabel = 'Save' }: AdminFormP
 function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending}>
-      {pending ? 'Saving' : label}
-    </Button>
+    <button
+      type="submit"
+      disabled={pending}
+      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-primary px-5 py-2 text-sm font-medium text-on-primary shadow-xs transition-colors hover:bg-primary/90 disabled:opacity-60"
+    >
+      {pending && <Loader2 aria-hidden size={15} className="animate-spin" />}
+      <span>{pending ? 'Saving' : label}</span>
+    </button>
   );
 }

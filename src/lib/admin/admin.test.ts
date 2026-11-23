@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { parseForm } from './forms';
-import { adminChangeError, hasRole, isRole, normaliseEmail, SIGN_IN_ERRORS, signInMessage, withoutProviderTokens } from '@/lib/auth-rules';
+import {
+  adminChangeError,
+  authBaseUrlConfig,
+  authUseSecureCookies,
+  hasRole,
+  isRole,
+  normaliseEmail,
+  SIGN_IN_ERRORS,
+  signInMessage,
+  withoutProviderTokens,
+} from '@/lib/auth-rules';
 import { isCleanCopy, hasNoDashOrEmoji } from '@/lib/copy-rules';
 import { slugify } from '@/lib/slug';
 import { eventSchema } from '@/lib/validation/event';
@@ -9,6 +19,7 @@ import { adminProjectSchema, MEMBER_WRITE_UP_MAX, memberProjectSchema } from '@/
 import { settingsSchema } from '@/lib/validation/settings';
 import { accraInputToDate, COPY_MESSAGE, dateToAccraInput } from '@/lib/validation/shared';
 import { certificationSchema } from '@/lib/validation/certification';
+import { adminSubscriberSchema, escapeCsvCell, newsletterCampaignSchema, subscribeSchema } from '@/lib/validation/newsletter';
 import { teamSchema } from '@/lib/validation/team';
 
 const EM_DASH = String.fromCharCode(0x2014);
@@ -306,5 +317,58 @@ describe('certifications', () => {
     expect(withDash.ok).toBe(false);
     const withEmoji = parseForm(certificationSchema, form({ ...base, memberName: `Ama ${EMOJI}` }));
     expect(withEmoji.ok).toBe(false);
+  });
+});
+
+describe('auth base URL and cookie config', () => {
+  it('allows Amplify domains and localhost even when siteUrl is unset', () => {
+    const config = authBaseUrlConfig(undefined);
+    expect(config.allowedHosts).toContain('*.amplifyapp.com');
+    expect(config.allowedHosts).toContain('localhost:*');
+    expect(config.fallback).toBe('http://localhost:3000');
+  });
+
+  it('adds a configured custom domain and extra hosts without duplicating defaults', () => {
+    const config = authBaseUrlConfig('https://awssbgucc.org/about', 'https://www.awssbgucc.org, preview.awssbgucc.org');
+    expect(config.allowedHosts).toContain('awssbgucc.org');
+    expect(config.allowedHosts).toContain('www.awssbgucc.org');
+    expect(config.allowedHosts).toContain('preview.awssbgucc.org');
+    expect(config.fallback).toBe('https://awssbgucc.org');
+  });
+
+  it('keeps HTTP cookies usable for local production e2e and enforces HTTPS cookies otherwise', () => {
+    expect(authUseSecureCookies('http://localhost:3211', true)).toBe(false);
+    expect(authUseSecureCookies('https://awssbgucc.org', false)).toBe(true);
+    expect(authUseSecureCookies(undefined, true)).toBe(true);
+    expect(authUseSecureCookies(undefined, false)).toBe(false);
+  });
+});
+
+describe('newsletter validation and CSV export', () => {
+  it('normalises emails and optional names on public subscribe', () => {
+    const valid = subscribeSchema.safeParse({ email: '  AMA@ucc.edu.gh ', name: '  Ama ', source: 'home', website: '' });
+    expect(valid.success).toBe(true);
+    if (valid.success) {
+      expect(valid.data.email).toBe('ama@ucc.edu.gh');
+      expect(valid.data.name).toBe('Ama');
+    }
+    expect(subscribeSchema.safeParse({ email: 'bad-email', name: '' }).success).toBe(false);
+  });
+
+  it('validates admin subscriber and campaign forms', () => {
+    expect(parseForm(adminSubscriberSchema, form({ email: 'builder@ucc.edu.gh', name: 'Kwame', status: 'SUBSCRIBED' })).ok).toBe(true);
+    expect(parseForm(adminSubscriberSchema, form({ email: 'builder@ucc.edu.gh', name: `Bad ${EMOJI}`, status: 'SUBSCRIBED' })).ok).toBe(false);
+
+    expect(parseForm(newsletterCampaignSchema, form({ subject: 'Cloud session recap', previewText: 'Slides inside', body: 'Thanks for coming.' })).ok).toBe(true);
+    expect(parseForm(newsletterCampaignSchema, form({ subject: `Recap ${EM_DASH} week 1`, previewText: '', body: 'Hello' })).ok).toBe(false);
+  });
+
+  it('neutralises spreadsheet formula triggers and quotes CSV cells properly', () => {
+    expect(escapeCsvCell('ama@ucc.edu.gh')).toBe('ama@ucc.edu.gh');
+    expect(escapeCsvCell('Mensah, Ama')).toBe('"Mensah, Ama"');
+    expect(escapeCsvCell('=CMD("calc")')).toBe('"\'=CMD(""calc"")"');
+    expect(escapeCsvCell('+233123')).toBe("'+233123");
+    expect(escapeCsvCell('-1')).toBe("'-1");
+    expect(escapeCsvCell('@evil')).toBe("'@evil");
   });
 });
