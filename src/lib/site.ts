@@ -4,6 +4,7 @@ export const SITE_DESCRIPTION =
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 export const AWS_EVENT_TERMS_URL = 'https://aws.amazon.com/events/terms/';
 export const DEFAULT_SOCIAL_URLS = {
+  whatsapp: 'https://chat.whatsapp.com/BnlWXQsAiJxBmZJwyYnpu0',
   linkedin: 'https://www.linkedin.com/company/awssbgucc',
   instagram: 'https://www.instagram.com/awssbgucc',
   x: 'https://x.com/awssbgucc',

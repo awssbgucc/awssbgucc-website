@@ -7,8 +7,7 @@ export const siteSettings = {
   // TODO(joel): confirm this over the older awsbuildergroup.ucc@gmail.com
   email: 'awssbgucc@gmail.com',
   meetupUrl: 'https://www.meetup.com/aws-sbg-at-university-of-cape-coast',
-  // TODO(joel): WhatsApp community link
-  whatsappUrl: null,
+  whatsappUrl: 'https://chat.whatsapp.com/BnlWXQsAiJxBmZJwyYnpu0',
   builderCenterUrl: 'https://bit.ly/4pNTKvI',
   linkedinUrl: 'https://www.linkedin.com/company/awssbgucc',
   instagramUrl: 'https://www.instagram.com/awssbgucc',

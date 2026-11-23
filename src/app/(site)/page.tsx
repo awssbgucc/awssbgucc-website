@@ -78,7 +78,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroMosaic meetupUrl={s.meetupUrl} next={next} latest={past[0]} now={now} />
+      <HeroMosaic meetupUrl={s.meetupUrl} whatsappUrl={s.whatsappUrl} next={next} latest={past[0]} now={now} />
 
       {next && (
         <section className="band" aria-label="Next session">
@@ -196,7 +196,7 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      <Closing meetupUrl={s.meetupUrl} />
+      <Closing meetupUrl={s.meetupUrl} whatsappUrl={s.whatsappUrl} />
     </>
   );
 }

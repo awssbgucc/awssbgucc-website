@@ -20,7 +20,7 @@ const at = (index: number) => 260 + index * 85;
  * pointer (BuildField), and the mint cursor after the headline blinks three times: the mint cell means "here and now"
  * across the site. See docs/MOTION_SYSTEM.md.
  */
-export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string; next?: Event; latest?: Event; now: Date }) {
+export function HeroMosaic({ meetupUrl, whatsappUrl, next, latest, now }: { meetupUrl: string; whatsappUrl?: string | null; next?: Event; latest?: Event; now: Date }) {
   const main = eventPhoto('fcc-lab-bench');
   const portrait = eventPhoto('fcc-over-a-phone');
   const detail = photo('code-on-screen');
@@ -49,6 +49,7 @@ export function HeroMosaic({ meetupUrl, next, latest, now }: { meetupUrl: string
             </p>
             <div className="hero-actions">
               <Cta href={meetupUrl}>Join on Meetup</Cta>
+              {whatsappUrl && <Cta href={whatsappUrl} variant="line">Join WhatsApp</Cta>}
               <Cta href="/events" variant="arrow">See our events</Cta>
             </div>
           </div>

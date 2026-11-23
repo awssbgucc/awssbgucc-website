@@ -11,7 +11,7 @@ const WAYS: { icon: SbgIconName; tone: SbgTone; who: string; what: string }[] = 
 ];
 
 /** The invitation, anchored to the place: the map with Cape Coast lit, and three ways in. */
-export function Closing({ meetupUrl }: { meetupUrl: string }) {
+export function Closing({ meetupUrl, whatsappUrl }: { meetupUrl: string; whatsappUrl?: string | null }) {
   return (
     <section className="closing" aria-labelledby="closing-title">
       <Container>
@@ -25,7 +25,8 @@ export function Closing({ meetupUrl }: { meetupUrl: string }) {
             </p>
             <div className="closing-actions">
               <Cta href={meetupUrl} variant="mint">Join on Meetup</Cta>
-              <Cta href="/builder" variant="line">Open the Builder Portal</Cta>
+              {whatsappUrl && <Cta href={whatsappUrl} variant="line">Join WhatsApp</Cta>}
+              <Cta href="/builder" variant="arrow">Open the Builder Portal</Cta>
             </div>
             <ul className="ways">
               {WAYS.map((way) => (

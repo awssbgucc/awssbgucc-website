@@ -9,6 +9,7 @@ export const getSiteSettings = cache(async () => {
   if (!settings) throw new Error('Site settings are missing. Run pnpm db:seed.');
   return {
     ...settings,
+    whatsappUrl: settings.whatsappUrl ?? DEFAULT_SOCIAL_URLS.whatsapp,
     linkedinUrl: settings.linkedinUrl ?? DEFAULT_SOCIAL_URLS.linkedin,
     instagramUrl: settings.instagramUrl ?? DEFAULT_SOCIAL_URLS.instagram,
     xUrl: settings.xUrl ?? DEFAULT_SOCIAL_URLS.x,
@@ -50,6 +51,14 @@ export const getProject = cache((slug: string) =>
 
 export const getPublicResources = cache((eventId: string) =>
   db.eventResource.findMany({ where: { eventId, access: 'PUBLIC' }, orderBy: { order: 'asc' } }),
+);
+
+export const getAllPublicResources = cache(() =>
+  db.eventResource.findMany({
+    where: { access: 'PUBLIC', event: { status: 'PUBLISHED' } },
+    orderBy: [{ event: { startsAt: 'desc' } }, { order: 'asc' }],
+    include: { event: { select: { slug: true, title: true, startsAt: true, tag: true } } },
+  }),
 );
 
 /** Check-ins per event, for the public attendance figure where none was entered by hand. */
