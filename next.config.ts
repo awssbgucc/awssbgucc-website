@@ -44,8 +44,9 @@ const nextConfig: NextConfig = {
 };
 
 export default withSentryConfig(nextConfig, {
-  org: process.env.SENTRY_ORG || 'joel-anarba',
-  project: process.env.SENTRY_PROJECT || 'aws-sbg-ucc',
+  org: process.env.SENTRY_ORG || 'aws-sbg-ucc',
+  project: process.env.SENTRY_PROJECT,
+  sentryUrl: process.env.SENTRY_URL || 'https://de.sentry.io/',
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: !process.env.CI,
   widenClientFileUpload: true,
