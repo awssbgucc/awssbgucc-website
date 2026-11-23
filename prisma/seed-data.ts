@@ -97,3 +97,26 @@ export const rewards = [
   digital(10, 'TITLE', 'peer-reviewer', 'Title: Peer reviewer', 'Shown under your name.', 80),
   digital(11, 'TITLE', 'night-builder', 'Title: Night builder', 'Shown under your name.', 80),
 ];
+
+function swag(slug: string, name: string, category: string, unitLabel: string, receivedTotal: number, lowStockThreshold: number, notes: string | null = null) {
+  return { id: `seed-swag-${slug}`, slug, name, category, unitLabel, quantity: 0, receivedTotal, lowStockThreshold, notes };
+}
+
+export const swagItems = [
+  swag('cotton-twill-cap-black', 'Cotton Twill Cap - Black', 'Apparel', 'pcs', 13, 3, 'AWS swag orders: 5 + 4 + 4 (20 pts each)'),
+  swag('javalina-executive-pen-1000-black', 'Javalina Executive Pen (1000-count) - Black', 'Stationery', 'boxes', 1, 1, '1000-count bulk pack'),
+  swag('javalina-executive-pen-1000-blue', 'Javalina Executive Pen (1000-count) - Blue', 'Stationery', 'boxes', 1, 1, '1000-count bulk pack'),
+  swag('owala-bottle-24oz-very-very-dark', '24oz Owala Bottle - Very Very Dark', 'Drinkware', 'pcs', 12, 3),
+  swag('core-team-kit-s', 'Core Team Kit - S', 'Core Team Kit', 'kits', 10, 2, 'AWS swag orders: 3 + 2 + 1 + 2 + 1 + 1 (1 pt each)'),
+  swag('core-team-kit-m', 'Core Team Kit - M', 'Core Team Kit', 'kits', 3, 1, 'AWS swag orders: 3 (1 pt each)'),
+  swag('core-team-kit-l', 'Core Team Kit - L', 'Core Team Kit', 'kits', 4, 1, 'AWS swag orders: 2 + 2'),
+  swag('core-team-kit-xl', 'Core Team Kit - XL', 'Core Team Kit', 'kits', 1, 1, 'AWS swag orders: 1 (1 pt each)'),
+  swag('javalina-spring-stylus-pen-lime-green', 'Javalina Spring Stylus Pen - Lime Green', 'Stationery', 'pcs', 55, 10, 'AWS swag orders: 35 + 20'),
+  swag('javalina-spring-stylus-pen-burnt-orange', 'Javalina Spring Stylus Pen - Burnt Orange', 'Stationery', 'pcs', 45, 10, 'AWS swag orders: 20 + 25'),
+  swag('mini-canvas-tote-14oz', '14oz Mini Canvas Tote', 'Bags', 'pcs', 10, 3),
+  swag('clear-belt-bag-black', 'Clear Belt Bag - Black', 'Bags', 'pcs', 9, 2, 'AWS swag orders: 4 + 5 (10 pts each)'),
+  swag('lanyard', 'Lanyard', 'Accessories', 'pcs', 10, 3),
+  swag('flag-blue', 'Flag - Blue', 'Event Gear', 'pcs', 1, 1, '20 pts each'),
+  swag('desk-mat', 'Desk Mat', 'Accessories', 'pcs', 2, 1, '20 pts each'),
+  swag('magnetic-phone-accessory-black', 'Magnetic Phone Accessory - Black', 'Accessories', 'pcs', 1, 1, '5 pts each'),
+];

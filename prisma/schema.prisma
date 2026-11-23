@@ -730,3 +730,47 @@ model AnalyticsEvent {
   @@index([eventType, createdAt])
   @@index([path, createdAt])
 }
+
+enum SwagMovementType {
+  SET_COUNT
+  RESTOCK
+  HANDOUT
+  ADJUSTMENT
+}
+
+model SwagItem {
+  id                String         @id @default(cuid())
+  slug              String         @unique
+  name              String
+  category          String         @default("Other")
+  unitLabel         String         @default("pcs")
+  quantity          Int            @default(0)
+  receivedTotal     Int            @default(0)
+  distributedTotal  Int            @default(0)
+  lowStockThreshold Int            @default(3)
+  notes             String?
+  updatedBy         String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  movements         SwagMovement[]
+
+  @@index([category])
+  @@index([name])
+}
+
+model SwagMovement {
+  id         String           @id @default(cuid())
+  itemId     String
+  item       SwagItem         @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  type       SwagMovementType
+  delta      Int
+  beforeQty  Int
+  afterQty   Int
+  reason     String
+  recipient  String?
+  actorEmail String
+  createdAt  DateTime         @default(now())
+
+  @@index([itemId, createdAt])
+  @@index([createdAt])
+}

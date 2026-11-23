@@ -30,6 +30,7 @@ import {
   normalisePath,
   shouldTrackPath,
 } from '@/lib/analytics';
+import { applySwagMovement, swagItemSchema, swagMovementSchema } from '@/lib/validation/swag';
 
 const EM_DASH = String.fromCharCode(0x2014);
 const EN_DASH = String.fromCharCode(0x2013);
@@ -432,5 +433,89 @@ describe('analytics helpers', () => {
     expect(h1).toBe(h2);
     expect(h1).not.toBe(hNextDay);
     expect(h1).not.toContain('203.0.113.5');
+  });
+});
+
+describe('swag inventory validation and calculations', () => {
+  it('validates new swag item forms and rejects dashes or emojis', () => {
+    const valid = parseForm(swagItemSchema, form({
+      name: 'Cotton Twill Cap - Black',
+      slug: '',
+      category: 'Apparel',
+      unitLabel: 'pcs',
+      quantity: '5',
+      receivedTotal: '13',
+      lowStockThreshold: '3',
+      notes: '20 pts each',
+    }));
+    expect(valid.ok).toBe(true);
+    if (valid.ok) {
+      expect(valid.data.slug).toBe('cotton-twill-cap-black');
+      expect(valid.data.quantity).toBe(5);
+      expect(valid.data.receivedTotal).toBe(13);
+    }
+
+    const withDash = parseForm(swagItemSchema, form({
+      name: `Cap ${EM_DASH} Black`,
+      slug: '',
+      category: 'Apparel',
+      unitLabel: 'pcs',
+      quantity: '0',
+      receivedTotal: '0',
+      lowStockThreshold: '1',
+      notes: '',
+    }));
+    expect(withDash.ok).toBe(false);
+
+    const withEmoji = parseForm(swagMovementSchema, form({
+      itemId: 'item-1',
+      type: 'HANDOUT',
+      amount: '2',
+      reason: `Event ${EMOJI}`,
+      recipient: '',
+    }));
+    expect(withEmoji.ok).toBe(false);
+  });
+
+  it('requires at least 1 unit for non-stocktake movements', () => {
+    const zeroSet = parseForm(swagMovementSchema, form({
+      itemId: 'item-1',
+      type: 'SET_COUNT',
+      amount: '0',
+      reason: 'All distributed',
+      recipient: '',
+    }));
+    expect(zeroSet.ok).toBe(true);
+
+    const zeroHandout = parseForm(swagMovementSchema, form({
+      itemId: 'item-1',
+      type: 'HANDOUT',
+      amount: '0',
+      reason: 'Invalid handout',
+      recipient: '',
+    }));
+    expect(zeroHandout.ok).toBe(false);
+  });
+
+  it('calculates SET_COUNT, RESTOCK, HANDOUT and ADJUSTMENT cleanly', () => {
+    expect(
+      applySwagMovement({ currentQty: 0, receivedTotal: 13, distributedTotal: 0, type: 'SET_COUNT', amount: 8 }),
+    ).toEqual({ ok: true, nextQty: 8, delta: 8, nextReceivedTotal: 13, nextDistributedTotal: 0 });
+
+    expect(
+      applySwagMovement({ currentQty: 8, receivedTotal: 13, distributedTotal: 0, type: 'RESTOCK', amount: 4 }),
+    ).toEqual({ ok: true, nextQty: 12, delta: 4, nextReceivedTotal: 17, nextDistributedTotal: 0 });
+
+    expect(
+      applySwagMovement({ currentQty: 12, receivedTotal: 17, distributedTotal: 0, type: 'HANDOUT', amount: 5 }),
+    ).toEqual({ ok: true, nextQty: 7, delta: -5, nextReceivedTotal: 17, nextDistributedTotal: 5 });
+
+    expect(
+      applySwagMovement({ currentQty: 7, receivedTotal: 17, distributedTotal: 5, type: 'ADJUSTMENT', amount: 2 }),
+    ).toEqual({ ok: true, nextQty: 5, delta: -2, nextReceivedTotal: 17, nextDistributedTotal: 5 });
+
+    expect(
+      applySwagMovement({ currentQty: 5, receivedTotal: 17, distributedTotal: 5, type: 'HANDOUT', amount: 6 }),
+    ).toEqual({ ok: false, error: 'Only 5 on hand.' });
   });
 });

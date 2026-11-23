@@ -14,6 +14,7 @@ import {
   Mail,
   Megaphone,
   Menu,
+  Package,
   ScrollText,
   Settings,
   ShieldCheck,
@@ -47,6 +48,7 @@ export type AdminIconName =
   | 'challenges'
   | 'submissions'
   | 'projects'
+  | 'swag'
   | 'reports'
   | 'rewards'
   | 'achievements'
@@ -71,6 +73,7 @@ const ICONS: Record<AdminIconName, LucideIcon> = {
   challenges: Flag,
   submissions: Inbox,
   projects: FolderKanban,
+  swag: Package,
   reports: BarChart3,
   rewards: Gift,
   achievements: Trophy,

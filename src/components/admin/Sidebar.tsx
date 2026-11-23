@@ -39,6 +39,7 @@ export async function Sidebar({ role, email }: { role: Role; email: string }) {
         { href: '/admin/challenges', label: 'Challenges', icon: 'challenges' },
         { href: '/admin/submissions', label: 'Submissions', icon: 'submissions', badge: pendingSubmissions, badgeTone: 'purple' },
         { href: '/admin/projects', label: 'Projects', icon: 'projects', badge: pendingProjects, badgeTone: 'purple' },
+        { href: '/admin/swag', label: 'Swag inventory', icon: 'swag' },
         { href: '/admin/reports', label: 'Reports', icon: 'reports' },
       ],
     },

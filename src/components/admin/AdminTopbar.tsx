@@ -19,6 +19,7 @@ const SECTION_NAMES: Record<string, string> = {
   challenges: 'Challenges',
   submissions: 'Submissions',
   projects: 'Projects',
+  swag: 'Swag inventory',
   reports: 'Reports',
   rewards: 'Rewards and redemptions',
   achievements: 'Achievements',

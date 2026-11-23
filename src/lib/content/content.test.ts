@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { adminUsers, partners as seedPartners, siteSettings as seedSettings, teamMembers } from '../../../prisma/seed-data';
+import { adminUsers, partners as seedPartners, siteSettings as seedSettings, swagItems, teamMembers } from '../../../prisma/seed-data';
 import { findCopyIssues } from '@/lib/copy-rules';
 import { countdown, dateParts, formatDate, formatTime, formatTimeRange } from '@/lib/format';
 import { externalLabel, homeStats, initials, pastEvents, upcomingEvents } from './selectors';
@@ -95,7 +95,14 @@ describe('seed data', () => {
   });
 
   it('passes the copy rules', () => {
-    expect(findCopyIssues(JSON.stringify({ teamMembers, seedPartners, seedSettings }))).toEqual([]);
+    expect(findCopyIssues(JSON.stringify({ teamMembers, seedPartners, seedSettings, swagItems }))).toEqual([]);
+  });
+
+  it('seeds all 16 deduplicated swag items totalling 178 received units', () => {
+    expect(swagItems).toHaveLength(16);
+    expect(new Set(swagItems.map((item) => item.slug)).size).toBe(16);
+    expect(swagItems.reduce((sum, item) => sum + item.receivedTotal, 0)).toBe(178);
+    expect(swagItems.every((item) => item.quantity === 0)).toBe(true);
   });
 });
 

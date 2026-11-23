@@ -18,7 +18,7 @@ export default async function AuditPage({ searchParams }: Props) {
     <>
       <PageHeader
         title="Audit log"
-        description="Sensitive actions: check-in changes, reviews, balance adjustments, rewards, suspensions, newsletter broadcasts and deletions."
+        description="Sensitive actions: check-in changes, reviews, balance adjustments, rewards, swag inventory changes, suspensions, newsletter broadcasts and deletions."
       />
       <form className="mb-6 flex max-w-lg flex-wrap items-center gap-3 rounded-lg border border-border-strong bg-card p-3.5" role="search">
         <div className="relative min-w-[200px] flex-1">
@@ -30,7 +30,7 @@ export default async function AuditPage({ searchParams }: Props) {
             id="action"
             name="action"
             defaultValue={filter}
-            placeholder="For example member. or checkin."
+            placeholder="For example swag., member. or checkin."
             className="min-h-10 w-full rounded-md border border-input-border bg-input pr-3 pl-9 text-sm text-text-strong placeholder:text-text-faint focus:border-focus focus:outline-none"
           />
         </div>

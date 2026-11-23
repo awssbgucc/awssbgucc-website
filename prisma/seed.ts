@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client';
-import { achievements, adminUsers, awardRules, partners, rewards, siteSettings, teamMembers } from './seed-data';
+import { achievements, adminUsers, awardRules, partners, rewards, siteSettings, swagItems, teamMembers } from './seed-data';
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DIRECT_URL }) });
 
@@ -14,6 +14,7 @@ async function main() {
   await prisma.awardRule.createMany({ data: awardRules, skipDuplicates: true });
   await prisma.achievement.createMany({ data: achievements, skipDuplicates: true });
   await prisma.reward.createMany({ data: rewards, skipDuplicates: true });
+  await prisma.swagItem.createMany({ data: swagItems, skipDuplicates: true });
   console.log('Seed complete');
 }
 
