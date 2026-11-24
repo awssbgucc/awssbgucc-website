@@ -16,7 +16,13 @@ export function PostForm({ post }: { post?: Post }) {
       <TextArea name="excerpt" label="Excerpt" defaultValue={post?.excerpt} />
       <TextField name="author" label="Author" defaultValue={post?.author} />
       <TextField name="externalUrl" label="External link" defaultValue={post?.externalUrl} help="For a post on LinkedIn or AWS Builder Center. Leave the body empty." />
-      <MarkdownField name="body" label="Body" defaultValue={post?.body} help="Markdown." />
+      <MarkdownField
+        name="body"
+        label="Body"
+        defaultValue={post?.body}
+        rows={18}
+        help="Supports headings (##), quotes (>), lists (-) and links ([label](/events/slug))."
+      />
       <ImageField name="coverImage" label="Cover image" folder="posts" recordId={post?.id} defaultValue={post?.coverImage} help="JPEG, PNG or WebP, up to 5 MB." />
       <SelectField name="status" label="Status" options={STATUSES} defaultValue={post?.status} />
     </AdminForm>

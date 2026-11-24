@@ -433,6 +433,10 @@ body {
 }
 
 /* Markdown bodies for events and posts */
+.prose-site {
+  max-width: 65ch;
+}
+
 .prose-site > * + * {
   margin-top: 1em;
 }

@@ -12,7 +12,7 @@ import { PrismaClient } from '../src/generated/prisma/client';
 //   Dry run, local:                 pnpm exec tsx scripts/import-community-history.ts
 //   Create drafts, local:           ... --apply
 //   Local visual preview:           ... --apply --preview   (publishes verified and needs-confirmation records that can be published)
-//   Update reviewed text:           ... --apply --refresh   (add --remote-drafts for a remote database, as below)
+//   Update reviewed text:           ... --apply --refresh   (add --remote-drafts for a remote database, --posts-only to skip events)
 //   Drafts on a remote database:    ... --apply --remote-drafts   with CONFIRM_REMOTE_HOST set to the database host name.
 //                                   Never publishes. Joel runs this himself after approving it; publishing then happens in the admin.
 
@@ -24,6 +24,7 @@ const apply = process.argv.includes('--apply');
 const preview = process.argv.includes('--preview');
 const remoteDrafts = process.argv.includes('--remote-drafts');
 const refresh = process.argv.includes('--refresh');
+const postsOnly = process.argv.includes('--posts-only');
 const IMPORTER = 'content import';
 
 if (!local) {
@@ -63,7 +64,7 @@ try {
     if (match) {
       postIds.set(record.slug, match.id);
       const diff = refresh && match.updatedBy === IMPORTER
-        ? changes(match, { title: record.title, excerpt: record.excerpt, body: record.body, coverImage: record.coverImage })
+        ? changes(match, { title: record.title, excerpt: record.excerpt, author: record.author, body: record.body, coverImage: record.coverImage })
         : null;
       if (!diff) { console.log(`Keep existing post: ${record.slug}${refresh && match.updatedBy !== IMPORTER ? ' (edited in the admin)' : ''}`); continue; }
       if (apply) await db.post.update({ where: { id: match.id }, data: { ...diff, updatedBy: IMPORTER } });
@@ -77,7 +78,7 @@ try {
     }
     console.log(`${apply ? 'Created' : 'Would create'} post ${record.slug}: ${status} [${review.state}]`);
   }
-  for (const { review, recapPostSlug, ...record } of data.events) {
+  if (!postsOnly) for (const { review, recapPostSlug, ...record } of data.events) {
     const eventId = record.meetupUrl?.match(/\/events\/(\d+)/)?.[1];
     const matches = await db.event.findMany({ where: { OR: [
       { slug: record.slug },

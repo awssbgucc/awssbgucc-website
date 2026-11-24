@@ -1,9 +1,10 @@
 'use client';
 
-import { Trash2, Upload } from 'lucide-react';
+import { Bold, Heading2, Heading3, Italic, Link2, List, Quote, Trash2, Upload } from 'lucide-react';
 import Image from 'next/image';
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { Markdown } from '@/components/site/Markdown';
+import { estimateReadingTime } from '@/lib/content/reading';
 import { ACCEPTED_TYPES, uploadError, type UploadFolder } from '@/lib/uploads/rules';
 import { useFieldId, useFormState } from './AdminForm';
 
@@ -95,24 +96,105 @@ export function CheckboxField({ name, label, help, defaultChecked = false }: { n
 export function MarkdownField(props: FieldProps & { rows?: number }) {
   const { id, value: initial, describedBy, invalid } = useValue(props);
   const [draft, setDraft] = useState<string | null>(null);
+  const [view, setView] = useState<'write' | 'split' | 'preview'>('split');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const value = draft ?? initial;
+  const stats = estimateReadingTime(value);
+
+  function applyFormat(prefix: string, suffix: string, placeholder: string, lineStart = false) {
+    const el = textareaRef.current;
+    if (!el) return;
+    const start = el.selectionStart ?? value.length;
+    const end = el.selectionEnd ?? value.length;
+    const selected = value.slice(start, end);
+    const body = selected || placeholder;
+    const needsNewline = lineStart && start > 0 && value[start - 1] !== '\n' ? '\n' : '';
+    const inserted = `${needsNewline}${prefix}${body}${suffix}`;
+    const next = value.slice(0, start) + inserted + value.slice(end);
+    setDraft(next);
+    const cursorStart = start + needsNewline.length + prefix.length;
+    const cursorEnd = cursorStart + body.length;
+    window.requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(cursorStart, cursorEnd);
+    });
+  }
+
+  const tools = [
+    { label: 'Heading 2', icon: Heading2, onClick: () => applyFormat('## ', '', 'Section heading', true) },
+    { label: 'Heading 3', icon: Heading3, onClick: () => applyFormat('### ', '', 'Subheading', true) },
+    { label: 'Bold', icon: Bold, onClick: () => applyFormat('**', '**', 'bold text') },
+    { label: 'Italic', icon: Italic, onClick: () => applyFormat('*', '*', 'emphasized text') },
+    { label: 'Quote', icon: Quote, onClick: () => applyFormat('> ', '', 'Quoted line', true) },
+    { label: 'Bullet list', icon: List, onClick: () => applyFormat('- ', '', 'List item', true) },
+    { label: 'Link', icon: Link2, onClick: () => applyFormat('[', '](https://example.com)', 'link text') },
+  ];
+
+  const views: { value: 'write' | 'split' | 'preview'; label: string }[] = [
+    { value: 'write', label: 'Write' },
+    { value: 'split', label: 'Split' },
+    { value: 'preview', label: 'Preview' },
+  ];
+
   return (
     <Wrapper {...props}>
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-bg p-1.5">
+        <div role="toolbar" aria-label="Formatting" className="flex flex-wrap items-center gap-1">
+          {tools.map(({ label, icon: Icon, onClick }) => (
+            <button
+              key={label}
+              type="button"
+              title={label}
+              aria-label={label}
+              disabled={view === 'preview'}
+              onClick={onClick}
+              className="inline-flex size-8 items-center justify-center rounded-sm border border-transparent text-text-muted transition-colors hover:border-border-strong hover:bg-card-raised hover:text-text-strong disabled:pointer-events-none disabled:opacity-40"
+            >
+              <Icon size={15} aria-hidden />
+            </button>
+          ))}
+        </div>
+        <div role="group" aria-label="Editor view" className="inline-flex rounded-sm border border-border-strong p-0.5">
+          {views.map((mode) => (
+            <button
+              key={mode.value}
+              type="button"
+              aria-pressed={view === mode.value}
+              onClick={() => setView(mode.value)}
+              className={`rounded-sm px-2.5 py-1 text-xs font-medium transition-colors ${
+                view === mode.value ? 'bg-primary text-on-primary' : 'text-text-muted hover:text-text-strong'
+              }`}
+            >
+              {mode.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className={view === 'split' ? 'grid gap-3 lg:grid-cols-2' : 'grid gap-3'}>
         <textarea
+          ref={textareaRef}
           id={id}
           name={props.name}
           rows={props.rows ?? 14}
           value={value}
+          hidden={view === 'preview'}
           onChange={(event) => setDraft(event.target.value)}
           aria-invalid={invalid}
           aria-describedby={describedBy}
           className={`${INPUT} font-display text-xs leading-relaxed`}
         />
-        <div role="region" aria-label="Preview" className="min-h-24 overflow-auto rounded-md border border-border bg-bg p-3.5 text-sm">
-          {value.trim() ? <Markdown>{value}</Markdown> : <p className="text-xs text-text-faint">Live Markdown preview appears here.</p>}
-        </div>
+        {view !== 'write' && (
+          <div role="region" aria-label="Preview" className="min-h-24 overflow-auto rounded-md border border-border bg-bg p-4 text-sm">
+            {value.trim() ? <Markdown>{value}</Markdown> : <p className="text-xs text-text-muted">Live Markdown preview appears here.</p>}
+          </div>
+        )}
       </div>
+
+      <p className="mt-1.5 font-display text-xs text-text-muted">
+        {stats.words} {stats.words === 1 ? 'word' : 'words'}
+        {stats.label ? ` / ${stats.label}` : ''}
+      </p>
     </Wrapper>
   );
 }
