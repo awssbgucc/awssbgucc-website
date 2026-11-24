@@ -201,8 +201,7 @@ export default async function AboutPage() {
               <Image src="/brand/sbg-chip-purple.svg" alt="" width={56} height={56} unoptimized />
               <h2 id="programme-title" className="section-title">Part of a global program, run by UCC students</h2>
               <p>
-                AWS Student Builder Groups grew out of AWS Cloud Clubs, broadened from cloud alone to software development, AI and other technologies
-                built on AWS. They give members access to hands-on learning, technical events and AWS resources. The group at UCC is run
+                AWS Student Builder Groups give members access to hands-on learning, technical events and AWS resources. The group at UCC is run
                 independently by students. It is not operated by AWS or by the university.
               </p>
               <div className="flex flex-wrap gap-6">
