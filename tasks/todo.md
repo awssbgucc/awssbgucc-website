@@ -931,3 +931,47 @@ Then
 - [x] Launch checklist split into Joel's steps and done steps (audit 9.7)
 - [x] Audit section 9
 - [x] Throwaway PostgreSQL stopped and deleted after the run
+
+## Content and presentation pass, 24 Nov 2026
+
+Joel asked for an editorial and presentation pass over the public site: less repetition, clearer page purposes, scannable facts, no redesign. Local database only for checks; nothing written to Neon; nothing committed, pushed or deployed.
+
+Audit (what repeats or reads weak)
+
+- "Our events so far" staircase appears on home and About, and the Events archive uses the same heading
+- The bootcamp is explained in full three times (home, Events, FAQ). On Events the voucher terms sit inside a paragraph
+- "Student-led community at UCC, part of the program" is said three times on About and twice in the footer
+- About "How to get involved" repeats the FAQ (join, cost, Meetup, portal); About never says how members learn or what they explore
+- Home partner call says "tell us how you would like to work together" twice, with two buttons to the same page
+- Hero lead and closing are long and repeat "no experience needed"
+- Articles: the banned travel metaphor, endings that restate the opening, paragraphs that make one point twice
+- Projects empty state lists the submission items in the paragraph and again in the slots
+
+Plan
+
+- [x] Home: shorter hero lead; bootcamp intro without the voucher detail (lives on Events), honest beat captions, link to the bootcamp details; tighter explore, partner call (drop duplicate footer), newsletter and closing copy
+- [x] About: intro says why the group exists; new "How we learn and build" (talks, bootcamp, build sessions, projects) in place of the join steps the FAQ covers; areas explored, grouped by what we have covered; a milestones list (events plus bootcamp start and week 3) in place of the repeated staircase; shorter programme note
+- [x] Events: archive heading "All events"; bootcamp band as a fact list (duration, schedule, location, partner, focus) with a separate voucher eligibility box, anchored at #bootcamp
+- [x] Projects: five submission items; copy that separates member submissions from session exercises
+- [x] Team, Writing, Resources: tighten intros only
+- [x] Footer brand line no longer repeats the compliance line
+- [x] Articles in content/community-history.json: tighten the three posts, keep every fact; Neon needs the import with --refresh
+- [x] Verify: typecheck, lint, test, check:copy, build; browser at 375 and 1280, dark and light, local database
+
+Checked, 24 Nov 2026
+
+- typecheck; lint with copy check (0 errors, 11 warnings, all in docs and the launch event's real title); 333 unit tests; production build
+- Local PGlite database with the reviewed content imported (--apply --preview), production server: 10 public routes at 375 and 1280, dark and light, all 200, no console errors. Only overflow: the home staircase at 375, an existing horizontal scroller
+- In Chrome at 1366: About sections, /events#bootcamp anchor, projects empty state
+- Not run: the Playwright e2e suites
+- Neon not touched. The article text reaches Neon only through the import with --refresh, for records nobody has saved in the admin
+
+## Follow-up from Joel, 24 Nov 2026
+
+- [x] Restore the bootcamp steps on the home page to describe every session, not week 3
+- [x] Broaden copy that limited the group to cloud: hero, footer, closing, Events intro, About formats, intro and why
+- [x] Hero: group photo (fcc-everyone) first; the lab bench photo moves to the laptop cell
+- [x] Phones and tablets: staircase becomes a column of rows, every event visible, steps build on scroll
+- [x] Phones: photo strips drift as the page scrolls, as on desktop
+
+Checked: typecheck, lint (0 errors, 11 existing warnings), 333 unit tests, production build on the local database, home captures at 375 and 1280 with motion on (step sizes measured, reel transform changes with scroll), 10 routes at 375 and 1280 in dark and light with no overflow or console errors. Not run: e2e.

@@ -7,7 +7,7 @@ import { PhotoViewer, usePhotoViewer, type ViewerPhoto } from '../PhotoViewer';
 type ReelPhoto = ViewerPhoto & { wide: boolean; date: string | null };
 
 /**
- * Photographs as one strip, oldest first. On wide screens the strip drifts sideways as the page scrolls past, like
+ * Photographs as one strip, oldest first. The strip drifts sideways as the page scrolls past, like
  * film through a gate. It is still a normal horizontal scroller: focusing a photo stops the drift so the browser can
  * bring it into view, and under reduced motion or without scroll-driven animation it just scrolls. Each photo opens
  * full screen with its date. The drift covers the whole strip in one pass, so a strip much longer than about a dozen

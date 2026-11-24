@@ -14,6 +14,7 @@ const ICON = { BOOTCAMP: 'ladder', BUILD: 'wrench', TALK: 'speaker', NETWORKING:
  * blocks in the official SBG backgrounds. The next session is the top step, in mint.
  * As the staircase crosses the screen, a white line completes along the top of each step in turn, oldest first, and
  * the top step's line is mint: progress climbing to now. Scroll-linked where the browser supports it, otherwise static.
+ * Below 1024 px the steps lie on their side as a column of rows, so phones see every event without scrolling sideways.
  */
 export function Staircase({ events, now, recaps }: { events: Event[]; now: Date; recaps: Map<string, string> }) {
   const steps = [...events].sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime()).slice(-6);

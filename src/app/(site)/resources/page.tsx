@@ -70,8 +70,8 @@ export default async function ResourcesPage() {
               </div>
             }
           >
-            Slides, bootcamp study packs, starter repositories and shared exam prep notes from our sessions are kept inside the Builder Portal for
-            members. Sign in with Google to access materials from sessions you attend.
+            Slides and lab files from our sessions are in the Builder Portal. Sign in with Google to open the materials from sessions you
+            attended.
           </SectionHead>
         </Container>
       </section>

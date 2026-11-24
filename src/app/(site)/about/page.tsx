@@ -4,11 +4,13 @@ import type { CSSProperties } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Cta } from '@/components/site/Cta';
 import { FaqList } from '@/components/site/FaqList';
-import { Staircase } from '@/components/site/home/Staircase';
 import { PageIntro } from '@/components/site/PageIntro';
 import { PhotoWall } from '@/components/site/PhotoWall';
+import { Link } from '@/components/site/motion/TransitionLink';
 import { PixelMap } from '@/components/site/PixelMap';
 import { SectionHead } from '@/components/site/SectionHead';
+import { TAG_LABEL, TAG_TONE } from '@/components/site/tone';
+import { DISCIPLINES, STATUS_LABEL } from '@/lib/content/disciplines';
 import { PUBLIC_FAQS } from '@/lib/content/faqs';
 import { getEvents, getPosts, getSiteSettings } from '@/lib/content/queries';
 import { photo, type PhotoId } from '@/lib/content/media';
@@ -20,11 +22,17 @@ export const metadata: Metadata = {
   description: 'A student-led community at the University of Cape Coast, part of the AWS Student Builder Groups program. Open to every department.',
 };
 
-const STEPS = [
-  { title: 'Join on Meetup', text: 'Membership is free, and every event is posted on Meetup first.' },
-  { title: 'Attend a session', text: 'Talks run online in the evening. The bootcamp and build sessions are held on campus, so bring a laptop.' },
-  { title: 'Use the Builder Portal', text: 'Sign in with Google to check in at sessions, access materials and track your participation.' },
-  { title: 'Share your projects', text: 'Submit projects you worked on at our sessions or independently to feature them on this site.' },
+const FORMATS = [
+  { title: 'Online talks', text: 'Evening sessions on Google Meet with people working in the industry, on getting started, DevOps, certifications and careers.' },
+  { title: 'Training bootcamps', text: 'Structured programmes that pair a certification syllabus with practical work on AWS. The first, Zero to Cloud Practitioner, runs with CITSA.' },
+  { title: 'Hands-on sessions', text: 'In-person sessions on campus where members build, test and troubleshoot on AWS, with facilitators beside them.' },
+  { title: 'Projects', text: 'Members share what they build, at a session or on their own, through the Builder Portal, which also holds session materials.' },
+];
+
+// The bootcamp is a programme, not an event record (Joel, 11 Nov 2026), so its milestones are listed here by hand.
+const BOOTCAMP_MILESTONES = [
+  { at: new Date('2026-10-17T16:30:00Z'), title: 'Zero to Cloud Practitioner begins', text: 'Our 12-week bootcamp with CITSA starts at LT5, on Saturday afternoons.', postSlug: null },
+  { at: new Date('2026-10-31T16:30:00Z'), title: 'Bootcamp week 3: a first website on Amazon S3', text: 'Every participant deployed a Hostel Finder website, working through bucket policy errors on the way.', postSlug: 'first-website-on-amazon-s3' },
 ];
 
 // Bootcamp photographs not used on the home page. Dates come from the photo filenames.
@@ -42,26 +50,52 @@ export default async function AboutPage() {
   const now = new Date();
   const past = pastEvents(events, now);
   const first = past[past.length - 1];
-  const recaps = new Map(posts.filter((p) => !p.externalUrl).map((p) => [p.id, p.slug]));
+  const recapSlugs = new Set(posts.filter((p) => !p.externalUrl).map((p) => p.slug));
   const lead = photo('facilitators');
+  const milestones = [
+    ...past.map((event) => ({
+      key: event.id,
+      at: event.startsAt,
+      tone: TAG_TONE[event.tag],
+      kind: `${TAG_LABEL[event.tag]}, ${event.format === 'IN_PERSON' ? 'on campus' : 'online'}`,
+      title: event.title.split(':')[0],
+      text: event.summary,
+      href: `/events/${event.slug}` as string | null,
+    })),
+    ...BOOTCAMP_MILESTONES.filter((m) => m.at <= now).map((m) => ({
+      key: m.title,
+      at: m.at,
+      tone: TAG_TONE.BOOTCAMP,
+      kind: `${TAG_LABEL.BOOTCAMP}, on campus`,
+      title: m.title,
+      text: m.text,
+      href: !m.postSlug ? '/events#bootcamp' : recapSlugs.has(m.postSlug) ? `/blog/${m.postSlug}` : null,
+    })),
+  ].sort((a, b) => a.at.getTime() - b.at.getTime());
+  const covered = DISCIPLINES.filter((d) => d.status === 'covered');
+  const open = DISCIPLINES.filter((d) => d.status !== 'covered');
 
   return (
     <>
       <section className="band band-top">
         <Container>
-          <PageIntro label="Who we are" title="About" intro="A student-led technical community at the University of Cape Coast, part of the AWS Student Builder Groups program." />
+          <PageIntro
+            label="Who we are"
+            title="About"
+            intro="Students at the University of Cape Coast who learn cloud computing, software development, AI and more by building things together, and who try to make the first step easier for whoever comes next."
+          />
           <div className="about-split">
             <div className="about-text" data-reveal="rise">
-              <h2 className="section-title">Learning through hands-on practice</h2>
+              <h2 className="section-title">Why the group exists</h2>
               <p>
-                AWS Student Builder Groups are student-led campus communities where members learn cloud computing and AI, organise technical events
-                and work on projects together. Our group meets at the University of Cape Coast and is open to students from every department.
+                Cloud computing, software and AI are often treated as Computer Science subjects, but they sit behind services in finance, health,
+                education, agriculture and research. We started the group so that students from any department can learn how these technologies
+                work and build with them, whether or not they have written code before.
               </p>
               {first && (
                 <p>
                   Since launching on {formatDate(first.startsAt)}, we have run {past.length} {past.length === 1 ? 'event' : 'events'} and started
-                  the 12-week Zero to Cloud Practitioner bootcamp with CITSA. So far we have focused on cloud fundamentals, career guidance and
-                  hosting web projects. As the group grows, we are open to members exploring backends, DevOps, security, data and AI.
+                  the Zero to Cloud Practitioner bootcamp. Most of that work has been cloud fundamentals, career guidance and getting websites online.
                 </p>
               )}
               <blockquote className="about-quote">
@@ -77,31 +111,73 @@ export default async function AboutPage() {
         </Container>
       </section>
 
-      {events.length > 0 && (
-        <section className="band band-grid" aria-labelledby="story-title">
-          <Container>
-            <SectionHead label="Our events" title="Our events so far" id="story-title" action={<Cta href="/events" variant="arrow">All events</Cta>} />
-            <Staircase events={events} now={now} recaps={recaps} />
-          </Container>
-        </section>
-      )}
-
-      <section className="band" aria-labelledby="how-title">
+      <section className="band band-alt" aria-labelledby="how-title">
         <Container>
-          <SectionHead label="Membership" title="How to get involved" id="how-title" />
+          <SectionHead label="What we run" title="How we learn and build" id="how-title" action={<Cta href="/events" variant="arrow">All events</Cta>} />
           <ol className="how-steps" data-reveal="steps">
-            {STEPS.map((step, index) => (
-              <li key={step.title} style={{ '--i': index } as CSSProperties}>
+            {FORMATS.map((format, index) => (
+              <li key={format.title} style={{ '--i': index } as CSSProperties}>
                 <span className="how-num">{String(index + 1).padStart(2, '0')}</span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
+                <h3>{format.title}</h3>
+                <p>{format.text}</p>
               </li>
             ))}
           </ol>
         </Container>
       </section>
 
-      <section className="band band-alt" aria-labelledby="gallery-title">
+      <section className="band" aria-labelledby="areas-title">
+        <Container>
+          <SectionHead label="Beyond certifications" title="What members explore" id="areas-title">
+            The talks and the bootcamp focus on AWS. The group is for anyone who wants to build, whether that is software, data, security or AI.
+          </SectionHead>
+          <div className="area-groups" data-reveal="rise">
+            {[
+              { label: STATUS_LABEL.covered, items: covered },
+              { label: 'Not covered yet', items: open },
+            ].map((group) => (
+              <div key={group.label}>
+                <h3 className="type-label text-text-muted">{group.label}</h3>
+                <ul className="area-list">
+                  {group.items.map((d) => (
+                    <li key={d.id}>
+                      <Link href={`/#explore-${d.id}`}>
+                        <span className={`swatch swatch-${d.tone}`} aria-hidden="true" />
+                        {d.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {milestones.length > 0 && (
+        <section className="band band-grid" aria-labelledby="story-title">
+          <Container>
+            <SectionHead label={first ? `Since ${formatDate(first.startsAt)}` : 'Our history'} title="How the group has grown" id="story-title" />
+            <ol className="milestones" data-reveal="rise">
+              {milestones.map((m) => (
+                <li key={m.key} className="milestone">
+                  <p className="type-label milestone-date">
+                    <span className={`swatch swatch-${m.tone}`} aria-hidden="true" />
+                    {formatDate(m.at)}
+                  </p>
+                  <div>
+                    <h3>{m.href ? <Link href={m.href}>{m.title}</Link> : m.title}</h3>
+                    <p className="milestone-kind">{m.kind}</p>
+                    <p>{m.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Container>
+        </section>
+      )}
+
+      <section className="band" aria-labelledby="gallery-title">
         <Container>
           <SectionHead label="Zero to Cloud Practitioner" title="Inside the bootcamp" id="gallery-title" />
           <PhotoWall
@@ -111,22 +187,23 @@ export default async function AboutPage() {
         </Container>
       </section>
 
-      <section className="band" id="faq" aria-labelledby="faq-title">
+      <section className="band band-alt" id="faq" aria-labelledby="faq-title">
         <Container>
           <SectionHead label="Common questions" title="Frequently asked questions" id="faq-title" action={<Cta href="/contact" variant="arrow">Ask us something else</Cta>} />
           <FaqList items={PUBLIC_FAQS} />
         </Container>
       </section>
 
-      <section className="band band-alt" aria-labelledby="programme-title">
+      <section className="band" aria-labelledby="programme-title">
         <Container>
           <div className="programme-note">
             <div data-reveal="rise">
               <Image src="/brand/sbg-chip-purple.svg" alt="" width={56} height={56} unoptimized />
               <h2 id="programme-title" className="section-title">Part of a global program, run by UCC students</h2>
               <p>
-                AWS Student Builder Groups give members access to hands-on learning, technical events and AWS resources. Our group is an
-                independent, student-led community at the University of Cape Coast.
+                AWS Student Builder Groups grew out of AWS Cloud Clubs, broadened from cloud alone to software development, AI and other technologies
+                built on AWS. They give members access to hands-on learning, technical events and AWS resources. The group at UCC is run
+                independently by students. It is not operated by AWS or by the university.
               </p>
               <div className="flex flex-wrap gap-6">
                 <Cta href={s.meetupUrl} variant="mint">Join on Meetup</Cta>

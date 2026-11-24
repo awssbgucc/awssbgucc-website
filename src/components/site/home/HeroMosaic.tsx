@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import { Container } from '@/components/ui/Container';
 import { DISCIPLINES } from '@/lib/content/disciplines';
-import { eventPhoto, photo } from '@/lib/content/media';
+import { eventPhoto, focusFor } from '@/lib/content/media';
 import type { Event } from '@/lib/content/types';
 import { countdown, dateParts } from '@/lib/format';
 import { Cta } from '../Cta';
@@ -21,9 +21,9 @@ const at = (index: number) => 260 + index * 85;
  * across the site. See docs/MOTION_SYSTEM.md.
  */
 export function HeroMosaic({ meetupUrl, whatsappUrl, next, latest, now }: { meetupUrl: string; whatsappUrl?: string | null; next?: Event; latest?: Event; now: Date }) {
-  const main = eventPhoto('fcc-lab-bench');
+  const main = eventPhoto('fcc-everyone');
   const portrait = eventPhoto('fcc-over-a-phone');
-  const detail = photo('code-on-screen');
+  const detail = eventPhoto('fcc-lab-bench');
   const featured = next ?? latest;
   const when = featured ? dateParts(featured.startsAt) : null;
 
@@ -44,8 +44,9 @@ export function HeroMosaic({ meetupUrl, whatsappUrl, next, latest, now }: { meet
               <span className="hero-line"><span style={i(1)}>of builders.<span className="hero-cursor" aria-hidden="true" /></span></span>
             </h1>
             <p className="hero-lead">
-              A student-led technical community at the University of Cape Coast, open to students from every department. We run online talks, 
-              bootcamps and hands-on campus sessions for students learning cloud computing, software development, AI and other emerging technologies on AWS. No prior experience needed. Just come ready to learn and build.
+              A student-led technical community at the University of Cape Coast, open to every department. We run online talks with people in
+              the industry, training bootcamps and hands-on sessions on campus for students learning cloud computing, software development, AI
+              and other technologies on AWS. No prior experience needed.
             </p>
             <div className="hero-actions">
               <Cta href={meetupUrl}>Join on Meetup</Cta>
@@ -56,8 +57,8 @@ export function HeroMosaic({ meetupUrl, whatsappUrl, next, latest, now }: { meet
 
           <div className="hero-mosaic">
             <figure className="cell cell-photo m-main" style={i(0)}>
-              <Image src={main.src} alt={main.alt} fill priority sizes="(min-width: 1024px) 34vw, 100vw" style={{ objectPosition: '50% 50%' }} />
-              <PixelReveal id={main.id} position="50% 50%" delay={at(0)} />
+              <Image src={main.src} alt={main.alt} fill priority sizes="(min-width: 1024px) 34vw, 100vw" style={{ objectPosition: focusFor(main.src) }} />
+              <PixelReveal id={main.id} position={focusFor(main.src)} delay={at(0)} />
               <figcaption>Computer Lab, New Science Annex</figcaption>
             </figure>
             <div className="cell cell-chip m-chip" style={i(1)}>
@@ -83,7 +84,7 @@ export function HeroMosaic({ meetupUrl, whatsappUrl, next, latest, now }: { meet
             <div className="cell block-blue m-blue" style={i(4)} aria-hidden="true" />
             <figure className="cell cell-photo m-detail" style={i(5)}>
               <Image src={detail.src} alt={detail.alt} fill sizes="(min-width: 1024px) 12vw, 1px" />
-              <PixelReveal id="code-on-screen" delay={at(5)} />
+              <PixelReveal id={detail.id} delay={at(5)} />
             </figure>
             <div className="cell block-magenta m-magenta" style={i(6)} aria-hidden="true" />
             <p className="cell m-note" style={i(7)}>

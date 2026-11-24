@@ -57,6 +57,12 @@ Repeated 16 Nov 2026: the From Code to Cloud work was checked on a local databas
 
 What happened: the copy read like a Cloud Practitioner course, although Student Builder Groups cover software, AI, data, security and more.
 Rule: position the group around building with technology. Separate what we have run (with sources) from areas open to explore, and never claim the second as the first.
+Repeated 24 Nov 2026: the editorial pass made the hero and footer narrower ("people working in cloud", "a Saturday bootcamp", "build sessions where you put a project online"). Student Builder Groups grew out of AWS Cloud Clubs precisely to go beyond cloud. When tightening copy, describe formats generally (talks with people in the industry, training bootcamps, hands-on sessions on campus) and keep cloud, software development and AI named together; put one programme's specifics (Saturdays, LT5) only where that programme is described.
+
+## Tightening copy that was written that way on purpose
+
+What happened: the bootcamp steps on the home page describe what happens at every session; the editorial pass anchored them to week 3, and Joel had to restore them (24 Nov 2026).
+Rule: before narrowing a general description to one dated instance, check whether the general version is the point. "Is this claim true of every session?" is a question for Joel, not a reason to rewrite.
 
 ## Measuring LCP after a scripted scroll
 

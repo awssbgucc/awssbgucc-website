@@ -64,7 +64,7 @@ export async function Footer() {
         <div className="footer-grid">
           <div className="footer-brand">
             <Logo size="large" />
-            <p>A student-led technical community at the University of Cape Coast. Online talks, bootcamps and hands-on sessions, free for all students.</p>
+            <p>Online talks with people in the industry, training bootcamps and hands-on sessions on campus. Free, and open to students in every department.</p>
             <div className="footer-meta">
               <p className="font-display text-xs text-text-muted">5.10 N  1.25 W / Cape Coast, Ghana</p>
               <a href={`mailto:${s.email}`} className="footer-email">{s.email}</a>

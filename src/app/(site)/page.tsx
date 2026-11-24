@@ -23,19 +23,19 @@ const PARTNER_CALL = [
     num: '01',
     tone: 'mint',
     title: 'Campus associations and clubs',
-    text: 'Co-host beginner-friendly cloud workshops, study tracks and hands-on labs for students in your department or club.',
+    text: 'Co-host a workshop, study track or lab for students in your department or club, the way CITSA co-runs our bootcamp.',
   },
   {
     num: '02',
     tone: 'blue',
     title: 'Companies and industry teams',
-    text: 'Share real-world cloud experience through guest talks, technical workshops, career sessions and student build days.',
+    text: 'Give a guest talk, run a technical workshop or join a career session with students.',
   },
   {
     num: '03',
     tone: 'purple',
     title: 'Sponsors and supporters',
-    text: 'Support bootcamps, campus build sessions, swag or Student Community Day at the University of Cape Coast.',
+    text: 'Support a bootcamp, a campus build session, swag or the Student Community Day.',
   },
 ] as const;
 
@@ -125,8 +125,7 @@ export default async function HomePage() {
       <section className="band band-alt" aria-labelledby="explore-title">
         <Container>
           <SectionHead label="Beyond certifications" title={<>What we&apos;re<br />exploring</>} id="explore-title">
-            We&apos;ve started with cloud fundamentals and getting websites and apps online. There&apos;s plenty more to explore, from DevOps and
-            security to machine learning and data analytics. Choose an area to see what we&apos;ve covered.
+            So far: cloud fundamentals and getting websites online. Choose an area to see what we have run in it, and what is still open.
           </SectionHead>
           <DisciplineExplorer disciplines={DISCIPLINES} records={records} />
         </Container>
@@ -146,8 +145,7 @@ export default async function HomePage() {
           ) : (
             <div className="projects-invite">
               <SectionHead label="Member projects" title="Share your AWS project" id="projects-title">
-                Built something using AWS? Submit it through the Builder Portal, whether you worked on it during a session or independently. Show us
-                what it does, how you built it and the AWS services behind it.
+                Anything you have built on AWS, at one of our sessions or on your own, can go up on this site. Submit it through the Builder Portal.
               </SectionHead>
               <ProjectSlots />
               <Cta href="/builder/projects/new" variant="line">Submit a project</Cta>
@@ -174,8 +172,8 @@ export default async function HomePage() {
               id="partners-call-title"
               action={<Cta href="/contact?topic=partnership" variant="mint">Become a partner</Cta>}
             >
-              We are inviting campus associations, tech companies and external organisations to partner with our community at the University of Cape
-              Coast. Reach out if you would like to co-host workshops, provide speakers, support bootcamps or sponsor events.
+              Associations, companies and organisations can co-host a workshop, send a speaker or support a bootcamp or event. Tell us what you
+              have in mind.
             </SectionHead>
             <ol className="partner-call-grid" data-reveal="steps">
               {PARTNER_CALL.map((item, index) => (
@@ -189,10 +187,6 @@ export default async function HomePage() {
                 </li>
               ))}
             </ol>
-            <div className="partner-call-foot">
-              <p className="text-sm text-text-muted">Representing a student association, tech company or organisation? Tell us how you would like to work together.</p>
-              <Cta href="/contact?topic=partnership" variant="arrow">Go to the contact page</Cta>
-            </div>
           </div>
         </Container>
       </section>

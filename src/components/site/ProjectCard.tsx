@@ -43,7 +43,7 @@ export function ProjectCard({ project, credit, size = 'normal' }: { project: Pro
 
 /** What a member project needs, shown where approved projects will appear. Never a stand-in project. */
 export function ProjectSlots() {
-  const slots = ['A screenshot or architecture diagram', 'What it does and the AWS services behind it', 'The source code, a live link (if available) and builder credit'];
+  const slots = ['What it does', 'The AWS services it uses', 'A link to the source code or the live project', 'A screenshot or architecture diagram', 'Who built it'];
   return (
     <ol className="project-slots" data-reveal="steps">
       {slots.map((text, index) => (

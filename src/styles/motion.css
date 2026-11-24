@@ -147,19 +147,27 @@ html[data-vt-phase='new'] [data-vt-dest='art'][data-reveal] > * { clip-path: non
 
 /* ---------- Staircase: progress climbing to now ---------- */
 .stair-block { position: relative; }
-.stair-block::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--color-text-strong); transform-origin: left; }
+/* Below 1024 the steps lie on their side, so the line runs down the edge that faces the card. */
+.stair-block::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 3px; background: var(--color-text-strong); transform-origin: top; }
 .stair-block-next::after { background: var(--color-bg); }
+@media (min-width: 1024px) {
+  .stair-block::after { left: 0; bottom: auto; width: auto; height: 6px; transform-origin: left; }
+}
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .staircase { view-timeline-name: --stairs; }
     .stair-block::after {
-      animation: step-complete linear both;
+      animation: step-complete-down linear both;
       animation-timeline: --stairs;
       animation-range: cover calc(18% + var(--i) * 7%) cover calc(24% + var(--i) * 7%);
     }
   }
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+    .stair-block::after { animation-name: step-complete; }
+  }
 }
 @keyframes step-complete { from { transform: scaleX(0); } }
+@keyframes step-complete-down { from { transform: scaleY(0); } }
 
 /* ---------- Photos: viewer, filmstrip, wall ---------- */
 .photo-viewer { position: fixed; inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 0; border: 0; background: rgb(22 29 38 / 0.97); color: var(--color-text); }
@@ -192,14 +200,18 @@ html[data-vt-phase='new'] [data-vt-dest='art'][data-reveal] > * { clip-path: non
   .reel-photo { height: 400px; }
 }
 @supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
-    /* The timeline belongs to the reel itself, measured against the page; clip, unlike hidden, adds no scroller. */
-    .photo-reel { view-timeline: --reel block; }
+  @media (prefers-reduced-motion: no-preference) {
+    /* The timeline belongs to the reel itself, measured against the page; clip, unlike hidden, adds no scroller.
+       Phones drift too: tapping a photo still opens it full screen, and the viewer steps through the rest. */
+    .photo-reel { view-timeline: --reel block; --reel-tail: 16px; }
     .photo-reel:not(:focus-within) { overflow-x: clip; }
     .photo-reel:not(:focus-within) .reel-track { animation: reel-drift linear both; animation-timeline: --reel; animation-range: cover 10% cover 90%; }
   }
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+    .photo-reel { --reel-tail: 64px; }
+  }
 }
-@keyframes reel-drift { to { transform: translateX(calc(-100% + 100cqw - 64px)); } }
+@keyframes reel-drift { to { transform: translateX(calc(-100% + 100cqw - var(--reel-tail))); } }
 
 .photo-wall .wall-photo { display: block; width: 100%; cursor: zoom-in; }
 .photo-wall figure:has(.wall-photo:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 4px; }

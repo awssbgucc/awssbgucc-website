@@ -101,7 +101,7 @@ Each entry gives the purpose, trigger, timing, behaviour on desktop and phone, t
 
 - **Purpose:** the session timeline reads as progress, with each step completing in turn and the last one mint.
 - **Trigger:** scroll-linked (`view-timeline`). Step *i* completes between 18% plus 7% times *i* and 24% plus 7% times *i* of the staircase crossing the screen.
-- **Phone:** the same, on the horizontal staircase.
+- **Phone and tablet:** below 1024 px the staircase is a column of rows, so every event shows without sideways scrolling. Each step is a bar on the left that widens towards now, and its line runs down the edge beside the card.
 - **Unsupported browsers and reduced motion:** every step is shown completed.
 - **Cost:** the compositor only (a transform on a pseudo-element). No JavaScript.
 
@@ -141,7 +141,7 @@ Each entry gives the purpose, trigger, timing, behaviour on desktop and phone, t
 | Into the portal | The click visibly registers while the server checks the session | The link fills in steps until the portal loads | No fill animation | No frozen transition here, because the wait can be long |
 | Archive tabs and type filters | The list changes without fuss | Unchanged from 11 Nov: the new list rises in once over 360 ms | Instant | Search typing stays instant. See "Tried and removed". |
 | Photo viewer | Photos open full screen from their thumbnail | View transition, 520 ms. Arrows and swipe step between photos. Without view transition support it opens at once. | Opens instantly | Native modal dialog: focus stays inside, Escape closes, focus returns to the thumbnail |
-| Filmstrip | Every approved photo, in order, as one strip | At 1024 px and wider it drifts sideways as the page scrolls past (`view-timeline`) | A normal horizontal scroller | Focusing a photo stops the drift so it can scroll into view |
+| Filmstrip | Every approved photo, in order, as one strip | It drifts sideways as the page scrolls past (`view-timeline`), on phones as well as desktops | A normal horizontal scroller | Focusing a photo stops the drift so it can scroll into view |
 | Hero depth | The mosaic gains depth as it leaves | Photos drift up at three rates while the hero exits (scroll-linked) | None | 1024 px and wider only |
 | Nav marker | Where you are, and where you are pointing | The mint cell slides to the hovered or focused link, then back to the current page (320 ms) | Jumps without sliding | Without JavaScript the static marker remains |
 | Mobile menu | A sheet that builds | Existing stepped sheet, plus the current page's mint cell and the colour strip building in sequence | Opens at once | Focus trap and Escape unchanged |

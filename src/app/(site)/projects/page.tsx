@@ -37,8 +37,8 @@ export default async function ProjectsPage() {
               <p className="type-label text-magenta">Share your work</p>
               <h2 className="section-title">Be the first to share a project</h2>
               <p>
-                Built something using AWS? Submit it through the Builder Portal, whether you worked on it during a session or independently. Include
-                a screenshot or architecture diagram, the AWS services behind it and a link to the code.
+                This page shows projects members submit themselves, whether they started them at one of our sessions or on their own. Submit yours
+                through the Builder Portal. Exercises the whole room does together, like the week 3 website, are written up in our recaps.
               </p>
               <div className="flex flex-wrap items-center gap-6">
                 <Cta href="/builder/projects/new" variant="mint">Submit a project</Cta>
@@ -51,9 +51,9 @@ export default async function ProjectsPage() {
               <Link href={`/blog/${weekThree.slug}`} className="projects-empty-story" data-reveal="mask">
                 <Image src={lab.src} alt={lab.alt} fill sizes="(min-width: 1024px) 36vw, 100vw" style={{ objectPosition: '62% 55%' }} />
                 <span className="story-caption">
-                  <span className="type-label">Built in a session</span>
+                  <span className="type-label">Session exercise</span>
                   <strong>In week 3 of the bootcamp, every participant deployed a Hostel Finder website on Amazon S3.</strong>
-                  <span>Read the recap</span>
+                  <span>Read the week 3 recap</span>
                 </span>
               </Link>
             )}

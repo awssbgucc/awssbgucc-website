@@ -5,9 +5,9 @@ import { PixelMap } from '../PixelMap';
 import { SbgIcon, type SbgIconName, type SbgTone } from '../SbgIcon';
 
 const WAYS: { icon: SbgIconName; tone: SbgTone; who: string; what: string }[] = [
-  { icon: 'ladder', tone: 'purple', who: 'Start from the basics', what: 'Join our community, attend an event or jump into an ongoing bootcamp. No AWS experience is needed, and we are here to help you get started whenever you join.' },
-  { icon: 'wrench', tone: 'magenta', who: 'Deploy a project', what: 'Come to an in-person build session and get a project of your own online.' },
-  { icon: 'speaker', tone: 'blue', who: 'Explore cloud careers', what: 'Hear from engineers working in the field about certifications, practical skills and career paths.' },
+  { icon: 'ladder', tone: 'purple', who: 'Start from the basics', what: 'Come to a talk or join the bootcamp, even partway through.' },
+  { icon: 'wrench', tone: 'magenta', who: 'Build hands-on', what: 'Come to a session on campus and build with AWS alongside other students, with facilitators beside you.' },
+  { icon: 'speaker', tone: 'blue', who: 'Explore tech careers', what: 'Ask people working in the industry about certifications, skills and career paths.' },
 ];
 
 /** The invitation, anchored to the place: the map with Cape Coast lit, and three ways in. */
@@ -20,8 +20,8 @@ export function Closing({ meetupUrl, whatsappUrl }: { meetupUrl: string; whatsap
             <p className="type-label text-lime">Cape Coast, Ghana</p>
             <h2 id="closing-title" className="closing-title">Come build<br />with us.</h2>
             <p className="closing-lead">
-              Membership is free on Meetup, and every event is posted there first. Members can also sign in to the Builder Portal to check in
-              at sessions, find materials and share projects.
+              Membership is free on Meetup, where every event is posted first. Once you are in, the Builder Portal is where you check in at
+              sessions, find materials and share projects.
             </p>
             <div className="closing-actions">
               <Cta href={meetupUrl} variant="mint">Join on Meetup</Cta>

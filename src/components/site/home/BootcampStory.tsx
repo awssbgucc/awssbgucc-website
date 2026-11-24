@@ -19,9 +19,8 @@ export function BootcampStory({ recapSlug }: { recapSlug?: string }) {
           <p className="type-label text-lavender">Bootcamp, with CITSA</p>
           <h2 className="section-title">Zero to Cloud Practitioner</h2>
           <p>
-            A 12-week preparation programme for the AWS Certified Cloud Practitioner exam (CLF-C02), run with the Computer Science and Information
-            Technology Student Association. Sessions mix exam topics with practical work on AWS services. Participants who attend consistently and
-            score 70% or higher on the official AWS Skill Builder practice exam are eligible for a certification exam voucher.
+            A 12-week programme with the Computer Science and Information Technology Student Association (CITSA) that prepares students for the AWS
+            Certified Cloud Practitioner exam (CLF-C02), with practical work on AWS in every session.
           </p>
         </div>
         <dl className="fact-grid fact-grid-tight">
@@ -49,7 +48,10 @@ export function BootcampStory({ recapSlug }: { recapSlug?: string }) {
       </div>
       <div className="bootcamp-foot">
         <p className="type-label text-text-muted">What to expect at each session</p>
-        {recapSlug && <Cta href={`/blog/${recapSlug}`} variant="arrow">Read a session recap</Cta>}
+        <div className="flex flex-wrap items-center gap-6">
+          <Cta href="/events#bootcamp" variant="arrow">Schedule and voucher terms</Cta>
+          {recapSlug && <Cta href={`/blog/${recapSlug}`} variant="arrow">Read a session recap</Cta>}
+        </div>
       </div>
     </div>
   );

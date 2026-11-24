@@ -43,7 +43,7 @@ export default async function BlogPage() {
           <PageIntro
             label="Recaps and notes"
             title="Writing"
-            intro="Detailed recaps from our campus sessions, career conversations, and hands-on workshops at the University of Cape Coast."
+            intro="What happened at our talks and bootcamp sessions: who spoke, what we built, and what went wrong on the way."
           >
             {posts.length > 0 && (
               <dl className="intro-stats">

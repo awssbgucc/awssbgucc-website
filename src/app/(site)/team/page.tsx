@@ -25,7 +25,7 @@ export default async function TeamPage() {
   return (
     <section className="band band-top">
       <Container>
-        <PageIntro label="Student-led" title="The team" intro="The students who plan sessions, coordinate venues, lead labs and run the group." />
+        <PageIntro label="Student-led" title="The team" intro="The students who plan the sessions, lead the labs and run the group." />
         {team.length === 0 ? (
           <div className="quiet-empty" data-reveal="rise">
             <h2 className="section-title">Meet us at our next session</h2>
@@ -34,7 +34,7 @@ export default async function TeamPage() {
           </div>
         ) : (
           <>
-            <Group title="Group Leader" people={team.filter((person) => person.roleGroup === 'LEADER')} />
+            <Group title="Group leader" people={team.filter((person) => person.roleGroup === 'LEADER')} />
             <Group title="Core team" people={team.filter((person) => person.roleGroup !== 'LEADER')} />
           </>
         )}

@@ -30,9 +30,7 @@ export function NewsletterBand({
               <h2 id={`${id}-title`} className="section-title">
                 Stay updated with our sessions
               </h2>
-              <p>
-                Get email updates when we announce new campus talks, build sessions, bootcamps and community recaps at the University of Cape Coast.
-              </p>
+              <p>An email when we announce a talk, a build session or a bootcamp, and when a new recap goes up.</p>
             </div>
             <NewsletterForm source={source} />
           </div>

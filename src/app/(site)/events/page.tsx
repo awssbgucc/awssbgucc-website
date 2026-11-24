@@ -30,7 +30,7 @@ export default async function EventsPage() {
     <>
       <section className="band band-top">
         <Container>
-          <PageIntro label="What we run" title="Events" intro="Online talks with people working in cloud computing, hands-on campus build sessions and bootcamps. Every event is free, with registration on Meetup.">
+          <PageIntro label="What we run" title="Events" intro="Online talks with people in the industry, hands-on sessions on campus and training bootcamps. Every event is free, with registration on Meetup.">
             {events.length > 0 && (
               <dl className="intro-stats">
                 <div><dt>Events run</dt><dd>{past.length}</dd></div>
@@ -45,32 +45,36 @@ export default async function EventsPage() {
 
       <section className="band band-alt" id="past-events" aria-labelledby="archive-title">
         <Container>
-          <SectionHead label="Archive" title="Our events so far" id="archive-title" />
+          <SectionHead label="Archive" title="All events" id="archive-title" />
           <EventBrowser upcoming={upcoming.map(item)} past={past.map(item)} empty={<NoEvents />} />
         </Container>
       </section>
 
-      <section className="band" aria-labelledby="bootcamp-title">
+      <section className="band" id="bootcamp" aria-labelledby="bootcamp-title">
         <Container>
           <div className="programme-band" data-reveal="rise">
             <div>
               <p className="type-label text-lavender">Bootcamp, with CITSA</p>
               <h2 id="bootcamp-title" className="section-title">Zero to Cloud Practitioner</h2>
               <p className="text-text-muted">
-                Our bootcamp with CITSA prepares UCC students for the AWS Certified Cloud Practitioner exam, mixing exam topics with
-                practical work on AWS services. No AWS experience is needed to join. Participants who attend consistently and score 70% or higher on
-                the official AWS Skill Builder practice exam are eligible for a certification exam voucher.
-              </p>
-              <p className="mt-4 text-text-muted">
-                Each session pairs core exam concepts with hands-on labs in the AWS console, from deploying web apps on Amazon S3 and working through
-                permission errors together to wrapping up with review quizzes.
+                Preparation for the AWS Certified Cloud Practitioner exam, with practical work on AWS in every session. No AWS experience is needed
+                to join.
               </p>
               <dl className="fact-grid mt-6">
-                <div><dt>When</dt><dd>Saturdays, 4:30 to 6:00 PM</dd></div>
-                <div><dt>Where</dt><dd>LT5, University of Cape Coast</dd></div>
-                <div className="col-span-full"><dt>Length</dt><dd>12 weeks, from Sat 17 Oct 2026</dd></div>
+                <div><dt>Duration</dt><dd>12 weeks, from Sat 17 Oct 2026</dd></div>
+                <div><dt>Schedule</dt><dd>Saturdays, 4:30 to 6:00 PM</dd></div>
+                <div><dt>Location</dt><dd>LT5, University of Cape Coast</dd></div>
+                <div><dt>Run with</dt><dd>CITSA UCC</dd></div>
+                <div className="col-span-full"><dt>Focus</dt><dd>Cloud Practitioner exam (CLF-C02) topics and hands-on AWS labs</dd></div>
               </dl>
-              {weekThree && <Cta href={`/blog/${weekThree.slug}`} variant="arrow" className="mt-4">Read a session recap</Cta>}
+              <div className="voucher-note">
+                <p className="type-label">Exam voucher eligibility</p>
+                <ul>
+                  <li>Attend the bootcamp consistently</li>
+                  <li>Score 70% or higher on the official AWS Skill Builder practice exam</li>
+                </ul>
+              </div>
+              {weekThree && <Cta href={`/blog/${weekThree.slug}`} variant="arrow" className="mt-4">Read the week 3 recap</Cta>}
             </div>
             <figure className="programme-flyer">
               <div className="flyer-frame" data-reveal="mask">

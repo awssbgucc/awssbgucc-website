@@ -249,9 +249,10 @@
 }
 @media (min-width: 768px) and (max-width: 1023px) { .feature-event { grid-template-columns: auto 1fr; } .feature-art { grid-column: 1 / -1; } }
 
-/* Staircase */
-.staircase { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(230px, 74vw); gap: 12px; align-items: end; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; scrollbar-width: thin; }
-.stair { display: flex; flex-direction: column; scroll-snap-align: start; }
+/* Staircase. Below 1024 a column of rows, so every event shows without sideways scrolling: each step is a bar on the
+   left that widens towards now, the staircase turned on its side. From 1024 the stepped row. */
+.staircase { display: grid; gap: 10px; }
+.stair { display: grid; grid-template-columns: auto minmax(0, 1fr); }
 .stair-card { position: relative; display: flex; flex-direction: column; padding: 12px; border: 1px solid var(--color-border-strong); background: var(--color-bg); transition: border-color 200ms; }
 .stair-card:hover { border-color: var(--color-text-muted); }
 .stair-art { position: relative; aspect-ratio: 16 / 9; display: grid; place-items: center; background: var(--color-card); overflow: hidden; }
@@ -264,11 +265,25 @@
 .stair-card:has(h3 a:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 .stair-meta { margin-top: 6px; font-size: 13px; color: var(--color-text-muted); }
 .stair-recap { align-self: flex-start; margin-top: 10px; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; color: var(--color-text); }
-.stair-block { height: calc((var(--i) + 1) * 22px); transform-origin: bottom; transition: transform 700ms steps(5, end); transition-delay: calc(var(--i) * 120ms + 200ms); }
-.motion-ready .staircase:not([data-inview]) .stair-block { transform: scaleY(0); }
+.stair-block { order: -1; width: calc((var(--i) + 1) * 8px); transform-origin: left; transition: transform 700ms steps(5, end); transition-delay: calc(var(--i) * 120ms + 200ms); }
+.motion-ready .staircase:not([data-inview]) .stair-block { transform: scaleX(0); }
+@media (max-width: 1023px) {
+  .stair-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); column-gap: 14px; align-content: start; }
+  .stair-card > :not(.stair-art) { grid-column: 2; }
+  .stair-art { grid-row: 1 / span 4; align-self: start; aspect-ratio: 4 / 3; }
+  .stair-date { margin-top: 0; }
+  .stair-card h3 { margin-top: 4px; font-size: 16px; }
+  .stair-recap { justify-self: start; margin-top: 6px; }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .stair-card { grid-template-columns: 200px minmax(0, 1fr); column-gap: 20px; }
+  .stair-block { width: calc((var(--i) + 1) * 12px); }
+}
 @media (min-width: 1024px) {
-  .staircase { grid-auto-flow: row; grid-template-columns: repeat(var(--count), 1fr); grid-auto-columns: auto; overflow: visible; gap: 16px; }
-  .stair-block { height: calc((var(--i) + 1) * 34px); }
+  .staircase { grid-template-columns: repeat(var(--count), 1fr); gap: 16px; align-items: end; }
+  .stair { display: flex; flex-direction: column; }
+  .stair-block { order: 0; width: auto; height: calc((var(--i) + 1) * 34px); transform-origin: bottom; }
+  .motion-ready .staircase:not([data-inview]) .stair-block { transform: scaleY(0); }
 }
 
 /* Bootcamp story */
@@ -362,7 +377,13 @@
 .project-slots { display: grid; gap: 1px; margin-block: 16px 24px; background: var(--color-border-strong); border: 1px dashed var(--color-border-strong); }
 .project-slots li { display: flex; gap: 16px; align-items: baseline; padding: 16px; background: var(--color-bg); color: var(--color-text); }
 .project-slots .type-label { color: var(--color-magenta); }
-@media (min-width: 768px) { .project-slots { grid-template-columns: repeat(3, 1fr); } .project-slots li { flex-direction: column; min-height: 140px; justify-content: space-between; } }
+@media (min-width: 1280px) {
+  .project-slots { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .project-slots li { flex-direction: column; min-height: 140px; justify-content: space-between; }
+  /* Beside the story photo the column is too narrow for five, so the list stays in rows. */
+  .projects-empty .project-slots { grid-template-columns: minmax(0, 1fr); }
+  .projects-empty .project-slots li { flex-direction: row; min-height: 0; }
+}
 .projects-invite .section-head { margin-bottom: 16px; }
 .projects-empty { display: grid; gap: 32px; }
 .projects-empty-copy p:not(.type-label) { margin-top: 16px; margin-bottom: 24px; color: var(--color-text-muted); max-width: 56ch; }
@@ -414,7 +435,6 @@
 .partner-call-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .partner-call-card h3 { font-family: var(--font-display); font-weight: 500; font-size: 20px; line-height: 1.2; letter-spacing: -0.03em; color: var(--color-text-strong); }
 .partner-call-card p { font-size: 15px; color: var(--color-text-muted); max-width: 38ch; }
-.partner-call-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; padding-top: 20px; border-top: 1px solid var(--color-border-strong); }
 @media (min-width: 768px) { .partner-call-grid { grid-template-columns: repeat(3, 1fr); } .partner-call-card { min-height: 200px; } }
 
 /* Closing */
@@ -515,6 +535,11 @@
 .programme-flyer { margin: 0; }
 .programme-flyer figcaption { margin-top: 10px; font-size: 12px; color: var(--color-text-muted); }
 @media (min-width: 1024px) { .programme-band { grid-template-columns: 1fr 1fr; align-items: center; gap: 48px; padding: 40px; } }
+#bootcamp { scroll-margin-top: 72px; }
+.voucher-note { margin-top: 16px; padding: 16px 18px; border: 1px solid var(--color-border-strong); border-left: 6px solid var(--color-sbg-mint); background: var(--color-card); }
+.voucher-note ul { margin-top: 10px; display: grid; gap: 6px; }
+.voucher-note li { position: relative; padding-left: 18px; font-size: 15px; color: var(--color-text-strong); }
+.voucher-note li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 8px; height: 8px; background: var(--color-sbg-mint); }
 
 /* Event page */
 .crumbs { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-family: var(--font-display); font-size: 12px; color: var(--color-text-muted); }
@@ -798,6 +823,23 @@
 .how-steps p { margin-top: 8px; color: var(--color-text-muted); font-size: 15px; }
 @media (min-width: 768px) { .how-steps { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .how-steps { grid-template-columns: repeat(4, 1fr); } .how-steps li { min-height: 260px; } }
+.band-alt .how-steps li { background: var(--color-bg-alt); }
+/* About: areas grouped by what we have covered, and the milestones list (24 Nov 2026). */
+.area-groups { display: grid; gap: 28px; }
+.area-list { display: grid; gap: 1px; margin-top: 12px; background: var(--color-border-strong); border: 1px solid var(--color-border-strong); }
+.area-list a { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 12px 16px; background: var(--color-bg); font-family: var(--font-display); font-size: 15px; letter-spacing: -0.02em; color: var(--color-text-strong); transition: background-color 160ms; }
+.area-list a:hover { background: var(--color-card); }
+@media (min-width: 640px) { .area-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .area-groups { grid-template-columns: 5fr 2fr; gap: 32px; } .area-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } .area-groups > div:last-child .area-list { grid-template-columns: minmax(0, 1fr); } }
+.milestones { border-top: 1px solid var(--color-border-strong); }
+.milestone { display: grid; gap: 8px 32px; padding: 22px 0; border-bottom: 1px solid var(--color-border-strong); }
+.milestone-date { display: flex; align-items: center; gap: 10px; color: var(--color-text-muted); }
+.milestone h3 { font-family: var(--font-display); font-weight: 500; font-size: 20px; letter-spacing: -0.03em; color: var(--color-text-strong); }
+.milestone h3 a { text-decoration: underline; text-decoration-color: var(--color-border-strong); text-underline-offset: 4px; transition: text-decoration-color 160ms; }
+.milestone h3 a:hover { text-decoration-color: currentColor; }
+.milestone-kind { margin-top: 4px; font-size: 13px; color: var(--color-text-muted); }
+.milestone p:not(.type-label):not(.milestone-kind) { margin-top: 8px; max-width: 62ch; color: var(--color-text); }
+@media (min-width: 768px) { .milestone { grid-template-columns: 200px minmax(0, 1fr); padding: 26px 0; } .milestone-date { padding-top: 6px; align-self: start; } }
 .photo-wall { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-flow: dense; gap: 12px; }
 .photo-wall figure { margin: 0; display: flex; flex-direction: column; }
 .wall-photo { position: relative; flex: 1; min-height: 200px; overflow: hidden; background: var(--color-card); }
