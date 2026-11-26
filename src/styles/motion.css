@@ -181,13 +181,20 @@ html[data-vt-phase='new'] [data-vt-dest='art'][data-reveal] > * { clip-path: non
 .photo-viewer-button { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border: 1px solid var(--color-border-strong); color: var(--color-text-strong); transition: background-color var(--dur-hover), border-color var(--dur-hover); }
 .photo-viewer-button:hover { background: rgb(255 255 255 / 0.08); border-color: var(--color-text-muted); }
 
-.reel-label { margin-top: 56px; color: var(--color-text-muted); }
-.photo-reel { container-type: inline-size; margin-top: 16px; padding-inline: 16px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.reel-shell { margin-top: 8px; }
+.reel-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-bottom: 16px; }
+.reel-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.reel-hint { font-size: 13px; color: var(--color-text-muted); }
+.reel-controls { display: flex; align-items: center; gap: 8px; }
+.reel-nav-btn { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--color-border-strong); background: var(--color-card); color: var(--color-text-strong); transition: background-color var(--dur-hover), border-color var(--dur-hover), color var(--dur-hover); }
+.reel-nav-btn:hover:not(:disabled) { border-color: var(--color-lime); background: var(--color-card-raised); color: var(--color-lime); }
+.reel-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.photo-reel { container-type: inline-size; padding-inline: 16px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; }
 .photo-reel:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
 .reel-track { display: flex; gap: 12px; width: max-content; padding-bottom: 8px; }
 .reel-track li { flex: none; width: 210px; scroll-snap-align: start; }
 .reel-track li.reel-wide { width: 372px; }
-.reel-photo { position: relative; display: block; width: 100%; height: 280px; overflow: hidden; background: var(--color-card); }
+.reel-photo { position: relative; display: block; width: 100%; height: 280px; overflow: hidden; background: var(--color-card); cursor: zoom-in; }
 .reel-photo img { object-fit: cover; transition: transform 700ms var(--ease-brand), filter var(--dur-hover); }
 .reel-photo:hover img { transform: scale(1.04); }
 .reel-photo::after { content: ''; position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; background: var(--color-lime); transform: scale(0); transform-origin: bottom right; transition: transform 240ms steps(3, end); }
@@ -199,19 +206,6 @@ html[data-vt-phase='new'] [data-vt-dest='art'][data-reveal] > * { clip-path: non
   .reel-track li.reel-wide { width: 532px; }
   .reel-photo { height: 400px; }
 }
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* The timeline belongs to the reel itself, measured against the page; clip, unlike hidden, adds no scroller.
-       Phones drift too: tapping a photo still opens it full screen, and the viewer steps through the rest. */
-    .photo-reel { view-timeline: --reel block; --reel-tail: 16px; }
-    .photo-reel:not(:focus-within) { overflow-x: clip; }
-    .photo-reel:not(:focus-within) .reel-track { animation: reel-drift linear both; animation-timeline: --reel; animation-range: cover 10% cover 90%; }
-  }
-  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
-    .photo-reel { --reel-tail: 64px; }
-  }
-}
-@keyframes reel-drift { to { transform: translateX(calc(-100% + 100cqw - var(--reel-tail))); } }
 
 .photo-wall .wall-photo { display: block; width: 100%; cursor: zoom-in; }
 .photo-wall figure:has(.wall-photo:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 4px; }

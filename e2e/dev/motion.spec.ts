@@ -66,17 +66,22 @@ test('the photo viewer opens, steps by keyboard and returns focus', async ({ pag
   await expect(first).toBeFocused();
 });
 
-test('the photo strips keep every photo reachable by keyboard', async ({ page }) => {
+test('the photo strip supports button, scroll and keyboard navigation', async ({ page }) => {
   await page.goto('/');
   const reels = page.locator('.photo-reel');
-  // From Code to Cloud, then the bootcamp.
-  await expect(reels).toHaveCount(2);
-  for (const reel of await reels.all()) {
-    const photos = reel.locator('.reel-photo');
-    expect(await photos.count()).toBeGreaterThan(8);
-    await photos.last().focus();
-    await expect(photos.last()).toBeInViewport();
-  }
+  await expect(reels).toHaveCount(1);
+  const reel = reels.first();
+  const prevBtn = page.getByRole('button', { name: 'Previous photos' });
+  const nextBtn = page.getByRole('button', { name: 'Next photos' });
+  await expect(prevBtn).toBeDisabled();
+  await expect(nextBtn).toBeEnabled();
+  await nextBtn.click();
+  await expect.poll(async () => reel.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
+  await expect(prevBtn).toBeEnabled();
+  const photos = reel.locator('.reel-photo');
+  expect(await photos.count()).toBeGreaterThan(8);
+  await photos.last().focus();
+  await expect(photos.last()).toBeInViewport();
 });
 
 test('the nav marker rests on the current page', async ({ page }, info) => {

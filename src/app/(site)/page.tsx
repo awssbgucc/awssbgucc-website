@@ -13,7 +13,7 @@ import { ProjectCard, ProjectSlots } from '@/components/site/ProjectCard';
 import { SectionHead } from '@/components/site/SectionHead';
 import { TeamCard } from '@/components/site/TeamCard';
 import { boardRecords, DISCIPLINES } from '@/lib/content/disciplines';
-import { allPhotos, eventPhoto, photo, photoDate, type EventPhotoId } from '@/lib/content/media';
+import { eventPhoto, type EventPhotoId } from '@/lib/content/media';
 import { getEvents, getPosts, getProjects, getSiteSettings, getTeam } from '@/lib/content/queries';
 import { pastEvents, projectCredit, upcomingEvents } from '@/lib/content/selectors';
 import { formatDate } from '@/lib/format';
@@ -39,8 +39,7 @@ const PARTNER_CALL = [
   },
 ] as const;
 
-// From Code to Cloud in the order it happened, without the two hero photos. About as long as the bootcamp strip, so
-// both drift at the same pace; every photo from the day is on the event page.
+// From Code to Cloud in the order it happened, without the two hero photos; every photo from the day is on the event page.
 const BUILD_DAY: EventPhotoId[] = [
   'fcc-opening-slide',
   'fcc-builder-center-talk',
@@ -70,11 +69,6 @@ export default async function HomePage() {
   const buildDayPhotos = BUILD_DAY.map((id) => {
     const image = eventPhoto(id);
     return { src: image.src, alt: image.alt, wide: image.width > image.height, date: null };
-  });
-  const reel = allPhotos().map((id) => {
-    const image = photo(id);
-    const date = photoDate(id);
-    return { src: image.src, alt: image.alt, wide: image.width > image.height, date, caption: date ? `${image.alt}. ${date}.` : image.alt };
   });
 
   return (
@@ -117,9 +111,7 @@ export default async function HomePage() {
       <section className="band" aria-label="Inside the bootcamp">
         <Container>
           <BootcampStory recapSlug={weekThree?.slug} />
-          <p className="type-label reel-label">Inside the Zero to Cloud Practitioner bootcamp</p>
         </Container>
-        <PhotoReel photos={reel} label="Bootcamp photographs" />
       </section>
 
       <section className="band band-alt" aria-labelledby="explore-title">
